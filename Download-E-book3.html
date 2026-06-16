@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>شكراً | FAROUK GRUP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #F0F2F5; /* رمادي أعمق وأنقى */
+      font-family: 'Tajawal', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      padding: 60px 20px;
+      color: #232323;
+    }
+
+    .card {
+      margin: auto;
+      margin-top: 50px;
+      max-width: 650px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 24px; /* زيادة قليلة للنعومة */
+      padding: 50px 45px 40px;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1); /* ظل أعمق وأكثر أناقة */
+      text-align: center;
+      border-top: 4px solid #B4945C; /* ذهبي أغمق وأكثر فخامة */
+    }
+
+    .icon-circle {
+      width: 85px;
+      height: 85px;
+      background: #B4945C; /* ذهبي فخم */
+      border: 6px solid #ffffff;
+      border-radius: 50%;
+      margin: -90px auto 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(180, 148, 92, 0.4); /* توهج ذهبي ناعم */
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #1E1E1E; /* أسود أنعم */
+      margin-bottom: 5px;
+    }
+
+    .sub {
+      font-size: 1.1rem;
+      color: #6C6C6C;
+      font-weight: 500;
+      margin-bottom: 35px;
+      letter-spacing: 0.5px;
+    }
+
+    .book-box {
+      background: #F9FAFB; /* رمادي فاتح جداً */
+      border-radius: 14px;
+      padding: 16px 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #232323;
+      border: 1px solid #E0E4E8; /* حدود أفتح */
+      margin-bottom: 40px;
+    }
+
+    .book-box i {
+      color: #B4945C;
+      font-size: 1.6rem;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 35px;
+    }
+
+    .btn {
+      flex: 1 1 200px;
+      background: #ffffff;
+      border: 1.5px solid #E0E4E8;
+      border-radius: 16px; /* نعومة أكبر */
+      padding: 22px 15px;
+      text-decoration: none;
+      color: #232323;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .btn i {
+      font-size: 2.2rem;
+      color: #B4945C;
+      transition: transform 0.3s ease;
+    }
+
+    .btn .format {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .btn .small {
+      font-size: 0.9rem;
+      color: #888888;
+    }
+
+    .btn:hover {
+      border-color: #B4945C;
+      background: #FCFAF7; /* لمسة دافئة */
+      transform: translateY(-3px);
+      box-shadow: 0 15px 25px -10px rgba(180, 148, 92, 0.2);
+    }
+
+    .btn:hover i {
+      transform: translateY(-3px);
+    }
+
+    .info-card {
+      background: #F9FAFB;
+      border-radius: 18px;
+      padding: 25px;
+      border: 1px solid #E0E4E8;
+      text-align: right;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .info-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-item i {
+      font-size: 1.6rem;
+      color: #4A5568; /* رمادي داكن أنيق */
+      width: 35px;
+      text-align: center;
+    }
+
+    .info-item p {
+      flex: 1;
+      color: #5A5F6E; /* تدرج رمادي راقي */
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .info-item strong {
+      color: #1E1E1E;
+    }
+
+    .footer-links {
+      margin-top: 45px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .back-link {
+      color: #1E1E1E;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 30px;
+      border-radius: 12px;
+      background: #F0F2F5;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover {
+      background: #1E1E1E;
+      color: #ffffff;
+    }
+
+    .copyright {
+      font-size: 0.85rem;
+      color: #8E9AA9; /* رمادي أنيق */
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 40px 15px; }
+      .card { padding: 45px 25px 30px; }
+      h1 { font-size: 2.1rem; }
+      .book-box { font-size: 1.1rem; flex-direction: column; text-align: center; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="icon-circle">
+      <i class="fas fa-check"></i>
+    </div>
+
+    <h1>شكراً لكم</h1>
+    <div class="sub">تمت عملية الشراء بنجاح</div>
+
+    <div class="book-box">
+      <i class="fas fa-book-open"></i>
+      <span>المطاعم الناجحة استراتيجيات حديثة لإدارة متقنة</span>
+    </div>
+
+    <div class="grid">
+      <a href="https://drive.google.com/uc?export=download&id=1sMhekiTtem8pdLFPqmcd1ZsY6tcJMNME" class="btn" download>
+        <i class="fa-solid fa-file-arrow-down"></i>
+        <span class="format">PDF</span>
+        <span class="small">النسخة الأساسية</span>
+      </a>
+      <a href="https://drive.google.com/uc?export=download&id=1MxYM6yVj6qwv5A9qdUjWzqSHby_fSw0Z" class="btn" download>
+        <i class="fa-solid fa-book-open-reader"></i>
+        <span class="format">ePub</span>
+        <span class="small">للقراءة المرنة</span>
+      </a>
+    </div>
+
+  <div class="device-note">
+        <strong>ملاحظات مهمة عند تحميل (ePub)</strong><br><br>
+<div class="info-card">
+      <div class="info-item">
+        <i class="fab fa-android"></i>
+        <p><strong>أندرويد:</strong> نوصي باستخدام تطبيق Google Play Books لأفضل تجربة قراءة.</p>
+      </div>
+      <div class="info-item">
+        <i class="fab fa-apple"></i>
+        <p><strong>آيفون:</strong> سيتم فتح الكتاب تلقائياً وبشكل متوافق داخل تطبيق Apple Books.</p>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="https://training.farouk-grup.com/home/Our-store" class="back-link">
+        <i class="fas fa-arrow-left"></i> العودة إلى المتجر
+      </a>
+      <div class="copyright">
+  <p>جميع الحقوق محفوظة © FAROUK GRUP TRAINING 2025</p>
+  <p>للتواصل: faroukgrup@gmail.com | +90 555 019 6682</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
