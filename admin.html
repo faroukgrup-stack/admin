@@ -661,8 +661,8 @@
             </div>
             <div class="platforms-static">
                 <button class="sidebar-btn active" onclick="loadData('all', this)"><i class="fas fa-chart-pie"></i> نظرة عامة</button>
-                <button class="sidebar-btn" data-platform="restaurant" onclick="loadData('restaurant', this)"><i class="fas fa-utensils"></i> منصة المطاعم</button>
                 <button class="sidebar-btn" data-platform="comprehensive" onclick="loadData('comprehensive', this)"><i class="fas fa-briefcase"></i> المنصة الشاملة</button>
+                <button class="sidebar-btn" data-platform="portaltr" onclick="loadData('portaltr', this)"><i class="fas fa-utensils"></i> المنصة الشاملة تركي</button>
                 <button class="sidebar-btn" data-platform="restaurantCourse" onclick="loadData('restaurantCourse', this)"><i class="fas fa-graduation-cap"></i> دورة إدارة المطاعم</button>
             </div>
             <div id="customPlatformsContainer" class="custom-platforms-container"></div>
@@ -769,7 +769,7 @@
         <input type="text" id="newUsername" placeholder="اسم المستخدم (Username)" required>
         <input type="password" id="newPassword" placeholder="كلمة المرور (Password)" required>
         <input type="text" id="newFullName" placeholder="الاسم الكامل (FullName)" required>
-        <select id="newUserPlatform"><option value="">اختر المنصة</option><option value="restaurant">منصة المطاعم</option><option value="comprehensive">المنصة الشاملة</option><option value="restaurantCourse">دورة إدارة المطاعم</option></select>
+        <select id="newUserPlatform"><option value="">اختر المنصة</option><option value="portaltr">المنصة الشاملة تركي</option><option value="comprehensive">المنصة الشاملة</option><option value="restaurantCourse">دورة إدارة المطاعم</option></select>
         <input type="date" id="newExpiryDate" placeholder="تاريخ الانتهاء (ExpiryDate)" required>
         <div class="modal-buttons"><button class="btn-save" onclick="addNewUser()">حفظ</button><button class="btn-cancel" onclick="closeModal('addUserModal')">إلغاء</button></div>
     </div>
@@ -783,7 +783,7 @@
         <input type="text" id="editUsername" placeholder="اسم المستخدم (Username)" required>
         <input type="password" id="editPassword" placeholder="كلمة المرور (Password)">
         <input type="text" id="editFullName" placeholder="الاسم الكامل (FullName)" required>
-        <select id="editUserPlatform"><option value="restaurant">منصة المطاعم</option><option value="comprehensive">المنصة الشاملة</option><option value="restaurantCourse">دورة إدارة المطاعم</option></select>
+        <select id="editUserPlatform"><option value="portaltr">المنصة الشاملة تركي</option><option value="comprehensive">المنصة الشاملة</option><option value="restaurantCourse">دورة إدارة المطاعم</option></select>
         <input type="date" id="editExpiryDate" required>
         <div class="modal-buttons"><button class="btn-save" onclick="updateUser()">حفظ التعديلات</button><button class="btn-cancel" onclick="closeModal('editUserModal')">إلغاء</button></div>
     </div>
@@ -809,7 +809,7 @@
 
     // ========== إعدادات المنصات ==========
     let PLATFORMS = {
-        restaurant: "https://script.google.com/macros/s/AKfycbx71hykCNSE6DD3y91WU6SB6KeLYjya6B9nE3FShGcgCgu29PcTzzyTFiYrGlC5pPp1bQ/exec",
+        portaltr: "https://script.google.com/macros/s/AKfycbxV3SEgQ4uyT6XDS_H7wx36XqhPypERktgAHjecSji2txu0BaG8A8XZbUwochlFVbesJg/exec",
         comprehensive: "https://script.google.com/macros/s/AKfycbzU_gRBy_BU1WdFHGOQCkcF-9pdUvwQArK9CrQtpE5PzikIKGWxhUxN6eNXcl1xW6s/exec",
         restaurantCourse: "https://script.google.com/macros/s/AKfycby1y5xyNBVO_guWxY3610vGMfQUslwN6qi2jEZruxJ3WqtFAUN_1ZtOI3W7O3Hc_EEr/exec"
     };
@@ -1079,7 +1079,7 @@
         if (!silent) showToast("تم تحديث البيانات", "fa-check-circle");
     }
     function translatePlatform(key) {
-        const map = { restaurant:"المطاعم", comprehensive:"الشاملة", restaurantCourse:"دورة إدارة المطاعم" };
+        const map = { portaltr:"الشاملة تركي", comprehensive:"الشاملة", restaurantCourse:"دورة إدارة المطاعم" };
         return map[key] || key;
     }
     function updateStatsCards(data) {
@@ -1205,7 +1205,7 @@
     // ========== المنصات المخصصة ==========
     function saveCustomPlatforms() {
         const custom = {};
-        for(let k in PLATFORMS) if(!['restaurant','comprehensive','restaurantCourse'].includes(k)) custom[k] = PLATFORMS[k];
+        for(let k in PLATFORMS) if(!['portaltr','comprehensive','restaurantCourse'].includes(k)) custom[k] = PLATFORMS[k];
         localStorage.setItem('customPlatforms', JSON.stringify(custom));
     }
     function loadCustomPlatforms() {
