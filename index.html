@@ -244,14 +244,8 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         .modal-box h3 {
@@ -341,9 +335,7 @@
         }
 
         @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
+            100% { transform: rotate(360deg); }
         }
 
         /* Empty state */
@@ -361,17 +353,9 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .app-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .tabs {
-                flex-direction: column;
-            }
-            .modal-box {
-                width: 95%;
-                padding: 20px;
-            }
+            .app-header { flex-direction: column; text-align: center; }
+            .tabs { flex-direction: column; }
+            .modal-box { width: 95%; padding: 20px; }
         }
     </style>
 </head>
@@ -546,11 +530,11 @@
 
     <script>
         // ==================== الإعدادات ====================
-        const API_URL =
-            'https://script.google.com/macros/s/AKfycbxBZzW39zrcfK6m_MmjfLxU55alUuKO4zdXL6WaoKcWZtptzEzunWZArzKSvHjiapoS/exec';
+        // ⚠️ استبدل هذا الرابط برابط النشر الجديد لتطبيق Google Apps Script بعد التعديل
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxBZzW39zrcfK6m_MmjfLxU55alUuKO4zdXL6WaoKcWZtptzEzunWZArzKSvHjiapoS/exec';
 
         // متغيرات عامة
-        let pendingDelete = null; // لتخزين معلومات الحذف المؤكد
+        let pendingDelete = null;
         let currentTab = 0;
         let allMaterials = [];
         let allRecipes = [];
@@ -575,17 +559,12 @@
 
         function closeModals() {
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
-            // إعادة تعيين التأكيد
             pendingDelete = null;
         }
 
-        /**
-         * استدعاء السيرفر - نستخدم GET مع Query Parameters لتجنب مشكلة CORS Preflight
-         */
         async function callServer(fn, params = {}) {
             showLoading();
             try {
-                // بناء رابط GET مع ترميز المعاملات
                 const url = new URL(API_URL);
                 url.searchParams.set('fn', fn);
                 if (Object.keys(params).length > 0) {
@@ -594,17 +573,11 @@
 
                 const res = await fetch(url.toString(), {
                     method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
 
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-
-                const data = await res.json();
-                return data;
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return await res.json();
             } catch (err) {
                 console.error('Server call error:', err);
                 return { success: false, error: err.message || 'فشل الاتصال بالسيرفر' };
@@ -615,7 +588,6 @@
 
         // ==================== تحميل البيانات ====================
         async function loadAllData() {
-            // تحميل المواد
             const matRes = await callServer('getAllMaterials');
             if (matRes.success) {
                 allMaterials = matRes.materials;
@@ -624,7 +596,6 @@
                 showToast(matRes.error || 'فشل تحميل المواد', true);
             }
 
-            // تحميل الأطباق
             const recRes = await callServer('getAllRecipes');
             if (recRes.success) {
                 allRecipes = recRes.recipes;
@@ -638,20 +609,10 @@
         // ==================== عرض الجداول ====================
         function renderRecipesTable() {
             const tbody = document.getElementById('recipesBody');
-
             if (allRecipes.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <i class="fas fa-clipboard-list"></i>
-                                <p>لا توجد أطباق بعد. أضف طبقك الأول!</p>
-                            </div>
-                        </td>
-                    </tr>`;
+                tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-clipboard-list"></i><p>لا توجد أطباق بعد. أضف طبقك الأول!</p></div></td></tr>`;
                 return;
             }
-
             tbody.innerHTML = allRecipes.map((recipe, i) => `
                 <tr>
                     <td>${i + 1}</td>
@@ -660,12 +621,8 @@
                     <td><span class="badge badge-warning">${recipe.trimmingCost.toFixed(2)}</span></td>
                     <td>${recipe.lossPercent.toFixed(1)}%</td>
                     <td>
-                        <button class="btn btn-sm btn-outline" onclick="viewRecipe('${escapeHtml(recipe.name)}')" title="عرض التفاصيل">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="confirmDeleteRecipe('${escapeHtml(recipe.name)}')" title="حذف">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="viewRecipe('${escapeHtml(recipe.name)}')" title="عرض التفاصيل"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="confirmDeleteRecipe('${escapeHtml(recipe.name)}')" title="حذف"><i class="fas fa-trash-alt"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -673,20 +630,10 @@
 
         function renderMaterialsTable() {
             const tbody = document.getElementById('materialsBody');
-
             if (allMaterials.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5">
-                            <div class="empty-state">
-                                <i class="fas fa-boxes"></i>
-                                <p>لا توجد مواد أولية. أضف المواد الأساسية!</p>
-                            </div>
-                        </td>
-                    </tr>`;
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-boxes"></i><p>لا توجد مواد أولية. أضف المواد الأساسية!</p></div></td></tr>`;
                 return;
             }
-
             tbody.innerHTML = allMaterials.map((mat, i) => `
                 <tr>
                     <td>${i + 1}</td>
@@ -694,12 +641,8 @@
                     <td>${escapeHtml(mat.unit)}</td>
                     <td><span class="badge badge-success">${mat.price.toFixed(2)}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline" onclick="editMaterial('${mat.id}')" title="تعديل">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="confirmDeleteMaterial('${mat.id}', '${escapeHtml(mat.name)}')" title="حذف">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="editMaterial('${mat.id}')" title="تعديل"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="confirmDeleteMaterial('${mat.id}', '${escapeHtml(mat.name)}')" title="حذف"><i class="fas fa-trash-alt"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -717,15 +660,8 @@
             currentTab = n;
             document.getElementById('tab0').style.display = n === 0 ? 'block' : 'none';
             document.getElementById('tab1').style.display = n === 1 ? 'block' : 'none';
-
-            // تحديث الأزرار النشطة
-            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', i === n);
-            });
-
-            // تحديث البيانات عند التبديل
-            if (n === 0) loadAllData();
-            if (n === 1) loadAllData();
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => btn.classList.toggle('active', i === n));
+            loadAllData();
         }
 
         // ==================== إضافة طبق ====================
@@ -737,14 +673,9 @@
 
         async function addRecipe() {
             const name = document.getElementById('recipeNameInput').value.trim();
-            if (!name) {
-                showToast('الرجاء إدخال اسم الطبق', true);
-                return;
-            }
-
+            if (!name) return showToast('الرجاء إدخال اسم الطبق', true);
             closeModals();
             const res = await callServer('addRecipe', { recipeName: name });
-
             if (res.success) {
                 showToast('✅ تمت إضافة الطبق بنجاح');
                 await loadAllData();
@@ -766,23 +697,11 @@
             const name = document.getElementById('materialNameInput').value.trim();
             const unit = document.getElementById('materialUnitInput').value.trim();
             const price = parseFloat(document.getElementById('materialPriceInput').value);
-
-            if (!name) {
-                showToast('الرجاء إدخال اسم المادة', true);
-                return;
-            }
-            if (!unit) {
-                showToast('الرجاء إدخال الوحدة', true);
-                return;
-            }
-            if (isNaN(price) || price < 0) {
-                showToast('الرجاء إدخال سعر صحيح', true);
-                return;
-            }
-
+            if (!name) return showToast('الرجاء إدخال اسم المادة', true);
+            if (!unit) return showToast('الرجاء إدخال الوحدة', true);
+            if (isNaN(price) || price < 0) return showToast('الرجاء إدخال سعر صحيح', true);
             closeModals();
             const res = await callServer('addMaterial', { name, unit, price });
-
             if (res.success) {
                 showToast('✅ تمت إضافة المادة بنجاح');
                 await loadAllData();
@@ -795,12 +714,10 @@
         function editMaterial(materialId) {
             const mat = allMaterials.find(m => m.id === materialId);
             if (!mat) return;
-
             document.getElementById('materialNameInput').value = mat.name;
             document.getElementById('materialUnitInput').value = mat.unit;
             document.getElementById('materialPriceInput').value = mat.price;
 
-            // تغيير وظيفة زر الحفظ لتعديل بدلاً من إضافة
             const modal = document.getElementById('materialModal');
             modal.classList.add('active');
             modal.querySelector('h3').innerHTML = '<i class="fas fa-edit"></i> تعديل مادة أولية';
@@ -810,18 +727,11 @@
                 const name = document.getElementById('materialNameInput').value.trim();
                 const unit = document.getElementById('materialUnitInput').value.trim();
                 const price = parseFloat(document.getElementById('materialPriceInput').value);
-
-                if (!name || !unit || isNaN(price)) {
-                    showToast('الرجاء ملء جميع الحقول', true);
-                    return;
-                }
-
+                if (!name || !unit || isNaN(price)) return showToast('الرجاء ملء جميع الحقول', true);
                 closeModals();
                 const res = await callServer('updateMaterial', { id: materialId, name, unit, price });
-
                 if (res.success) {
                     showToast('✅ تم تحديث المادة بنجاح');
-                    // إعادة تعيين زر الحفظ
                     saveBtn.textContent = 'إضافة';
                     saveBtn.onclick = addMaterial;
                     modal.querySelector('h3').innerHTML = '<i class="fas fa-box"></i> إضافة مادة أولية';
@@ -834,75 +744,50 @@
 
         // ==================== حذف طبق ====================
         function confirmDeleteRecipe(recipeName) {
-            pendingDelete = {
-                type: 'recipe',
-                name: recipeName
-            };
-            document.getElementById('confirmTitle').innerHTML =
-                '<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> تأكيد حذف الطبق';
-            document.getElementById('confirmMessage').textContent =
-                `هل أنت متأكد من حذف طبق "${recipeName}"؟ سيتم حذف جميع بياناته.`;
+            pendingDelete = { type: 'recipe', name: recipeName };
+            document.getElementById('confirmTitle').innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> تأكيد حذف الطبق';
+            document.getElementById('confirmMessage').textContent = `هل أنت متأكد من حذف طبق "${recipeName}"؟ سيتم حذف جميع بياناته.`;
             document.getElementById('confirmModal').classList.add('active');
         }
 
-        // ==================== حذف مادة ====================
         function confirmDeleteMaterial(materialId, materialName) {
-            pendingDelete = {
-                type: 'material',
-                id: materialId,
-                name: materialName
-            };
-            document.getElementById('confirmTitle').innerHTML =
-                '<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> تأكيد حذف المادة';
-            document.getElementById('confirmMessage').textContent =
-                `هل أنت متأكد من حذف مادة "${materialName}"؟`;
+            pendingDelete = { type: 'material', id: materialId, name: materialName };
+            document.getElementById('confirmTitle').innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> تأكيد حذف المادة';
+            document.getElementById('confirmMessage').textContent = `هل أنت متأكد من حذف مادة "${materialName}"؟`;
             document.getElementById('confirmModal').classList.add('active');
         }
 
         async function confirmDelete() {
-            if (!pendingDelete) {
-                closeModals();
-                return;
-            }
-
+            if (!pendingDelete) return closeModals();
             const del = pendingDelete;
             closeModals();
-
             let res;
             if (del.type === 'recipe') {
                 res = await callServer('deleteRecipe', { recipeName: del.name });
             } else if (del.type === 'material') {
                 res = await callServer('deleteMaterial', { materialId: del.id });
             }
-
             if (res && res.success) {
                 showToast(`✅ تم حذف "${del.name}" بنجاح`);
                 await loadAllData();
             } else {
                 showToast((res && res.error) || 'فشل الحذف', true);
             }
-
             pendingDelete = null;
         }
 
         // ==================== تعديل اسم المطعم ====================
         function showEditRestaurantName() {
-            document.getElementById('restaurantNameInput').value = document.getElementById('restaurantNameText')
-        .textContent;
+            document.getElementById('restaurantNameInput').value = document.getElementById('restaurantNameText').textContent;
             document.getElementById('restaurantModal').classList.add('active');
             setTimeout(() => document.getElementById('restaurantNameInput').focus(), 100);
         }
 
         async function updateRestaurantName() {
             const name = document.getElementById('restaurantNameInput').value.trim();
-            if (!name) {
-                showToast('الرجاء إدخال اسم المطعم', true);
-                return;
-            }
-
+            if (!name) return showToast('الرجاء إدخال اسم المطعم', true);
             closeModals();
             const res = await callServer('updateRestaurantName', { name });
-
             if (res.success) {
                 document.getElementById('restaurantNameText').textContent = name;
                 showToast('✅ تم تحديث اسم المطعم');
@@ -911,44 +796,29 @@
             }
         }
 
-        // ==================== عرض تفاصيل طبق ====================
         function viewRecipe(recipeName) {
             showToast(`📋 عرض تفاصيل طبق: ${recipeName} (قيد التطوير)`);
-            // يمكنك توجيه المستخدم لصفحة تفاصيل الطبق هنا
-            // window.open(`recipe.html?name=${encodeURIComponent(recipeName)}`, '_blank');
         }
 
-        // ==================== دوال عامة ====================
         function refreshAll() {
             showToast('🔄 جاري تحديث البيانات...');
             loadAllData();
         }
 
-        // ==================== بدء التطبيق ====================
-        window.onload = function() {
-            loadAllData();
-        };
+        // ==================== الأحداث العامة ====================
+        window.onload = loadAllData;
 
-        // إغلاق المودال عند النقر خارجه
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal-overlay')) {
-                closeModals();
-            }
+            if (e.target.classList.contains('modal-overlay')) closeModals();
         });
 
-        // إغلاق المودال عند الضغط على Escape
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModals();
-            }
-            // إرسال عند الضغط على Enter في حقول الإدخال
+            if (e.key === 'Escape') closeModals();
             if (e.key === 'Enter') {
                 const activeModal = document.querySelector('.modal-overlay.active');
                 if (activeModal) {
                     const primaryBtn = activeModal.querySelector('.btn-primary');
-                    if (primaryBtn && document.activeElement.tagName === 'INPUT') {
-                        primaryBtn.click();
-                    }
+                    if (primaryBtn && document.activeElement.tagName === 'INPUT') primaryBtn.click();
                 }
             }
         });
