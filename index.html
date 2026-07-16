@@ -6,147 +6,952 @@
     <title>نظام إدارة التكلفة الغذائية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        :root { --primary: #0f2b4b; --accent: #facc15; --success: #22c55e; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,sans-serif; }
-        body { background:#f8fafc; color:#1e293b; }
-        .container { max-width:1450px; margin:0 auto; padding:20px; }
-        .app-header { background:linear-gradient(135deg,#0f2b4b,#1a3f66); color:white; padding:18px 30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 20px rgba(0,0,0,0.15); }
-        .tabs { display:flex; gap:10px; background:white; padding:12px; border-radius:16px; margin:25px 0; box-shadow:0 4px 15px rgba(0,0,0,0.08); }
-        .tab-btn { flex:1; padding:14px; border:none; background:#f1f5f9; border-radius:12px; font-weight:600; cursor:pointer; }
-        .tab-btn.active { background:var(--primary); color:white; }
-        .btn { padding:10px 20px; border:none; border-radius:30px; font-weight:600; cursor:pointer; }
-        .btn-primary { background:var(--accent); color:#0f2b4b; }
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:1000; }
-        .modal-box { background:white; padding:30px; border-radius:20px; width:90%; max-width:500px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
-        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); padding:14px 30px; border-radius:50px; color:white; z-index:2000; opacity:0; transition:0.4s; }
-        .toast.show { opacity:1; }
+        :root {
+            --primary: #0f2b4b;
+            --primary-light: #1a3f66;
+            --accent: #facc15;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.2);
+            --radius: 16px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .app-header .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-header .restaurant-name {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 20px;
+            transition: background 0.3s;
+        }
+
+        .app-header .restaurant-name:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            background: var(--card);
+            padding: 8px;
+            border-radius: var(--radius);
+            margin: 25px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(15, 43, 75, 0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #f1f5f9;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: #fbbf24;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(250, 204, 21, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            border-radius: 20px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: #f8fafc;
+            padding: 14px 16px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--text);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 43, 75, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--card);
+            padding: 30px;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-box h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-box input,
+        .modal-box select {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .modal-box input:focus,
+        .modal-box select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toast {
+            padding: 14px 30px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.4s;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            font-size: 0.95rem;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Loading */
+        #loading {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 43, 75, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-direction: column;
+            gap: 15px;
+            font-size: 1.2rem;
+            backdrop-filter: blur(2px);
+        }
+
+        #loading.active {
+            display: flex;
+        }
+
+        .spinner {
+            font-size: 45px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .modal-box {
+                width: 95%;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div id="loading" style="display:none;position:fixed;inset:0;background:rgba(15,43,75,0.7);z-index:9999;align-items:center;justify-content:center;color:white;">
-    <div style="text-align:center;">
-        <i class="fas fa-spinner fa-spin" style="font-size:40px;"></i>
+    <!-- Loading Overlay -->
+    <div id="loading">
+        <i class="fas fa-spinner spinner"></i>
         <p>جاري التحميل...</p>
     </div>
-</div>
 
-<div class="toast" id="toast"><span id="toastMsg"></span></div>
-
-<header class="app-header">
-    <div><i class="fas fa-utensils"></i> نظام التكلفة</div>
-    <div id="restaurantNameDisplay">المطعم</div>
-    <button class="btn btn-primary" onclick="refreshAll()">تحديث</button>
-</header>
-
-<div class="container">
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(0)">الرئيسية</button>
-        <button class="tab-btn" onclick="switchTab(1)">المواد الأولية</button>
+    <!-- Toast Container -->
+    <div class="toast-container">
+        <div class="toast" id="toast"><span id="toastMsg"></span></div>
     </div>
 
-    <div id="tab0">
-        <button class="btn btn-primary" onclick="showAddRecipeModal()">+ إضافة طبق</button>
-        <div style="margin-top:20px;background:white;padding:20px;border-radius:12px;">
-            <table style="width:100%;border-collapse:collapse;">
-                <thead><tr><th>#</th><th>اسم الطبق</th><th>التكلفة</th><th>الإجراءات</th></tr></thead>
-                <tbody id="recipesBody"></tbody>
-            </table>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="logo">
+            <i class="fas fa-utensils"></i> نظام التكلفة
+        </div>
+        <div class="restaurant-name" id="restaurantNameDisplay" onclick="showEditRestaurantName()" title="انقر لتعديل اسم المطعم">
+            <i class="fas fa-store"></i> <span id="restaurantNameText">المطعم</span>
+        </div>
+        <button class="btn btn-primary" onclick="refreshAll()">
+            <i class="fas fa-sync-alt"></i> تحديث
+        </button>
+    </header>
+
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(0)">
+                <i class="fas fa-clipboard-list"></i> الأطباق الرئيسية
+            </button>
+            <button class="tab-btn" onclick="switchTab(1)">
+                <i class="fas fa-boxes"></i> المواد الأولية
+            </button>
+        </div>
+
+        <!-- Tab 0: Recipes -->
+        <div id="tab0">
+            <div style="margin-bottom:20px;">
+                <button class="btn btn-primary" onclick="showAddRecipeModal()">
+                    <i class="fas fa-plus-circle"></i> إضافة طبق جديد
+                </button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الطبق</th>
+                            <th>التكلفة الفعلية</th>
+                            <th>تكلفة القص</th>
+                            <th>نسبة الفاقد</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recipesBody">
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <p>جاري تحميل البيانات...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 1: Materials -->
+        <div id="tab1" style="display:none;">
+            <div style="margin-bottom:20px;">
+                <button class="btn btn-primary" onclick="showAddMaterialModal()">
+                    <i class="fas fa-plus-circle"></i> إضافة مادة أولية
+                </button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المادة</th>
+                            <th>الوحدة</th>
+                            <th>السعر</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="materialsBody">
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="fas fa-boxes"></i>
+                                    <p>جاري تحميل البيانات...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div id="tab1" style="display:none;">
-        <button class="btn btn-primary" onclick="showAddMaterialModal()">+ إضافة مادة</button>
-        <div style="margin-top:20px;background:white;padding:20px;border-radius:12px;">
-            <table style="width:100%;border-collapse:collapse;">
-                <thead><tr><th>#</th><th>الاسم</th><th>الوحدة</th><th>السعر</th></tr></thead>
-                <tbody id="materialsBody"></tbody>
-            </table>
+    <!-- Modal: Add Recipe -->
+    <div class="modal-overlay" id="recipeModal">
+        <div class="modal-box">
+            <h3><i class="fas fa-plus-circle"></i> إضافة طبق جديد</h3>
+            <input type="text" id="recipeNameInput" placeholder="أدخل اسم الطبق هنا..." />
+            <div class="modal-actions">
+                <button onclick="closeModals()" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button onclick="addRecipe()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> إضافة
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Add Recipe Modal -->
-<div class="modal-overlay" id="recipeModal">
-    <div class="modal-box">
-        <h3>إضافة طبق جديد</h3>
-        <input type="text" id="recipeNameInput" placeholder="اسم الطبق" style="width:100%;padding:12px;margin:15px 0;border:1px solid #ccc;border-radius:8px;">
-        <button onclick="closeModals()" class="btn" style="background:#e2e8f0;">إلغاء</button>
-        <button onclick="addRecipe()" class="btn btn-primary">إضافة</button>
+    <!-- Modal: Add Material -->
+    <div class="modal-overlay" id="materialModal">
+        <div class="modal-box">
+            <h3><i class="fas fa-box"></i> إضافة مادة أولية</h3>
+            <input type="text" id="materialNameInput" placeholder="اسم المادة (مثال: طماطم)" />
+            <input type="text" id="materialUnitInput" placeholder="الوحدة (مثال: كجم، لتر، قطعة)" />
+            <input type="number" id="materialPriceInput" placeholder="السعر للوحدة الواحدة" step="0.01" />
+            <div class="modal-actions">
+                <button onclick="closeModals()" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button onclick="addMaterial()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> إضافة
+                </button>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbysfidmTrleW8rlDXVCW0YiSoWHihJfBR6Uh50iEiSkOPNzzQf6y1A_HHwgsmXJ8PUl/exec';
+    <!-- Modal: Edit Restaurant Name -->
+    <div class="modal-overlay" id="restaurantModal">
+        <div class="modal-box">
+            <h3><i class="fas fa-store"></i> تعديل اسم المطعم</h3>
+            <input type="text" id="restaurantNameInput" placeholder="أدخل اسم المطعم..." />
+            <div class="modal-actions">
+                <button onclick="closeModals()" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button onclick="updateRestaurantName()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </div>
+        </div>
+    </div>
 
-    async function callServer(fn, params={}) {
-        document.getElementById('loading').style.display = 'flex';
-        try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({fn, params})
+    <!-- Modal: Delete Confirmation -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-box">
+            <h3 id="confirmTitle"><i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> تأكيد الحذف</h3>
+            <p id="confirmMessage">هل أنت متأكد من رغبتك في حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.</p>
+            <div class="modal-actions">
+                <button onclick="closeModals()" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button onclick="confirmDelete()" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt"></i> حذف
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== الإعدادات ====================
+        const API_URL =
+            'https://script.google.com/macros/s/AKfycbysfidmTrleW8rlDXVCW0YiSoWHihJfBR6Uh50iEiSkOPNzzQf6y1A_HHwgsmXJ8PUl/exec';
+
+        // متغيرات عامة
+        let pendingDelete = null; // لتخزين معلومات الحذف المؤكد
+        let currentTab = 0;
+        let allMaterials = [];
+        let allRecipes = [];
+
+        // ==================== دوال مساعدة ====================
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('active');
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.style.background = isError ? '#ef4444' : '#0f2b4b';
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+            // إعادة تعيين التأكيد
+            pendingDelete = null;
+        }
+
+        /**
+         * استدعاء السيرفر - نستخدم GET مع Query Parameters لتجنب مشكلة CORS Preflight
+         */
+        async function callServer(fn, params = {}) {
+            showLoading();
+            try {
+                // بناء رابط GET مع ترميز المعاملات
+                const url = new URL(API_URL);
+                url.searchParams.set('fn', fn);
+                if (Object.keys(params).length > 0) {
+                    url.searchParams.set('params', JSON.stringify(params));
+                }
+
+                const res = await fetch(url.toString(), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                const data = await res.json();
+                return data;
+            } catch (err) {
+                console.error('Server call error:', err);
+                return { success: false, error: err.message || 'فشل الاتصال بالسيرفر' };
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ==================== تحميل البيانات ====================
+        async function loadAllData() {
+            // تحميل المواد
+            const matRes = await callServer('getAllMaterials');
+            if (matRes.success) {
+                allMaterials = matRes.materials;
+                renderMaterialsTable();
+            } else {
+                showToast(matRes.error || 'فشل تحميل المواد', true);
+            }
+
+            // تحميل الأطباق
+            const recRes = await callServer('getAllRecipes');
+            if (recRes.success) {
+                allRecipes = recRes.recipes;
+                document.getElementById('restaurantNameText').textContent = recRes.restaurantName || 'المطعم';
+                renderRecipesTable();
+            } else {
+                showToast(recRes.error || 'فشل تحميل الأطباق', true);
+            }
+        }
+
+        // ==================== عرض الجداول ====================
+        function renderRecipesTable() {
+            const tbody = document.getElementById('recipesBody');
+
+            if (allRecipes.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-clipboard-list"></i>
+                                <p>لا توجد أطباق بعد. أضف طبقك الأول!</p>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allRecipes.map((recipe, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td><strong>${escapeHtml(recipe.name)}</strong></td>
+                    <td><span class="badge badge-success">${recipe.costPrice.toFixed(2)}</span></td>
+                    <td><span class="badge badge-warning">${recipe.trimmingCost.toFixed(2)}</span></td>
+                    <td>${recipe.lossPercent.toFixed(1)}%</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline" onclick="viewRecipe('${escapeHtml(recipe.name)}')" title="عرض التفاصيل">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="confirmDeleteRecipe('${escapeHtml(recipe.name)}')" title="حذف">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderMaterialsTable() {
+            const tbody = document.getElementById('materialsBody');
+
+            if (allMaterials.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fas fa-boxes"></i>
+                                <p>لا توجد مواد أولية. أضف المواد الأساسية!</p>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allMaterials.map((mat, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td><strong>${escapeHtml(mat.name)}</strong></td>
+                    <td>${escapeHtml(mat.unit)}</td>
+                    <td><span class="badge badge-success">${mat.price.toFixed(2)}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline" onclick="editMaterial('${mat.id}')" title="تعديل">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="confirmDeleteMaterial('${mat.id}', '${escapeHtml(mat.name)}')" title="حذف">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        // ==================== التبويبات ====================
+        function switchTab(n) {
+            currentTab = n;
+            document.getElementById('tab0').style.display = n === 0 ? 'block' : 'none';
+            document.getElementById('tab1').style.display = n === 1 ? 'block' : 'none';
+
+            // تحديث الأزرار النشطة
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === n);
             });
-            return await res.json();
-        } catch (err) {
-            console.error(err);
-            return {success: false, error: err.message};
-        } finally {
-            document.getElementById('loading').style.display = 'none';
+
+            // تحديث البيانات عند التبديل
+            if (n === 0) loadAllData();
+            if (n === 1) loadAllData();
         }
-    }
 
-    function showToast(msg, isError=false) {
-        const toast = document.getElementById('toast');
-        document.getElementById('toastMsg').textContent = msg;
-        toast.style.background = isError ? '#ef4444' : '#0f2b4b';
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 4000);
-    }
-
-    function closeModals() {
-        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
-    }
-
-    async function loadData() {
-        const res = await callServer('getAllRecipes');
-        if (res.success) {
-            document.getElementById('restaurantNameDisplay').textContent = res.restaurantName || 'المطعم';
-            // يمكنك توسيع عرض الجداول هنا
-            console.log(res);
-        } else {
-            showToast(res.error || 'فشل تحميل البيانات', true);
+        // ==================== إضافة طبق ====================
+        function showAddRecipeModal() {
+            document.getElementById('recipeNameInput').value = '';
+            document.getElementById('recipeModal').classList.add('active');
+            setTimeout(() => document.getElementById('recipeNameInput').focus(), 100);
         }
-    }
 
-    function switchTab(n) {
-        document.getElementById('tab0').style.display = n===0 ? 'block' : 'none';
-        document.getElementById('tab1').style.display = n===1 ? 'block' : 'none';
-    }
+        async function addRecipe() {
+            const name = document.getElementById('recipeNameInput').value.trim();
+            if (!name) {
+                showToast('الرجاء إدخال اسم الطبق', true);
+                return;
+            }
 
-    function showAddRecipeModal() {
-        document.getElementById('recipeModal').style.display = 'flex';
-    }
+            closeModals();
+            const res = await callServer('addRecipe', { recipeName: name });
 
-    async function addRecipe() {
-        const name = document.getElementById('recipeNameInput').value.trim();
-        if (!name) return showToast('أدخل اسم الطبق', true);
-        closeModals();
-        const res = await callServer('addRecipe', {recipeName: name});
-        if (res.success) {
-            showToast('تمت الإضافة بنجاح');
-            loadData();
-        } else {
-            showToast(res.error, true);
+            if (res.success) {
+                showToast('✅ تمت إضافة الطبق بنجاح');
+                await loadAllData();
+            } else {
+                showToast(res.error || 'فشل إضافة الطبق', true);
+            }
         }
-    }
 
-    function refreshAll() {
-        loadData();
-    }
+        // ==================== إضافة مادة ====================
+        function showAddMaterialModal() {
+            document.getElementById('materialNameInput').value = '';
+            document.getElementById('materialUnitInput').value = '';
+            document.getElementById('materialPriceInput').value = '';
+            document.getElementById('materialModal').classList.add('active');
+            setTimeout(() => document.getElementById('materialNameInput').focus(), 100);
+        }
 
-    // بدء البرنامج
-    window.onload = loadData;
-</script>
+        async function addMaterial() {
+            const name = document.getElementById('materialNameInput').value.trim();
+            const unit = document.getElementById('materialUnitInput').value.trim();
+            const price = parseFloat(document.getElementById('materialPriceInput').value);
+
+            if (!name) {
+                showToast('الرجاء إدخال اسم المادة', true);
+                return;
+            }
+            if (!unit) {
+                showToast('الرجاء إدخال الوحدة', true);
+                return;
+            }
+            if (isNaN(price) || price < 0) {
+                showToast('الرجاء إدخال سعر صحيح', true);
+                return;
+            }
+
+            closeModals();
+            const res = await callServer('addMaterial', { name, unit, price });
+
+            if (res.success) {
+                showToast('✅ تمت إضافة المادة بنجاح');
+                await loadAllData();
+            } else {
+                showToast(res.error || 'فشل إضافة المادة', true);
+            }
+        }
+
+        // ==================== تعديل مادة ====================
+        function editMaterial(materialId) {
+            const mat = allMaterials.find(m => m.id === materialId);
+            if (!mat) return;
+
+            document.getElementById('materialNameInput').value = mat.name;
+            document.getElementById('materialUnitInput').value = mat.unit;
+            document.getElementById('materialPriceInput').value = mat.price;
+
+            // تغيير وظيفة زر الحفظ لتعديل بدلاً من إضافة
+            const modal = document.getElementById('materialModal');
+            modal.classList.add('active');
+            modal.querySelector('h3').innerHTML = '<i class="fas fa-edit"></i> تعديل مادة أولية';
+            const saveBtn = modal.querySelector('.btn-primary');
+            saveBtn.textContent = 'حفظ التعديلات';
+            saveBtn.onclick = async function() {
+                const name = document.getElementById('materialNameInput').value.trim();
+                const unit = document.getElementById('materialUnitInput').value.trim();
+                const price = parseFloat(document.getElementById('materialPriceInput').value);
+
+                if (!name || !unit || isNaN(price)) {
+                    showToast('الرجاء ملء جميع الحقول', true);
+                    return;
+                }
+
+                closeModals();
+                const res = await callServer('updateMaterial', { id: materialId, name, unit, price });
+
+                if (res.success) {
+                    showToast('✅ تم تحديث المادة بنجاح');
+                    // إعادة تعيين زر الحفظ
+                    saveBtn.textContent = 'إضافة';
+                    saveBtn.onclick = addMaterial;
+                    modal.querySelector('h3').innerHTML = '<i class="fas fa-box"></i> إضافة مادة أولية';
+                    await loadAllData();
+                } else {
+                    showToast(res.error || 'فشل تحديث المادة', true);
+                }
+            };
+        }
+
+        // ==================== حذف طبق ====================
+        function confirmDeleteRecipe(recipeName) {
+            pendingDelete = {
+                type: 'recipe',
+                name: recipeName
+            };
+            document.getElementById('confirmTitle').innerHTML =
+                '<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> تأكيد حذف الطبق';
+            document.getElementById('confirmMessage').textContent =
+                `هل أنت متأكد من حذف طبق "${recipeName}"؟ سيتم حذف جميع بياناته.`;
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        // ==================== حذف مادة ====================
+        function confirmDeleteMaterial(materialId, materialName) {
+            pendingDelete = {
+                type: 'material',
+                id: materialId,
+                name: materialName
+            };
+            document.getElementById('confirmTitle').innerHTML =
+                '<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> تأكيد حذف المادة';
+            document.getElementById('confirmMessage').textContent =
+                `هل أنت متأكد من حذف مادة "${materialName}"؟`;
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        async function confirmDelete() {
+            if (!pendingDelete) {
+                closeModals();
+                return;
+            }
+
+            const del = pendingDelete;
+            closeModals();
+
+            let res;
+            if (del.type === 'recipe') {
+                res = await callServer('deleteRecipe', { recipeName: del.name });
+            } else if (del.type === 'material') {
+                res = await callServer('deleteMaterial', { materialId: del.id });
+            }
+
+            if (res && res.success) {
+                showToast(`✅ تم حذف "${del.name}" بنجاح`);
+                await loadAllData();
+            } else {
+                showToast((res && res.error) || 'فشل الحذف', true);
+            }
+
+            pendingDelete = null;
+        }
+
+        // ==================== تعديل اسم المطعم ====================
+        function showEditRestaurantName() {
+            document.getElementById('restaurantNameInput').value = document.getElementById('restaurantNameText')
+        .textContent;
+            document.getElementById('restaurantModal').classList.add('active');
+            setTimeout(() => document.getElementById('restaurantNameInput').focus(), 100);
+        }
+
+        async function updateRestaurantName() {
+            const name = document.getElementById('restaurantNameInput').value.trim();
+            if (!name) {
+                showToast('الرجاء إدخال اسم المطعم', true);
+                return;
+            }
+
+            closeModals();
+            const res = await callServer('updateRestaurantName', { name });
+
+            if (res.success) {
+                document.getElementById('restaurantNameText').textContent = name;
+                showToast('✅ تم تحديث اسم المطعم');
+            } else {
+                showToast(res.error || 'فشل تحديث الاسم', true);
+            }
+        }
+
+        // ==================== عرض تفاصيل طبق ====================
+        function viewRecipe(recipeName) {
+            showToast(`📋 عرض تفاصيل طبق: ${recipeName} (قيد التطوير)`);
+            // يمكنك توجيه المستخدم لصفحة تفاصيل الطبق هنا
+            // window.open(`recipe.html?name=${encodeURIComponent(recipeName)}`, '_blank');
+        }
+
+        // ==================== دوال عامة ====================
+        function refreshAll() {
+            showToast('🔄 جاري تحديث البيانات...');
+            loadAllData();
+        }
+
+        // ==================== بدء التطبيق ====================
+        window.onload = function() {
+            loadAllData();
+        };
+
+        // إغلاق المودال عند النقر خارجه
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModals();
+            }
+        });
+
+        // إغلاق المودال عند الضغط على Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModals();
+            }
+            // إرسال عند الضغط على Enter في حقول الإدخال
+            if (e.key === 'Enter') {
+                const activeModal = document.querySelector('.modal-overlay.active');
+                if (activeModal) {
+                    const primaryBtn = activeModal.querySelector('.btn-primary');
+                    if (primaryBtn && document.activeElement.tagName === 'INPUT') {
+                        primaryBtn.click();
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
