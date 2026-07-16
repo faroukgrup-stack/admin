@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نظام إدارة التكلفة الغذائية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        :root { --primary: #0f2b4b; --accent: #facc15; --success: #22c55e; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,sans-serif; }
+        body { background:#f8fafc; color:#1e293b; }
+        .container { max-width:1450px; margin:0 auto; padding:20px; }
+        .app-header { background:linear-gradient(135deg,#0f2b4b,#1a3f66); color:white; padding:18px 30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 20px rgba(0,0,0,0.15); }
+        .tabs { display:flex; gap:10px; background:white; padding:12px; border-radius:16px; margin:25px 0; box-shadow:0 4px 15px rgba(0,0,0,0.08); }
+        .tab-btn { flex:1; padding:14px; border:none; background:#f1f5f9; border-radius:12px; font-weight:600; cursor:pointer; }
+        .tab-btn.active { background:var(--primary); color:white; }
+        .btn { padding:10px 20px; border:none; border-radius:30px; font-weight:600; cursor:pointer; }
+        .btn-primary { background:var(--accent); color:#0f2b4b; }
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:1000; }
+        .modal-box { background:white; padding:30px; border-radius:20px; width:90%; max-width:500px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); padding:14px 30px; border-radius:50px; color:white; z-index:2000; opacity:0; transition:0.4s; }
+        .toast.show { opacity:1; }
+    </style>
+</head>
+<body>
+
+<div id="loading" style="display:none;position:fixed;inset:0;background:rgba(15,43,75,0.7);z-index:9999;align-items:center;justify-content:center;color:white;">
+    <div style="text-align:center;">
+        <i class="fas fa-spinner fa-spin" style="font-size:40px;"></i>
+        <p>جاري التحميل...</p>
+    </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<header class="app-header">
+    <div><i class="fas fa-utensils"></i> نظام التكلفة</div>
+    <div id="restaurantNameDisplay">المطعم</div>
+    <button class="btn btn-primary" onclick="refreshAll()">تحديث</button>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(0)">الرئيسية</button>
+        <button class="tab-btn" onclick="switchTab(1)">المواد الأولية</button>
+    </div>
+
+    <div id="tab0">
+        <button class="btn btn-primary" onclick="showAddRecipeModal()">+ إضافة طبق</button>
+        <div style="margin-top:20px;background:white;padding:20px;border-radius:12px;">
+            <table style="width:100%;border-collapse:collapse;">
+                <thead><tr><th>#</th><th>اسم الطبق</th><th>التكلفة</th><th>الإجراءات</th></tr></thead>
+                <tbody id="recipesBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab1" style="display:none;">
+        <button class="btn btn-primary" onclick="showAddMaterialModal()">+ إضافة مادة</button>
+        <div style="margin-top:20px;background:white;padding:20px;border-radius:12px;">
+            <table style="width:100%;border-collapse:collapse;">
+                <thead><tr><th>#</th><th>الاسم</th><th>الوحدة</th><th>السعر</th></tr></thead>
+                <tbody id="materialsBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Recipe Modal -->
+<div class="modal-overlay" id="recipeModal">
+    <div class="modal-box">
+        <h3>إضافة طبق جديد</h3>
+        <input type="text" id="recipeNameInput" placeholder="اسم الطبق" style="width:100%;padding:12px;margin:15px 0;border:1px solid #ccc;border-radius:8px;">
+        <button onclick="closeModals()" class="btn" style="background:#e2e8f0;">إلغاء</button>
+        <button onclick="addRecipe()" class="btn btn-primary">إضافة</button>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxwA92G58_R8Bp9xJXS7_HlIXMtg7z4MYA6bK8vP0cWNmfhwdOAIbho71DDdpEvwT67/exec';
+
+    async function callServer(fn, params={}) {
+        document.getElementById('loading').style.display = 'flex';
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({fn, params})
+            });
+            return await res.json();
+        } catch (err) {
+            console.error(err);
+            return {success: false, error: err.message};
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    function showToast(msg, isError=false) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        toast.style.background = isError ? '#ef4444' : '#0f2b4b';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    function closeModals() {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+    }
+
+    async function loadData() {
+        const res = await callServer('getAllRecipes');
+        if (res.success) {
+            document.getElementById('restaurantNameDisplay').textContent = res.restaurantName || 'المطعم';
+            // يمكنك توسيع عرض الجداول هنا
+            console.log(res);
+        } else {
+            showToast(res.error || 'فشل تحميل البيانات', true);
+        }
+    }
+
+    function switchTab(n) {
+        document.getElementById('tab0').style.display = n===0 ? 'block' : 'none';
+        document.getElementById('tab1').style.display = n===1 ? 'block' : 'none';
+    }
+
+    function showAddRecipeModal() {
+        document.getElementById('recipeModal').style.display = 'flex';
+    }
+
+    async function addRecipe() {
+        const name = document.getElementById('recipeNameInput').value.trim();
+        if (!name) return showToast('أدخل اسم الطبق', true);
+        closeModals();
+        const res = await callServer('addRecipe', {recipeName: name});
+        if (res.success) {
+            showToast('تمت الإضافة بنجاح');
+            loadData();
+        } else {
+            showToast(res.error, true);
+        }
+    }
+
+    function refreshAll() {
+        loadData();
+    }
+
+    // بدء البرنامج
+    window.onload = loadData;
+</script>
+</body>
+</html>
