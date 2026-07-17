@@ -10,17 +10,19 @@
             --primary: #0f2b4b;
             --primary-light: #1a3f66;
             --accent: #facc15;
-            --success: #22c55e;
+            --accent-hover: #fbbf24;
+            --success: #10b981;
             --danger: #ef4444;
-            --bg: #f8fafc;
+            --bg: #f1f5f9;
             --card: #ffffff;
             --text: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.25);
             --radius: 16px;
-            --radius-sm: 8px;
+            --radius-sm: 10px;
+            --transition: 0.2s ease;
         }
 
         * {
@@ -34,12 +36,7 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1450px;
-            margin: 0 auto;
-            padding: 20px;
+            min-height: 100vh;
         }
 
         /* Header */
@@ -56,7 +53,7 @@
         }
 
         .app-header .logo {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -67,13 +64,24 @@
             font-size: 1.1rem;
             opacity: 0.9;
             cursor: pointer;
-            padding: 5px 15px;
-            border-radius: 20px;
-            transition: background 0.3s;
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: background var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .app-header .restaurant-name:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         /* Tabs */
@@ -95,9 +103,13 @@
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all var(--transition);
             font-size: 1rem;
             color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .tab-btn.active {
@@ -117,11 +129,12 @@
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all var(--transition);
             font-size: 0.95rem;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -130,7 +143,7 @@
         }
 
         .btn-primary:hover {
-            background: #fbbf24;
+            background: var(--accent-hover);
             transform: translateY(-1px);
             box-shadow: 0 4px 15px rgba(250, 204, 21, 0.4);
         }
@@ -145,7 +158,7 @@
         }
 
         .btn-sm {
-            padding: 6px 12px;
+            padding: 6px 14px;
             font-size: 0.85rem;
             border-radius: 20px;
         }
@@ -161,10 +174,21 @@
             color: white;
         }
 
+        .btn-ghost {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid transparent;
+        }
+
+        .btn-ghost:hover {
+            background: #f1f5f9;
+            border-color: var(--border);
+        }
+
         /* Tables */
         .table-container {
             background: var(--card);
-            padding: 20px;
+            padding: 5px 20px 20px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             overflow-x: auto;
@@ -177,16 +201,17 @@
 
         thead th {
             background: #f8fafc;
-            padding: 14px 16px;
+            padding: 16px;
             text-align: right;
             font-weight: 700;
             color: var(--text);
             border-bottom: 2px solid var(--border);
             white-space: nowrap;
+            font-size: 0.95rem;
         }
 
         tbody td {
-            padding: 12px 16px;
+            padding: 14px 16px;
             border-bottom: 1px solid var(--border);
             vertical-align: middle;
         }
@@ -201,15 +226,15 @@
 
         .badge {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
         }
 
         .badge-success {
-            background: #dcfce7;
-            color: #166534;
+            background: #d1fae5;
+            color: #065f46;
         }
 
         .badge-warning {
@@ -238,23 +263,31 @@
             padding: 30px;
             border-radius: var(--radius);
             width: 90%;
-            max-width: 500px;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: var(--shadow-lg);
             animation: slideUp 0.3s ease;
         }
 
+        .modal-box.large {
+            max-width: 800px;
+        }
+
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
         .modal-box h3 {
             margin-bottom: 20px;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             color: var(--primary);
             display: flex;
             align-items: center;
             gap: 10px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
         }
 
         .modal-box input,
@@ -265,20 +298,62 @@
             border: 2px solid var(--border);
             border-radius: var(--radius-sm);
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: border-color var(--transition);
+            background: #fafafa;
         }
 
         .modal-box input:focus,
         .modal-box select:focus {
             outline: none;
             border-color: var(--primary);
+            background: white;
         }
 
         .modal-actions {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
+            margin-top: 25px;
             justify-content: flex-end;
+        }
+
+        /* Ingredients list inside modal */
+        .ingredient-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ingredient-row:last-child {
+            border-bottom: none;
+        }
+
+        .ingredient-row span {
+            flex: 1;
+        }
+
+        .ingredient-row .mat-name {
+            font-weight: 600;
+        }
+
+        .ingredient-row .qty {
+            color: var(--text-light);
+        }
+
+        .add-ingredient-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            align-items: flex-end;
+        }
+
+        .add-ingredient-form select {
+            flex: 2;
+        }
+
+        .add-ingredient-form input {
+            flex: 1;
         }
 
         /* Toast */
@@ -303,6 +378,7 @@
             transition: all 0.4s;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
             font-size: 0.95rem;
+            background: var(--primary);
         }
 
         .toast.show {
@@ -330,7 +406,7 @@
         }
 
         .spinner {
-            font-size: 45px;
+            font-size: 50px;
             animation: spin 1s linear infinite;
         }
 
@@ -351,12 +427,25 @@
             opacity: 0.5;
         }
 
+        /* Section title */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 20px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .app-header { flex-direction: column; text-align: center; }
             .tabs { flex-direction: column; }
             .modal-box { width: 95%; padding: 20px; }
+            .add-ingredient-form { flex-direction: column; }
         }
+
     </style>
 </head>
 <body>
@@ -478,19 +567,47 @@
         </div>
     </div>
 
-    <!-- Modal: Add Material -->
+    <!-- Modal: Add/Edit Material -->
     <div class="modal-overlay" id="materialModal">
         <div class="modal-box">
-            <h3><i class="fas fa-box"></i> إضافة مادة أولية</h3>
+            <h3 id="materialModalTitle"><i class="fas fa-box"></i> إضافة مادة أولية</h3>
             <input type="text" id="materialNameInput" placeholder="اسم المادة (مثال: طماطم)" />
             <input type="text" id="materialUnitInput" placeholder="الوحدة (مثال: كجم، لتر، قطعة)" />
-            <input type="number" id="materialPriceInput" placeholder="السعر للوحدة الواحدة" step="0.01" />
+            <input type="number" id="materialPriceInput" placeholder="السعر للوحدة الواحدة" step="0.01" min="0" />
             <div class="modal-actions">
                 <button onclick="closeModals()" class="btn btn-outline">
                     <i class="fas fa-times"></i> إلغاء
                 </button>
-                <button onclick="addMaterial()" class="btn btn-primary">
+                <button id="materialSaveBtn" onclick="addMaterial()" class="btn btn-primary">
                     <i class="fas fa-save"></i> إضافة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Recipe Ingredients -->
+    <div class="modal-overlay" id="ingredientsModal">
+        <div class="modal-box large">
+            <h3><i class="fas fa-list-ul"></i> مكونات الطبق: <span id="currentRecipeName"></span></h3>
+            <div id="ingredientsList">
+                <div class="empty-state"><i class="fas fa-info-circle"></i><p>لا توجد مكونات مضافة بعد.</p></div>
+            </div>
+            <div class="section-title"><i class="fas fa-plus"></i> إضافة مكون</div>
+            <div class="add-ingredient-form">
+                <select id="ingredientSelect">
+                    <option value="">-- اختر مادة أولية --</option>
+                </select>
+                <input type="number" id="ingredientQty" placeholder="الكمية" step="0.01" min="0.01" />
+                <button class="btn btn-primary btn-sm" onclick="addIngredientToRecipe()">
+                    <i class="fas fa-plus"></i> إضافة
+                </button>
+            </div>
+            <div class="modal-actions">
+                <button onclick="closeModals()" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+                <button onclick="saveRecipeIngredients()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> حفظ المكونات
                 </button>
             </div>
         </div>
@@ -531,13 +648,16 @@
     <script>
         // ==================== الإعدادات ====================
         // ⚠️ استبدل هذا الرابط برابط النشر الجديد لتطبيق Google Apps Script بعد التعديل
-        const API_URL = 'https://script.google.com/macros/s/AKfycbw5Rj6XLpGegNYbthyPOJBfkwwtcGiRfYRcr_3QK0lIK3tkLQ6lU_1zLwx1HKuQrq7f/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbx8JLId3mOngqorpB4LZtbkPj9ueWfugm0elyWqxFScQTdCXRiMLSSlhsrxzPZeEwSu/exec';
 
         // متغيرات عامة
         let pendingDelete = null;
         let currentTab = 0;
         let allMaterials = [];
         let allRecipes = [];
+        // لتخزين مكونات الطبق الحالي أثناء التحرير
+        let currentRecipeIngredients = [];
+        let currentEditingRecipe = null;
 
         // ==================== دوال مساعدة ====================
         function showLoading() {
@@ -621,7 +741,7 @@
                     <td><span class="badge badge-warning">${recipe.trimmingCost.toFixed(2)}</span></td>
                     <td>${recipe.lossPercent.toFixed(1)}%</td>
                     <td>
-                        <button class="btn btn-sm btn-outline" onclick="viewRecipe('${escapeHtml(recipe.name)}')" title="عرض التفاصيل"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline" onclick="openIngredientsModal('${escapeHtml(recipe.name)}')" title="مكونات الطبق"><i class="fas fa-list-ul"></i></button>
                         <button class="btn btn-sm btn-danger" onclick="confirmDeleteRecipe('${escapeHtml(recipe.name)}')" title="حذف"><i class="fas fa-trash-alt"></i></button>
                     </td>
                 </tr>
@@ -684,11 +804,15 @@
             }
         }
 
-        // ==================== إضافة مادة ====================
+        // ==================== إضافة / تعديل مادة ====================
         function showAddMaterialModal() {
             document.getElementById('materialNameInput').value = '';
             document.getElementById('materialUnitInput').value = '';
             document.getElementById('materialPriceInput').value = '';
+            document.getElementById('materialModalTitle').innerHTML = '<i class="fas fa-box"></i> إضافة مادة أولية';
+            const saveBtn = document.getElementById('materialSaveBtn');
+            saveBtn.textContent = 'إضافة';
+            saveBtn.onclick = addMaterial;
             document.getElementById('materialModal').classList.add('active');
             setTimeout(() => document.getElementById('materialNameInput').focus(), 100);
         }
@@ -710,7 +834,6 @@
             }
         }
 
-        // ==================== تعديل مادة ====================
         function editMaterial(materialId) {
             const mat = allMaterials.find(m => m.id === materialId);
             if (!mat) return;
@@ -718,10 +841,8 @@
             document.getElementById('materialUnitInput').value = mat.unit;
             document.getElementById('materialPriceInput').value = mat.price;
 
-            const modal = document.getElementById('materialModal');
-            modal.classList.add('active');
-            modal.querySelector('h3').innerHTML = '<i class="fas fa-edit"></i> تعديل مادة أولية';
-            const saveBtn = modal.querySelector('.btn-primary');
+            document.getElementById('materialModalTitle').innerHTML = '<i class="fas fa-edit"></i> تعديل مادة أولية';
+            const saveBtn = document.getElementById('materialSaveBtn');
             saveBtn.textContent = 'حفظ التعديلات';
             saveBtn.onclick = async function() {
                 const name = document.getElementById('materialNameInput').value.trim();
@@ -732,14 +853,16 @@
                 const res = await callServer('updateMaterial', { id: materialId, name, unit, price });
                 if (res.success) {
                     showToast('✅ تم تحديث المادة بنجاح');
+                    // إعادة تعيين النافذة إلى وضع الإضافة
                     saveBtn.textContent = 'إضافة';
                     saveBtn.onclick = addMaterial;
-                    modal.querySelector('h3').innerHTML = '<i class="fas fa-box"></i> إضافة مادة أولية';
+                    document.getElementById('materialModalTitle').innerHTML = '<i class="fas fa-box"></i> إضافة مادة أولية';
                     await loadAllData();
                 } else {
                     showToast(res.error || 'فشل تحديث المادة', true);
                 }
             };
+            document.getElementById('materialModal').classList.add('active');
         }
 
         // ==================== حذف طبق ====================
@@ -796,8 +919,102 @@
             }
         }
 
-        function viewRecipe(recipeName) {
-            showToast(`📋 عرض تفاصيل طبق: ${recipeName} (قيد التطوير)`);
+        // ==================== إدارة مكونات الطبق ====================
+        async function openIngredientsModal(recipeName) {
+            currentEditingRecipe = recipeName;
+            document.getElementById('currentRecipeName').textContent = recipeName;
+            // تحميل المكونات الحالية من السيرفر
+            const res = await callServer('getRecipeIngredients', { recipeName });
+            if (res.success) {
+                currentRecipeIngredients = res.ingredients || [];
+            } else {
+                currentRecipeIngredients = [];
+                showToast(res.error || 'تعذر تحميل المكونات', true);
+            }
+            renderIngredientsList();
+            populateMaterialSelect();
+            document.getElementById('ingredientsModal').classList.add('active');
+        }
+
+        function renderIngredientsList() {
+            const container = document.getElementById('ingredientsList');
+            if (currentRecipeIngredients.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-info-circle"></i><p>لا توجد مكونات مضافة بعد.</p></div>';
+                return;
+            }
+            container.innerHTML = currentRecipeIngredients.map((ing, idx) => {
+                const mat = allMaterials.find(m => m.id === ing.materialId);
+                const matName = mat ? mat.name : (ing.materialName || 'غير معروف');
+                const unit = mat ? mat.unit : '';
+                return `
+                    <div class="ingredient-row">
+                        <span class="mat-name">${escapeHtml(matName)}</span>
+                        <span class="qty">${ing.quantity} ${unit}</span>
+                        <button class="btn btn-sm btn-ghost" onclick="removeIngredient(${idx})" title="حذف"><i class="fas fa-times" style="color:var(--danger);"></i></button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function populateMaterialSelect() {
+            const select = document.getElementById('ingredientSelect');
+            select.innerHTML = '<option value="">-- اختر مادة أولية --</option>';
+            allMaterials.forEach(mat => {
+                const option = document.createElement('option');
+                option.value = mat.id;
+                option.textContent = `${mat.name} (${mat.unit})`;
+                select.appendChild(option);
+            });
+        }
+
+        function addIngredientToRecipe() {
+            const select = document.getElementById('ingredientSelect');
+            const qtyInput = document.getElementById('ingredientQty');
+            const materialId = select.value;
+            const quantity = parseFloat(qtyInput.value);
+
+            if (!materialId) return showToast('الرجاء اختيار مادة أولية', true);
+            if (isNaN(quantity) || quantity <= 0) return showToast('الرجاء إدخال كمية صحيحة', true);
+
+            const mat = allMaterials.find(m => m.id === materialId);
+            if (!mat) return;
+
+            // التحقق من عدم وجود المادة مسبقاً
+            const existing = currentRecipeIngredients.find(ing => ing.materialId === materialId);
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                currentRecipeIngredients.push({
+                    materialId: materialId,
+                    materialName: mat.name,
+                    quantity: quantity
+                });
+            }
+
+            renderIngredientsList();
+            select.value = '';
+            qtyInput.value = '';
+            showToast('تمت إضافة المكون');
+        }
+
+        function removeIngredient(index) {
+            currentRecipeIngredients.splice(index, 1);
+            renderIngredientsList();
+        }
+
+        async function saveRecipeIngredients() {
+            if (!currentEditingRecipe) return;
+            const res = await callServer('saveRecipeIngredients', {
+                recipeName: currentEditingRecipe,
+                ingredients: currentRecipeIngredients
+            });
+            if (res.success) {
+                showToast('✅ تم حفظ مكونات الطبق بنجاح');
+                closeModals();
+                await loadAllData(); // لتحديث التكاليف
+            } else {
+                showToast(res.error || 'فشل حفظ المكونات', true);
+            }
         }
 
         function refreshAll() {
@@ -816,9 +1033,9 @@
             if (e.key === 'Escape') closeModals();
             if (e.key === 'Enter') {
                 const activeModal = document.querySelector('.modal-overlay.active');
-                if (activeModal) {
+                if (activeModal && document.activeElement.tagName === 'INPUT') {
                     const primaryBtn = activeModal.querySelector('.btn-primary');
-                    if (primaryBtn && document.activeElement.tagName === 'INPUT') primaryBtn.click();
+                    if (primaryBtn) primaryBtn.click();
                 }
             }
         });
