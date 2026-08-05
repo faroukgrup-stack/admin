@@ -997,6 +997,7 @@
                         platformKey: key,
                         startDate: u.expiryDate || "غير محدد",
                         daysLeft: parseInt(u.daysLeft) || 0,
+                        // ملاحظة: يجب على المنصات إرسال حقل regDate (تاريخ التسجيل) لتفعيل رسم المشتركين الجدد
                         regDate: u.regDate || null
                     }));
                 }
@@ -1099,6 +1100,7 @@
         });
     }
 
+    // ===== رسم بياني للمشتركين الجدد مع رسالة توضيحية في حال عدم توفر البيانات =====
     function drawLoginChart(data) {
         const ctx = document.getElementById('loginChart').getContext('2d');
         if (lineChart) lineChart.destroy();
@@ -1114,6 +1116,10 @@
         const grad = ctx.createLinearGradient(0,0,0,200);
         grad.addColorStop(0, 'rgba(184,134,11,0.4)');
         grad.addColorStop(1, 'rgba(184,134,11,0)');
+        
+        // التحقق من وجود بيانات
+        const hasData = counts.some(c => c > 0);
+        
         lineChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -1134,6 +1140,12 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
+                    title: {
+                        display: true,
+                        text: hasData ? '' : '⚠️ لا توجد بيانات للمشتركين الجدد (تأكد من توفر regDate)',
+                        color: '#f39c12',
+                        font: { size: 14, weight: 'bold' }
+                    },
                     legend: { labels: { color: '#ddd' } }
                 },
                 scales: {
