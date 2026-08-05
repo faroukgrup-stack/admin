@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+    <title>نموذج التدقيق والتشخيص الشامل للأعمال (150 سؤال) | FAROUK GRUP</title>
+    <meta name="description" content="أداة تدقيق احترافية من 15 محوراً لتشخيص المشاريع وتقييم جاهزية التوسع والامتياز التجاري">
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js">
+    </script>
+    <style>
+        :root {
+            --bg-dark: #0b0e17;
+            --bg-panel: rgba(18, 24, 36, 0.92);
+            --bg-card: rgba(22, 30, 46, 0.85);
+            --border-light: rgba(184, 134, 11, 0.3);
+            --accent-glow: #b8860b;
+            --accent-soft: #d4b15a;
+            --text-light: #f0f4fa;
+            --text-muted: #aab7d4;
+            --gold: #b8860b;
+            --gold-light: #d4b15a;
+            --gold-soft: rgba(184, 134, 11, 0.1);
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --success: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: radial-gradient(circle at 70% 30%, #141c2b, #0a0e16);
+            color: var(--text-light);
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .glow-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-bg span {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(184, 134, 11, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: glowMove 20s infinite alternate;
+        }
+        @keyframes glowMove {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(40px, -30px) scale(1.2);
+            }
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-tool {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-light);
+            border-radius: 20px 20px 0 0;
+            padding: 20px 25px;
+            text-align: center;
+        }
+        .header-tool h2 {
+            color: var(--gold-light);
+            font-weight: 900;
+            font-size: 1.8rem;
+        }
+        .header-tool .badge {
+            background: var(--gold);
+            color: #111;
+            padding: 5px 18px;
+            border-radius: 50px;
+            font-weight: 800;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .form-container {
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-light);
+            border-radius: 0 0 20px 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .client-data {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: rgba(184, 134, 11, 0.08);
+            padding: 15px;
+            border-radius: 12px;
+        }
+        .client-data input,
+        .client-data select {
+            flex: 1 1 200px;
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 30px;
+            background: rgba(10, 14, 23, 0.7);
+            color: var(--text-light);
+            font-family: inherit;
+        }
+
+        .section-block {
+            border: 1px solid rgba(184, 134, 11, 0.2);
+            border-radius: 14px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .section-block h3 {
+            background: #151b28;
+            color: var(--gold-light);
+            padding: 12px 18px;
+            margin: 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .section-block h3 .fa-chevron-down {
+            margin-right: auto;
+            transition: 0.3s;
+        }
+        .section-block.collapsed .body {
+            display: none;
+        }
+        .section-block.collapsed h3 .fa-chevron-down {
+            transform: rotate(-90deg);
+        }
+
+        .question-row {
+            background: rgba(20, 28, 40, 0.7);
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .question-row p {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .options-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        .options-row label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 7px 14px;
+            border-radius: 25px;
+            border: 1px solid #444;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .options-row label:hover {
+            border-color: var(--gold);
+            background: rgba(184, 134, 11, 0.15);
+        }
+        .options-row input[type="radio"] {
+            accent-color: var(--gold);
+        }
+
+        .meta-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .meta-row select,
+        .meta-row input {
+            flex: 1;
+            min-width: 120px;
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #ccc;
+            font-family: inherit;
+        }
+        .note-field input {
+            width: 100%;
+            padding: 8px 12px;
+            margin-top: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #ccc;
+            font-family: inherit;
+        }
+
+        .btn-generate {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #111;
+            font-weight: 900;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: 0.3s;
+        }
+        .btn-generate:hover {
+            background: #111;
+            color: var(--gold);
+            box-shadow: 0 8px 25px rgba(184, 134, 11, 0.5);
+        }
+
+        .report-section {
+            display: none;
+            margin-top: 25px;
+        }
+        .report-card {
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.85rem;
+        }
+        .summary-table th {
+            background: rgba(184, 134, 11, 0.2);
+            padding: 10px;
+            border-bottom: 2px solid var(--gold);
+        }
+        .summary-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #111;
+            margin: 20px auto;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .chart-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 15px;
+        }
+        .chart-box h4 {
+            color: var(--gold-light);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .export-btns {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .export-btns button {
+            background: rgba(184, 134, 11, 0.15);
+            border: 1px solid var(--border-light);
+            color: var(--gold-light);
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .export-btns button:hover {
+            background: var(--gold);
+            color: #111;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        @media(max-width:768px) {
+            .client-data {
+                flex-direction: column;
+            }
+            .options-row label {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg"><span></span></div>
+    <div class="container">
+        <div class="header-tool" data-aos="fade-down">
+            <h2>🩺 نموذج التدقيق والتشخيص الشامل للأعمال (150 سؤال)</h2>
+            <span class="badge">FAROUK GRUP - Business Audit &amp; Franchise Readiness</span>
+        </div>
+        <div class="form-container" data-aos="fade-up" id="assessmentFormContainer">
+            <!-- بيانات العميل -->
+            <div class="client-data">
+                <input type="text" id="clientName" placeholder="اسم المنشأة / المشروع">
+                <input type="text" id="ownerName" placeholder="اسم المالك / المدير">
+                <input type="text" id="contactNumber" placeholder="رقم التواصل">
+                <input type="email" id="email" placeholder="البريد الإلكتروني">
+                <input type="text" id="city" placeholder="المدينة والدولة">
+                <input type="date" id="estDate" placeholder="تاريخ التأسيس">
+                <input type="number" id="branches" placeholder="عدد الفروع / المواقع" min="1">
+                <select id="activityType">
+                    <option value="">نوع النشاط</option>
+                    <option>تجاري</option>
+                    <option>خدمي</option>
+                    <option>صناعي</option>
+                    <option>تقني</option>
+                    <option>زراعي</option>
+                    <option>مقاولات</option>
+                    <option>استثماري</option>
+                    <option>أخرى</option>
+                </select>
+                <input type="number" id="employees" placeholder="عدد الموظفين" min="1">
+            </div>
+
+            <div id="allSections"></div>
+
+            <button class="btn-generate" onclick="generateReport()"><i class="fas fa-chart-bar"></i> تحليل وتوليد التقرير
+                الاستشاري الشامل</button>
+
+            <div id="reportContainer" class="report-section" data-aos="fade-up">
+                <div class="report-card" id="reportContent">
+                    <div style="text-align:center; border-bottom:2px solid var(--gold); padding-bottom:15px; margin-bottom:20px;">
+                        <h2 style="color:var(--gold-light);">تقرير التدقيق والتشخيص الشامل للأعمال</h2>
+                        <p id="reportClientDisplay" style="font-size:1.2rem;"></p>
+                        <p id="reportMeta" style="color:#aaa;"></p>
+                    </div>
+                    <table class="summary-table" id="summaryTable">
+                        <thead><tr><th>المحور</th><th>الدرجة الخام</th><th>النسبة</th><th>التصنيف</th><th>متوسط الخطورة</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <div class="score-circle" id="finalScoreCircle">0</div>
+                    <p id="finalClassification" style="text-align:center; font-size:1.5rem; font-weight:bold;"></p>
+                    <div class="charts-grid" id="chartsContainer"></div>
+                    <div style="background:rgba(184,134,11,0.08); padding:15px; border-radius:12px; margin-top:15px;" id="recommendationBox"></div>
+                    <div class="export-btns">
+                        <button onclick="exportToWord()"><i class="fas fa-file-word"></i> تقرير Word احترافي</button>
+                        <button onclick="exportToExcel()"><i class="fas fa-file-excel"></i> تصدير Excel شامل</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <i class="fas fa-spinner fa-pulse" style="font-size:3rem; color:var(--gold-light);"></i>
+        <p style="margin-top:15px;">جاري إنشاء التقرير...</p>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js">
+    </script>
+    <script>
+        AOS.init({ duration: 600, once: true });
+
+        // ========== بيانات المحاور (15 محوراً) ==========
+        const sectionsData = [
+            { id: 'sec1', name: 'الرؤية والاستراتيجية', icon: 'fa-eye', start: 1, end: 10, weight: 0.07 },
+            { id: 'sec2', name: 'الملكية والحوكمة', icon: 'fa-sitemap', start: 11, end: 20, weight: 0.07 },
+            { id: 'sec3', name: 'الإدارة العامة', icon: 'fa-user-tie', start: 21, end: 30, weight: 0.07 },
+            { id: 'sec4', name: 'المبيعات والإيرادات', icon: 'fa-chart-line', start: 31, end: 40, weight: 0.07 },
+            { id: 'sec5', name: 'التحليل المالي', icon: 'fa-file-invoice-dollar', start: 41, end: 50, weight: 0.07 },
+            { id: 'sec6', name: 'التدفقات النقدية', icon: 'fa-money-bill-wave', start: 51, end: 60, weight: 0.07 },
+            { id: 'sec7', name: 'التكاليف', icon: 'fa-coins', start: 61, end: 70, weight: 0.07 },
+            { id: 'sec8', name: 'تكوين المنتجات والخدمات', icon: 'fa-cubes', start: 71, end: 80, weight: 0.07 },
+            { id: 'sec9', name: 'المشتريات', icon: 'fa-truck', start: 81, end: 90, weight: 0.06 },
+            { id: 'sec10', name: 'المخزون والأصول', icon: 'fa-boxes', start: 91, end: 100, weight: 0.06 },
+            { id: 'sec11', name: 'التشغيل', icon: 'fa-cogs', start: 101, end: 110, weight: 0.07 },
+            { id: 'sec12', name: 'الموارد البشرية', icon: 'fa-users', start: 111, end: 120, weight: 0.07 },
+            { id: 'sec13', name: 'التسويق والعلامة التجارية', icon: 'fa-bullhorn', start: 121, end: 130, weight: 0.06 },
+            { id: 'sec14', name: 'الأنظمة والتقنية', icon: 'fa-laptop-code', start: 131, end: 140, weight: 0.06 },
+            { id: 'sec15', name: 'الجاهزية للتوسع', icon: 'fa-store-alt', start: 141, end: 150, weight: 0.06 }
+        ];
+
+        // ========== 150 سؤالاً معمماً للأعمال ==========
+        const questionsText = [
+            // الرؤية والاستراتيجية (1-10)
+            'ما الرؤية طويلة المدى للمشروع؟',
+            'ما الرسالة الأساسية للعلامة التجارية / المشروع؟',
+            'ما الأهداف الاستراتيجية للسنة الحالية؟',
+            'ما الأهداف خلال 3 سنوات؟',
+            'ما الأهداف خلال 5 سنوات؟',
+            'من هم الأسواق / الفئات المستهدفة؟',
+            'ما الميزة التنافسية الحالية؟',
+            'من هم أهم المنافسين؟',
+            'ما أكبر التحديات التي تواجه المشروع؟',
+            'ما أهم الفرص المتاحة للنمو؟',
+
+            // الملكية والحوكمة (11-20)
+            'ما هيكل الملكية الحالي؟',
+            'هل يوجد شركاء؟',
+            'هل الأدوار بين الشركاء محددة بوضوح؟',
+            'من صاحب القرار النهائي؟',
+            'هل توجد اجتماعات إدارية دورية؟',
+            'هل يتم توثيق القرارات؟',
+            'هل توجد سياسات معتمدة؟',
+            'هل توجد صلاحيات مكتوبة؟',
+            'هل توجد مؤشرات أداء للإدارة؟',
+            'هل يوجد مجلس استشاري أو لجنة رقابة؟',
+
+            // الإدارة العامة (21-30)
+            'هل يوجد مدير عام متفرغ؟',
+            'هل يوجد هيكل تنظيمي معتمد؟',
+            'هل جميع المناصب محددة؟',
+            'هل توجد أوصاف وظيفية؟',
+            'هل توجد أهداف لكل إدارة / قسم؟',
+            'هل توجد اجتماعات تشغيل أسبوعية؟',
+            'هل توجد تقارير إدارية منتظمة؟',
+            'هل توجد خطة عمل سنوية؟',
+            'هل توجد خطة تطوير للمنظمة؟',
+            'ما أبرز التحديات الإدارية الحالية؟',
+
+            // المبيعات والإيرادات (31-40)
+            'ما متوسط الإيرادات الشهرية؟',
+            'ما أعلى شهر إيرادات خلال آخر سنة؟',
+            'ما أقل شهر إيرادات خلال آخر سنة؟',
+            'ما نسبة النمو السنوي للإيرادات؟',
+            'ما متوسط عدد المعاملات اليومية؟',
+            'ما متوسط قيمة المعاملة / الفاتورة؟',
+            'ما أكثر أيام الأسبوع من حيث الإيرادات؟',
+            'ما أقل أيام الأسبوع من حيث الإيرادات؟',
+            'ما أعلى فترات البيع / الخدمة؟',
+            'ما أقل فترات البيع / الخدمة؟',
+
+            // التحليل المالي (41-50)
+            'هل توجد قوائم مالية شهرية؟',
+            'هل يتم إقفال الحسابات شهرياً؟',
+            'هل يتم إعداد ميزانية سنوية؟',
+            'هل تتم مقارنة النتائج بالميزانية؟',
+            'ما هامش الربح الإجمالي الحالي؟',
+            'ما هامش الربح التشغيلي الحالي؟',
+            'ما صافي الربح الحالي؟',
+            'هل توجد خسائر متراكمة؟',
+            'هل توجد قروض أو التزامات مالية؟',
+            'ما أكبر بند مصروفات؟',
+
+            // التدفقات النقدية (51-60)
+            'هل يتم إعداد تقرير تدفق نقدي؟',
+            'هل توجد أزمة سيولة حالياً؟',
+            'كم يوماً يغطي الرصيد النقدي الحالي؟',
+            'هل توجد ذمم متأخرة (عملاء)؟',
+            'هل توجد التزامات قصيرة الأجل؟',
+            'هل يتم التخطيط للنقدية مسبقاً؟',
+            'هل توجد فجوات نقدية موسمية؟',
+            'هل يتم تحصيل المستحقات بانتظام؟',
+            'هل توجد مديونية مرتفعة؟',
+            'ما أكبر ضغط على السيولة؟',
+
+            // التكاليف (61-70)
+            'ما نسبة التكاليف المباشرة إلى الإيرادات؟',
+            'ما نسبة التكاليف غير المباشرة إلى الإيرادات؟',
+            'ما نسبة تكلفة العمالة إلى الإيرادات؟',
+            'هل توجد أهداف تكلفة معتمدة؟',
+            'هل يتم مراقبة الانحرافات التكلفوية؟',
+            'هل توجد تقارير تكلفة شهرية؟',
+            'هل يتم تحليل أسباب ارتفاع التكاليف؟',
+            'هل توجد تكلفة معيارية للمنتجات / الخدمات؟',
+            'هل تتم مراجعة الأسعار دورياً؟',
+            'ما أكبر مصدر لارتفاع التكاليف؟',
+
+            // تكوين المنتجات والخدمات (71-80)
+            'كم عدد المنتجات / الخدمات الحالية؟',
+            'هل توجد دراسة ربحية لكل منتج / خدمة؟',
+            'ما أكثر المنتجات / الخدمات مبيعاً؟',
+            'ما أقل المنتجات / الخدمات مبيعاً؟',
+            'ما أكثر المنتجات / الخدمات ربحية؟',
+            'ما أقل المنتجات / الخدمات ربحية؟',
+            'هل توجد منتجات / خدمات خاسرة؟',
+            'متى تم تحديث قائمة المنتجات / الخدمات آخر مرة؟',
+            'هل يتم تحليل أداء المنتجات / الخدمات دورياً؟',
+            'هل توجد استراتيجية تسعير واضحة؟',
+
+            // المشتريات (81-90)
+            'هل توجد سياسة شراء معتمدة؟',
+            'كم عدد الموردين المعتمدين؟',
+            'هل يوجد مورد بديل لكل مادة / خدمة رئيسية؟',
+            'هل تتم مقارنة الأسعار دورياً؟',
+            'هل توجد عقود مع الموردين؟',
+            'هل يتم تقييم أداء الموردين؟',
+            'هل توجد صلاحيات شراء محددة؟',
+            'هل تتم مراجعة الفواتير قبل الدفع؟',
+            'هل توجد مشتريات طارئة متكررة؟',
+            'ما أبرز مشاكل التوريد الحالية؟',
+
+            // المخزون والأصول (91-100)
+            'هل يوجد نظام لإدارة المخزون / الأصول؟',
+            'هل يتم الجرد الدوري؟',
+            'كم مرة يتم الجرد سنوياً؟',
+            'هل توجد فروقات جرد؟',
+            'ما نسبة الهدر / التالف؟',
+            'هل يتم تحليل الفروقات ومعالجتها؟',
+            'هل توجد أصناف / أصول راكدة؟',
+            'هل توجد مواد منتهية الصلاحية أو تالفة؟',
+            'هل يتم تطبيق نظام FIFO أو ما يعادله؟',
+            'ما أكبر مشكلة في إدارة المخزون / الأصول؟',
+
+            // التشغيل (101-110)
+            'هل توجد إجراءات تشغيل قياسية (SOPs)؟',
+            'هل توجد أدلة تشغيل موثقة؟',
+            'هل توجد قوائم تفقد يومية / أسبوعية؟',
+            'هل توجد مؤشرات أداء تشغيلية (KPIs)؟',
+            'هل يتم قياس سرعة وكفاءة الخدمة / الإنتاج؟',
+            'هل توجد متابعة دورية للجودة؟',
+            'هل يتم توثيق الأعطال والمشكلات التشغيلية؟',
+            'هل توجد خطط طوارئ تشغيلية؟',
+            'هل يتم مراجعة الأداء التشغيلي دورياً؟',
+            'ما أكبر مشكلة تشغيلية حالياً؟',
+
+            // الموارد البشرية (111-120)
+            'كم عدد الموظفين الحاليين؟',
+            'هل يوجد هيكل وظيفي معتمد؟',
+            'هل توجد أوصاف وظيفية محدثة؟',
+            'هل توجد مؤشرات أداء للموظفين؟',
+            'هل يتم إجراء تقييمات أداء دورية؟',
+            'هل توجد خطة تدريب وتطوير سنوية؟',
+            'ما معدل دوران الموظفين السنوي؟',
+            'ما معدل الغياب الشهري؟',
+            'هل توجد حوافز ومكافآت؟',
+            'ما أكبر تحدٍ في الموارد البشرية؟',
+
+            // التسويق والعلامة التجارية (121-130)
+            'هل توجد خطة تسويق سنوية؟',
+            'ما ميزانية التسويق الحالية؟',
+            'هل يتم قياس العائد على الاستثمار التسويقي؟',
+            'ما القنوات التسويقية المستخدمة؟',
+            'ما عدد العملاء الجدد شهرياً؟',
+            'ما نسبة العملاء المتكررين؟',
+            'هل توجد قاعدة بيانات للعملاء؟',
+            'هل يوجد برنامج ولاء للعملاء؟',
+            'هل يتم تحليل المنافسين بانتظام؟',
+            'ما أكبر تحدٍ تسويقي حالياً؟',
+
+            // الأنظمة والتقنية (131-140)
+            'ما نظام إدارة الأعمال (ERP / POS) المستخدم؟',
+            'هل النظام مرتبط بالمخزون / الأصول؟',
+            'هل النظام مرتبط بالمحاسبة؟',
+            'هل توجد لوحات مؤشرات (Dashboard)؟',
+            'هل توجد تقارير آلية دورية؟',
+            'هل توجد صلاحيات مستخدمين محددة؟',
+            'هل توجد نسخ احتياطية للبيانات؟',
+            'هل يتم تحليل البيانات دورياً؟',
+            'هل توجد أنظمة CRM لإدارة العملاء؟',
+            'ما أكبر تحدٍ تقني حالياً؟',
+
+            // الجاهزية للتوسع (141-150)
+            'هل العلامة التجارية مسجلة رسمياً؟',
+            'هل يوجد دليل تشغيل موثق؟',
+            'هل يوجد دليل تدريب للموظفين؟',
+            'هل يوجد دليل للموارد البشرية؟',
+            'هل يوجد دليل للجودة والمعايير؟',
+            'هل يوجد دليل للهوية البصرية؟',
+            'هل النموذج التشغيلي قابل للتكرار؟',
+            'هل جميع الفروع / المواقع تحقق نتائج متقاربة؟',
+            'هل توجد خطة توسع واضحة المعالم؟',
+            'ما مدى جاهزية المشروع للتحول إلى نموذج امتياز / توسع؟'
+        ];
+
+        // ========== بناء النموذج ==========
+        function buildForm() {
+            const container = document.getElementById('allSections');
+            let html = '';
+            sectionsData.forEach(sec => {
+                html += `<div class="section-block" id="${sec.id}">
+                            <h3 onclick="toggleSection('${sec.id}')">
+                                <i class="fas ${sec.icon}"></i> ${sec.name} (الأسئلة ${sec.start}-${sec.end})
+                                <i class="fas fa-chevron-down"></i>
+                            </h3>
+                            <div class="body">`;
+                for (let i = sec.start; i <= sec.end; i++) {
+                    html += `<div class="question-row">
+                                <p>${i}. ${questionsText[i-1]}</p>
+                                <div class="options-row">
+                                    <label><input type="radio" name="q${i}" value="0" required> غير متوفر</label>
+                                    <label><input type="radio" name="q${i}" value="1"> ضعيف</label>
+                                    <label><input type="radio" name="q${i}" value="2"> مقبول</label>
+                                    <label><input type="radio" name="q${i}" value="3"> جيد</label>
+                                    <label><input type="radio" name="q${i}" value="4"> ممتاز</label>
+                                </div>
+                                <div class="meta-row">
+                                    <select id="evidence_q${i}">
+                                        <option value="">الأدلة المطلوبة</option>
+                                        <option>غير متوفر</option>
+                                        <option>متوفر جزئياً</option>
+                                        <option>متوفر بالكامل</option>
+                                    </select>
+                                    <select id="risk_q${i}">
+                                        <option value="">مستوى الخطورة</option>
+                                        <option>منخفض</option>
+                                        <option>متوسط</option>
+                                        <option>مرتفع</option>
+                                    </select>
+                                    <input type="text" id="note_q${i}" placeholder="ملاحظاتك">
+                                </div>
+                            </div>`;
+                }
+                html += `<div class="note-field">
+                            <textarea id="note_section_${sec.id}" placeholder="ملاحظات عامة على المحور" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleSection(id) {
+            document.getElementById(id).classList.toggle('collapsed');
+        }
+        buildForm();
+
+        // ========== متغيرات عامة ==========
+        let globalData = null;
+        let chartInstances = [];
+
+        // ========== إنشاء التقرير ==========
+        function generateReport() {
+            const allRadios = document.querySelectorAll('input[type="radio"]:required');
+            let allOk = true;
+            allRadios.forEach(r => {
+                if (!document.querySelector(`input[name="${r.name}"]:checked`)) allOk = false;
+            });
+            if (!allOk) {
+                alert('يرجى الإجابة على جميع الأسئلة.');
+                return;
+            }
+
+            // بيانات العميل
+            const clientInfo = {
+                name: document.getElementById('clientName').value,
+                owner: document.getElementById('ownerName').value,
+                contact: document.getElementById('contactNumber').value,
+                email: document.getElementById('email').value,
+                city: document.getElementById('city').value,
+                estDate: document.getElementById('estDate').value,
+                branches: document.getElementById('branches').value,
+                activity: document.getElementById('activityType').value,
+                employees: document.getElementById('employees').value,
+            };
+
+            // جمع إجابات الأسئلة
+            const questionsData = [];
+            sectionsData.forEach(sec => {
+                for (let i = sec.start; i <= sec.end; i++) {
+                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                    const score = selected ? parseInt(selected.value) : 0;
+                    const label = selected ? selected.parentElement.querySelector('span')?.innerText || '-' :
+                    '-';
+                    const evidence = document.getElementById(`evidence_q${i}`)?.value || '';
+                    const risk = document.getElementById(`risk_q${i}`)?.value || '';
+                    const note = document.getElementById(`note_q${i}`)?.value || '';
+                    questionsData.push({ number: i, section: sec.name, question: questionsText[i - 1], score,
+                        label, evidence, risk, note });
+                }
+            });
+
+            // حساب نتائج المحاور
+            const sectionResults = sectionsData.map(sec => {
+                let raw = 0;
+                let riskSum = 0;
+                let riskCount = 0;
+                for (let i = sec.start; i <= sec.end; i++) {
+                    const sel = document.querySelector(`input[name="q${i}"]:checked`);
+                    if (sel) raw += parseInt(sel.value);
+                    const riskVal = document.getElementById(`risk_q${i}`)?.value;
+                    if (riskVal === 'مرتفع') riskSum += 3;
+                    else if (riskVal === 'متوسط') riskSum += 2;
+                    else if (riskVal === 'منخفض') riskSum += 1;
+                    if (riskVal) riskCount++;
+                }
+                const max = (sec.end - sec.start + 1) * 4;
+                const pct = (raw / max) * 100;
+                const avgRisk = riskCount > 0 ? (riskSum / riskCount) : 0;
+                const cls = pct >= 90 ? 'ممتاز' : pct >= 75 ? 'جيد جداً' : pct >= 60 ? 'جيد' : 'يحتاج تطوير';
+                const note = document.getElementById(`note_section_${sec.id}`)?.value || '';
+                return { ...sec, raw, max, pct, cls, avgRisk, note };
+            });
+
+            // الدرجة النهائية
+            let totalScore = 0;
+            sectionResults.forEach(s => totalScore += s.pct * s.weight);
+            const finalScore = Math.round(totalScore);
+
+            // جدول الملخص
+            let tableRows = '';
+            sectionResults.forEach(s => {
+                const riskText = s.avgRisk >= 2.5 ? 'مرتفع' : s.avgRisk >= 1.5 ? 'متوسط' : s.avgRisk > 0 ?
+                    'منخفض' : '-';
+                tableRows +=
+                    `<tr><td>${s.name}</td><td>${s.raw}/${s.max}</td><td>${Math.round(s.pct)}%</td><td>${s.cls}</td><td>${riskText}</td></tr>`;
+            });
+            document.getElementById('summaryTable').querySelector('tbody').innerHTML = tableRows;
+            document.getElementById('finalScoreCircle').innerText = finalScore;
+
+            // التصنيف النهائي والتوصيات
+            let classText = '',
+                recText = '';
+            if (finalScore >= 90) {
+                classText = 'ممتاز - جاهز للتوسع والامتياز';
+                recText = 'المنظومة متكاملة. يُوصى بالتحسين المستمر والتوسع المدروس مع توثيق أفضل الممارسات.';
+            } else if (finalScore >= 80) {
+                classText = 'جيد جداً - جاهز بعد تحسينات محدودة';
+                recText = 'يحتاج إلى توثيق أفضل للعمليات وتطوير أدلة التشغيل والتدريب.';
+            } else if (finalScore >= 70) {
+                classText = 'جيد - يحتاج إعادة هيكلة جزئية';
+                recText = 'فجوات في ضبط التكاليف أو التوثيق أو الأنظمة. الأولوية لإعادة الهيكلة وتحسين الحوكمة.';
+            } else {
+                classText = 'يحتاج تطوير - إعادة بناء المنظومة';
+                recText = 'ضعف جوهري في الأنظمة والإجراءات. يجب البدء بخطة تصحيحية شاملة تشمل جميع المحاور.';
+            }
+            document.getElementById('finalClassification').innerHTML = classText;
+            document.getElementById('recommendationBox').innerHTML = `<strong>التوصيات:</strong><br>${recText}`;
+            document.getElementById('reportClientDisplay').innerText = clientInfo.name || 'عميل';
+            document.getElementById('reportMeta').innerText =
+                `المشروع: ${clientInfo.name || '-'} | التاريخ: ${new Date().toLocaleDateString('ar-EG')}`;
+
+            // الرسوم البيانية
+            chartInstances.forEach(c => c.destroy());
+            chartInstances = [];
+            const chartsContainer = document.getElementById('chartsContainer');
+            chartsContainer.innerHTML = '';
+            sectionResults.forEach((sec, i) => {
+                const box = document.createElement('div');
+                box.className = 'chart-box';
+                box.innerHTML = `<h4>${sec.name}</h4><canvas id="chart-${i}" height="120"></canvas>`;
+                chartsContainer.appendChild(box);
+            });
+            sectionResults.forEach((sec, i) => {
+                const ctx = document.getElementById(`chart-${i}`).getContext('2d');
+                const pct = Math.round(sec.pct);
+                const color = pct >= 80 ? '#28a745' : pct >= 60 ? '#ffc107' : '#dc3545';
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [sec.name],
+                        datasets: [{ data: [pct], backgroundColor: color, borderColor: color, borderWidth: 1,
+                                barThickness: 30 }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        scales: {
+                            x: { beginAtZero: true, max: 100, ticks: { color: '#ccc' } },
+                            y: { ticks: { color: '#ccc' } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+                chartInstances.push(chart);
+            });
+
+            document.getElementById('reportContainer').style.display = 'block';
+            document.getElementById('reportContainer').scrollIntoView({ behavior: 'smooth' });
+
+            globalData = {
+                clientInfo,
+                sectionResults,
+                questionsData,
+                finalScore,
+                classText,
+                recText,
+                date: new Date().toLocaleDateString('ar-EG')
+            };
+        }
+
+        // ========== تحميل ==========
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('show', show);
+        }
+
+        // ========== تصدير إلى Word ==========
+        async function exportToWord() {
+            if (!globalData) { alert('الرجاء إجراء التحليل أولاً.'); return; }
+            showLoading(true);
+            try {
+                const d = globalData;
+                const chartContainer = document.getElementById('chartsContainer');
+                let chartsImg = '';
+                if (chartContainer) {
+                    const canvas = await html2canvas(chartContainer, { scale: 2, backgroundColor: '#0b0e17' });
+                    chartsImg = canvas.toDataURL('image/png');
+                }
+                let clientRows = '';
+                const c = d.clientInfo;
+                clientRows += `<tr><th>المنشأة</th><td>${c.name}</td><th>المالك</th><td>${c.owner}</td></tr>`;
+                clientRows += `<tr><th>التواصل</th><td>${c.contact}</td><th>البريد</th><td>${c.email}</td></tr>`;
+                clientRows += `<tr><th>المدينة</th><td>${c.city}</td><th>التأسيس</th><td>${c.estDate}</td></tr>`;
+                clientRows += `<tr><th>الفروع</th><td>${c.branches}</td><th>النشاط</th><td>${c.activity}</td></tr>`;
+                clientRows += `<tr><th colspan="2">الموظفين</th><td colspan="2">${c.employees}</td></tr>`;
+                const summaryRows = d.sectionResults.map(s =>
+                    `<tr><td>${s.name}</td><td>${Math.round(s.pct)}%</td><td>${s.cls}</td></tr>`).join('');
+                let questionsTable = '';
+                d.questionsData.forEach(q => {
+                    questionsTable +=
+                        `<tr><td>${q.number}</td><td>${q.section}</td><td>${q.question}</td><td>${q.score}</td><td>${q.label}</td><td>${q.evidence||'-'}</td><td>${q.risk||'-'}</td><td>${q.note||'-'}</td></tr>`;
+                });
+                const fullHtml = `<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>تقرير تدقيق - FAROUK GRUP</title>
+                <style>body{font-family:'Tajawal',sans-serif;padding:30px;background:#fff;} .cover{text-align:center;border-bottom:4px solid #b8860b;margin-bottom:25px;} table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.8rem;} th,td{border:1px solid #b8860b;padding:8px;text-align:center;} .score{font-size:2.5rem;font-weight:bold;color:#b8860b;text-align:center;}</style></head><body>
+                <div class="cover"><h1>مجموعة فاروق للاستشارات والأعمال</h1><h2>تقرير التدقيق والتشخيص الشامل للأعمال</h2><p>العميل: ${c.name} | التاريخ: ${d.date}</p></div>
+                <h2>بيانات العميل</h2><table>${clientRows}</table>
+                <h2>ملخص المحاور</h2><table><tr><th>المحور</th><th>النسبة</th><th>التصنيف</th></tr>${summaryRows}</table>
+                <div class="score">الدرجة الكلية: ${d.finalScore}%</div><p style="text-align:center;font-size:1.2rem;">${d.classText}</p>
+                <h2>الرسوم البيانية</h2><img src="${chartsImg}" style="max-width:100%; height:auto; border:1px solid #ccc;"/>
+                <h2>تفاصيل الأسئلة والملاحظات</h2><table><tr><th>#</th><th>المحور</th><th>السؤال</th><th>الدرجة</th><th>التقييم</th><th>الأدلة</th><th>الخطورة</th><th>ملاحظات</th></tr>${questionsTable}</table>
+                <h2>التوصيات</h2><p>${d.recText}</p><p style="text-align:center;margin-top:40px;color:#888;">تم الإنشاء بواسطة FAROUK GRUP © ${new Date().getFullYear()}</p></body></html>`;
+                const blob = new Blob(['\uFEFF' + fullHtml], { type: 'application/msword' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `تقرير_تدقيق_${c.name}_${d.date}.doc`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            } catch (e) { console.error(e);
+                alert('فشل التصدير.'); } finally { showLoading(false); }
+        }
+
+        // ========== تصدير إلى Excel ==========
+        async function exportToExcel() {
+            if (!globalData) { alert('الرجاء إجراء التحليل أولاً.'); return; }
+            showLoading(true);
+            try {
+                const d = globalData;
+                const wb = new ExcelJS.Workbook();
+                wb.creator = 'FAROUK GRUP';
+                const G = 'FFB8860B',
+                    GL = 'FFD4B15A',
+                    DB = 'FF0B0E17';
+
+                function mh(ws, r, fc, tc, text, bg = DB, tc2 = GL, fs = 14) {
+                    ws.mergeCells(r, fc, r, tc);
+                    const cell = ws.getCell(r, fc);
+                    cell.value = text;
+                    cell.font = { name: 'Arial', bold: true, size: fs, color: { argb: tc2 } };
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
+                    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true,
+                        readingOrder: 'rtl' };
+                    cell.border = { top: { style: 'medium', color: { argb: G } }, bottom: { style: 'medium',
+                            color: { argb: G } }, left: { style: 'medium', color: { argb: G } },
+                        right: { style: 'medium', color: { argb: G } } };
+                }
+
+                const cover = wb.addWorksheet('غلاف', { views: [{ rightToLeft: true, showGridLines: false }] });
+                [8, 45, 35, 8].forEach((w, i) => cover.getColumn(i + 1).width = w);
+                mh(cover, 2, 1, 4, 'مجموعة فاروق للاستشارات والأعمال\nFAROUK GRUP', DB, GL, 20);
+                mh(cover, 4, 1, 4, `تقرير التدقيق والتشخيص الشامل للأعمال\n${d.clientInfo.name}`, DB, GL, 16);
+
+                const clientSheet = wb.addWorksheet('بيانات العميل', { views: [{ rightToLeft: true }] });
+                clientSheet.columns = [{ width: 25 }, { width: 25 }];
+                [
+                    ['المنشأة', d.clientInfo.name],
+                    ['المالك', d.clientInfo.owner],
+                    ['التواصل', d.clientInfo.contact],
+                    ['البريد', d.clientInfo.email],
+                    ['المدينة', d.clientInfo.city],
+                    ['التأسيس', d.clientInfo.estDate],
+                    ['الفروع', d.clientInfo.branches],
+                    ['النشاط', d.clientInfo.activity],
+                    ['الموظفين', d.clientInfo.employees]
+                ].forEach(([k, v], i) => { clientSheet.getCell(`A${i+1}`).value = k;
+                    clientSheet.getCell(`B${i+1}`).value = v; });
+
+                const qSheet = wb.addWorksheet('الأسئلة والتقييم', { views: [{ rightToLeft: true }] });
+                qSheet.columns = [{ width: 5 }, { width: 20 }, { width: 40 }, { width: 8 }, { width: 12 },
+                    { width: 15 }, { width: 12 }, { width: 25 }
+                ];
+                qSheet.addRow(['#', 'المحور', 'السؤال', 'الدرجة', 'التقييم', 'الأدلة', 'الخطورة', 'ملاحظات']);
+                d.questionsData.forEach(q => qSheet.addRow([q.number, q.section, q.question, q.score, q.label, q
+                    .evidence || '', q.risk || '', q.note || ''
+                ]));
+
+                const resSheet = wb.addWorksheet('ملخص المحاور', { views: [{ rightToLeft: true }] });
+                resSheet.columns = [{ width: 30 }, { width: 12 }, { width: 15 }, { width: 15 }];
+                resSheet.addRow(['المحور', 'النسبة', 'التصنيف', 'متوسط الخطورة']);
+                d.sectionResults.forEach(s => {
+                    const riskText = s.avgRisk >= 2.5 ? 'مرتفع' : s.avgRisk >= 1.5 ? 'متوسط' : s.avgRisk > 0 ?
+                        'منخفض' : '-';
+                    resSheet.addRow([s.name, `${Math.round(s.pct)}%`, s.cls, riskText]);
+                });
+                resSheet.addRow([]);
+                resSheet.addRow(['الدرجة الكلية', `${d.finalScore}%`, d.classText, '']);
+
+                const sumSheet = wb.addWorksheet('التوصيات', { views: [{ rightToLeft: true }] });
+                sumSheet.mergeCells('A1:D1');
+                sumSheet.getCell('A1').value = `التقييم: ${d.finalScore}/100 - ${d.classText}`;
+                sumSheet.mergeCells('A3:D3');
+                sumSheet.getCell('A3').value = `التوصيات: ${d.recText}`;
+
+                const chartSheet = wb.addWorksheet('الرسوم البيانية', { views: [{ rightToLeft: true }] });
+                const chartContainer = document.getElementById('chartsContainer');
+                if (chartContainer) {
+                    const canvasImg = await html2canvas(chartContainer, { scale: 2, backgroundColor: '#0b0e17' });
+                    const imgId = wb.addImage({ base64: canvasImg.toDataURL('image/png'), extension: 'png' });
+                    chartSheet.addImage(imgId, 'A1:J30');
+                }
+
+                const buf = await wb.xlsx.writeBuffer();
+                const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                saveAs(blob, `تدقيق_${d.clientInfo.name}_${d.date}.xlsx`);
+            } catch (e) { console.error(e); } finally { showLoading(false); }
+        }
+    </script>
+</body>
+</html>
