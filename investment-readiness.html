@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقياس جاذبية الاستثمار (30 سؤال) | FAROUK GRUP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js">
+    </script>
+    <style>
+        :root {
+            --bg-dark: #0b0e17;
+            --bg-panel: rgba(18, 24, 36, 0.94);
+            --gold: #b8860b;
+            --gold-light: #d4b15a;
+            --text-light: #f0f4fa;
+            --text-muted: #aab7d4;
+            --border-light: rgba(184, 134, 11, 0.25);
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: radial-gradient(circle at 70% 30%, #141c2b, #0a0e16);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* الهيدر */
+        .header {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: 20px 20px 0 0;
+            padding: 20px 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: var(--gold-light);
+            font-weight: 900;
+            font-size: 1.8rem;
+        }
+
+        .header .sub {
+            color: var(--text-muted);
+            font-size: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .header .sub .badge {
+            background: var(--gold);
+            color: #111;
+            padding: 2px 15px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        /* بيانات العميل (مبسطة) */
+        .client-simple {
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border-light);
+            border-right: 1px solid var(--border-light);
+            padding: 15px 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .client-simple input,
+        .client-simple select {
+            flex: 1 1 180px;
+            padding: 10px 15px;
+            border-radius: 30px;
+            border: 1px solid #444;
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .client-simple input::placeholder {
+            color: #888;
+        }
+
+        /* المحاور والأسئلة */
+        .form-body {
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border-light);
+            border-right: 1px solid var(--border-light);
+            padding: 20px 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .axis-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .axis-card h3 {
+            background: rgba(184, 134, 11, 0.15);
+            padding: 12px 18px;
+            color: var(--gold-light);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin: 0;
+            border-bottom: 1px solid rgba(184, 134, 11, 0.1);
+        }
+
+        .axis-card h3 i {
+            width: 24px;
+        }
+
+        .axis-card .q-group {
+            padding: 5px 18px 15px;
+        }
+
+        .q-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            gap: 10px;
+        }
+
+        .q-item:last-child {
+            border-bottom: none;
+        }
+
+        .q-item .q-text {
+            flex: 2 1 250px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #ddd;
+        }
+
+        .q-item .q-options {
+            flex: 1 1 200px;
+            display: flex;
+            gap: 5px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .q-item .q-options label {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            color: #aaa;
+        }
+
+        .q-item .q-options label:hover {
+            border-color: var(--gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .q-item .q-options input[type="radio"] {
+            accent-color: var(--gold);
+            margin: 0;
+        }
+
+        /* زر التوليد */
+        .btn-invest {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold), #e6b800);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #111;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-invest:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(184, 134, 11, 0.4);
+            background: #111;
+            color: var(--gold);
+        }
+
+        /* التقرير النهائي */
+        .report-invest {
+            display: none;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: 0 0 20px 20px;
+            padding: 30px;
+            margin-top: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .report-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .score-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+        }
+
+        .big-number {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--gold-light);
+            line-height: 1;
+        }
+
+        .big-label {
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 8px 30px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+
+        .status-high {
+            background: var(--success);
+            color: #fff;
+        }
+        .status-mid {
+            background: var(--warning);
+            color: #111;
+        }
+        .status-low {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .radar-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 15px;
+            height: 300px;
+        }
+
+        .rec-box {
+            background: rgba(184, 134, 11, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-right: 4px solid var(--gold);
+        }
+
+        .rec-box h4 {
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+        .rec-box ul {
+            list-style: none;
+            padding: 0;
+        }
+        .rec-box li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+        }
+        .rec-box li strong {
+            color: var(--gold-light);
+        }
+
+        .export-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .export-btn {
+            background: rgba(184, 134, 11, 0.15);
+            border: 1px solid var(--border-light);
+            color: var(--gold-light);
+            padding: 10px 25px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .export-btn:hover {
+            background: var(--gold);
+            color: #111;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-overlay.show {
+            display: flex;
+        }
+        .loading-box {
+            background: rgba(18, 24, 36, 0.95);
+            border: 1px solid rgba(184, 134, 11, 0.2);
+            border-radius: 20px;
+            padding: 2rem 2.5rem;
+            text-align: center;
+        }
+        .loading-box i {
+            font-size: 2.5rem;
+            color: var(--gold-light);
+            animation: spin 0.8s linear infinite;
+            display: block;
+            margin-bottom: 0.6rem;
+        }
+        .loading-box h3 {
+            color: var(--gold-light);
+            font-size: 1.2rem;
+        }
+        .loading-box p {
+            color: #aaa;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #555;
+            font-size: 0.8rem;
+            padding: 15px;
+        }
+
+        /* تنسيق الطباعة */
+        @media print {
+            .btn-invest, .export-container, .client-simple input, .client-simple select {
+                display: none !important;
+            }
+            body { background: #fff; color: #000; }
+            .header, .form-body, .report-invest, .client-simple {
+                background: #fff !important;
+                border-color: #ccc !important;
+                box-shadow: none !important;
+            }
+            .header h1 { color: #b8860b; }
+            .radar-container { background: #f9f9f9; }
+            .score-box { background: #f5f5f5; }
+            .rec-box { background: #fefcf6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <i class="fas fa-spinner"></i>
+            <h3 id="loadingTitle">جاري إنشاء التقرير...</h3>
+            <p id="loadingMsg">يرجى الانتظار</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-handshake"></i> مقياس جاذبية الاستثمار</h1>
+            <div class="sub">
+                <span>تقييم سريع للمشروع من وجهة نظر المستثمر (30 سؤالاً)</span>
+                <span class="badge">FAROUK GRUP - Investment Readiness</span>
+            </div>
+        </div>
+
+        <!-- بيانات العميل -->
+        <div class="client-simple">
+            <input type="text" id="clientName" placeholder="اسم المنشأة">
+            <input type="text" id="ownerName" placeholder="المالك / المدير التنفيذي">
+            <input type="text" id="contactInfo" placeholder="رقم التواصل">
+            <input type="text" id="industry" placeholder="النشاط (مثال: تقني، صناعي، خدمي)">
+            <input type="number" id="revenue" placeholder="الإيرادات السنوية التقريبية (مليون)">
+        </div>
+
+        <!-- الأسئلة -->
+        <div class="form-body" id="formBody">
+            <!-- سيتم توليدها بواسطة JS -->
+        </div>
+
+        <button class="btn-invest" onclick="generateInvestReport()">
+            <i class="fas fa-chart-pie"></i> تحليل الجاذبية الاستثمارية
+        </button>
+
+        <!-- التقرير -->
+        <div class="report-invest" id="reportInvest">
+            <h2 style="color:var(--gold-light); text-align:center; border-bottom:2px solid var(--gold); padding-bottom:10px;">
+                <i class="fas fa-file-alt"></i> تقرير جاذبية الاستثمار
+            </h2>
+            <div id="reportClientMeta" style="text-align:center; color:#aaa; margin:10px 0;"></div>
+
+            <div class="report-grid">
+                <div class="score-box">
+                    <div class="big-label">مؤشر الجاذبية</div>
+                    <div class="big-number" id="finalInvestScore">0</div>
+                    <div style="font-size:1rem; color:#888;">من 100</div>
+                    <div id="statusBadge" class="status-tag">-</div>
+                    <hr style="border-color:#444; margin:15px 0;">
+                    <div style="text-align:right; font-size:0.9rem;">
+                        <div><span style="color:var(--gold-light);">✓</span> قوة الفريق: <span id="d1"></span></div>
+                        <div><span style="color:var(--gold-light);">✓</span> قابلية التوسع: <span id="d2"></span></div>
+                        <div><span style="color:var(--gold-light);">✓</span> الميزة التنافسية: <span id="d3"></span></div>
+                        <div><span style="color:var(--gold-light);">✓</span> الأنظمة والشفافية: <span id="d4"></span></div>
+                        <div><span style="color:var(--gold-light);">✓</span> المخاطر والاستدامة: <span id="d5"></span></div>
+                    </div>
+                </div>
+                <div class="radar-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <div class="rec-box" id="recommendationInvest">
+                <h4><i class="fas fa-lightbulb"></i> رؤية المستثمر والتوصيات</h4>
+                <ul id="recList"></ul>
+            </div>
+
+            <div class="export-container">
+                <button class="export-btn" onclick="exportToWord()"><i class="fas fa-file-word"></i> تصدير Word</button>
+                <button class="export-btn" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> تصدير Excel</button>
+                <button class="export-btn" onclick="window.print()"><i class="fas fa-print"></i> طباعة</button>
+            </div>
+        </div>
+        <div class="footer-note">© FAROUK GRUP - أداة التقييم الاستثماري السريع | تعتمد على 30 مؤشراً رئيسياً</div>
+    </div>
+
+    <script>
+        // =============================================
+        // بيانات المحاور الخمسة والأسئلة (30 سؤالاً)
+        // =============================================
+        const axes = [{
+            id: 'axis1',
+            name: 'الفريق الإداري والمؤسس',
+            icon: 'fa-users-cog',
+            questions: [
+                'هل يتمتع المؤسس/المدير بخبرة سابقة ناجحة في نفس المجال؟',
+                'هل الفريق الإداري مكتمل (مالي، تشغيلي، تسويقي)؟',
+                'هل يعمل المؤسسون بدوام كامل في المشروع؟',
+                'هل هناك خطة واضحة لخلافة الإدارة أو توزيع الصلاحيات؟',
+                'هل يتمتع الفريق بسمعة جيدة في السوق؟',
+                'هل التزام المؤسسين طويل الأمد تجاه المشروع (5+ سنوات)؟'
+            ]
+        }, {
+            id: 'axis2',
+            name: 'نموذج العمل وقابلية التوسع',
+            icon: 'fa-rocket',
+            questions: [
+                'هل نموذج العمل قابل للتكرار في مواقع أو أسواق جديدة؟',
+                'هل هامش الربح الصافي يتجاوز 15%؟',
+                'هل تنمو الإيرادات سنوياً بنسبة تزيد عن 10%؟',
+                'هل هناك تنوع في مصادر الدخل (لا تعتمد على منتج واحد)؟',
+                'هل يمكن تشغيل المشروع دون الحاجة لوجود المؤسس يومياً؟',
+                'هل حجم السوق المستهدف كبير وينمو؟'
+            ]
+        }, {
+            id: 'axis3',
+            name: 'الميزة التنافسية والسوق',
+            icon: 'fa-shield-alt',
+            questions: [
+                'هل تمتلك المنشأة علامة تجارية مسجلة أو محمية؟',
+                'هل هناك ميزة تنافسية واضحة (تكلفة، جودة، تقنية)؟',
+                'هل نسبة العملاء المتكررين تتجاوز 40%؟',
+                'هل المنافسون الحاليون ضعفاء أو مجزأون؟',
+                'هل هناك حواجز دخول أمام المنافسين الجدد (براءات، عقود حصرية)؟',
+                'هل تقوم بتحليل المنافسين بشكل دوري؟'
+            ]
+        }, {
+            id: 'axis4',
+            name: 'الأنظمة والشفافية',
+            icon: 'fa-clipboard-check',
+            questions: [
+                'هل توجد قوائم مالية مدققة أو شفافة (P&L, Balance Sheet)؟',
+                'هل يتم فصل الحسابات الشخصية عن حسابات الشركة؟',
+                'هل توجد أنظمة محاسبة وإدارة (ERP) متكاملة؟',
+                'هل يتم إعداد ميزانيات وتوقعات مالية سنوية؟',
+                'هل سياسات التشغيل والحوكمة موثقة كتابياً؟',
+                'هل يمكن الوصول إلى البيانات والمؤشرات بسهولة وشفافية؟'
+            ]
+        }, {
+            id: 'axis5',
+            name: 'المخاطر والاستدامة',
+            icon: 'fa-shield-virus',
+            questions: [
+                'هل التدفق النقدي التشغيلي موجب باستمرار؟',
+                'هل نسبة الدين إلى حقوق الملكية أقل من 1؟',
+                'هل يتم تنويع الموردين وعدم الاعتماد على مورد واحد؟',
+                'هل توجد خطط طوارئ تشغيلية ومالية معتمدة؟',
+                'هل نسبة دوران الموظفين منخفضة (أقل من 15% سنوياً)؟',
+                'هل التزامات المشروع تجاه العملاء والموردين واضحة ومستقرة؟'
+            ]
+        }];
+
+        // =============================================
+        // بناء النموذج
+        // =============================================
+        function buildInvestmentForm() {
+            const container = document.getElementById('formBody');
+            let html = '';
+            axes.forEach((axis, idx) => {
+                html += `<div class="axis-card">
+                            <h3><i class="fas ${axis.icon}"></i> ${axis.name} <span style="font-size:0.7rem; color:#888; margin-right:auto;">${axis.questions.length} أسئلة</span></h3>
+                            <div class="q-group">`;
+                axis.questions.forEach((q, qi) => {
+                    const num = (idx * 6) + qi + 1;
+                    html += `<div class="q-item">
+                                <span class="q-text">${num}. ${q}</span>
+                                <div class="q-options">
+                                    <label><input type="radio" name="q_${num}" value="1"> 1</label>
+                                    <label><input type="radio" name="q_${num}" value="2"> 2</label>
+                                    <label><input type="radio" name="q_${num}" value="3"> 3</label>
+                                    <label><input type="radio" name="q_${num}" value="4"> 4</label>
+                                    <label><input type="radio" name="q_${num}" value="5" checked> 5</label>
+                                </div>
+                            </div>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+        buildInvestmentForm();
+
+        // =============================================
+        // المتغيرات العامة
+        // =============================================
+        let radarInstance = null;
+        let currentReportData = null; // لحفظ بيانات التقرير للتصدير
+
+        // =============================================
+        // توليد التقرير
+        // =============================================
+        function generateInvestReport() {
+            // التحقق من الإجابة على جميع الأسئلة
+            const allRadios = document.querySelectorAll('#formBody input[type="radio"]');
+            const names = [...new Set([...allRadios].map(r => r.name))];
+            let allOk = true;
+            names.forEach(name => {
+                if (!document.querySelector(`input[name="${name}"]:checked`)) allOk = false;
+            });
+            if (!allOk) {
+                alert('يرجى التأكد من الإجابة على جميع الأسئلة (كل سؤال له تقييم من 1 إلى 5).');
+                return;
+            }
+
+            // جلب بيانات العميل
+            const client = {
+                name: document.getElementById('clientName').value || 'غير محدد',
+                owner: document.getElementById('ownerName').value || 'غير محدد',
+                contact: document.getElementById('contactInfo').value || '-',
+                industry: document.getElementById('industry').value || '-',
+                revenue: document.getElementById('revenue').value || '0'
+            };
+
+            // حساب متوسط كل محور
+            const axisResults = axes.map((axis, idx) => {
+                let sum = 0,
+                    count = 0;
+                for (let i = 0; i < axis.questions.length; i++) {
+                    const num = (idx * 6) + i + 1;
+                    const sel = document.querySelector(`input[name="q_${num}"]:checked`);
+                    if (sel) { sum += parseInt(sel.value);
+                        count++; }
+                }
+                const avg = count > 0 ? (sum / count) : 0;
+                const pct = Math.round((avg / 5) * 100);
+                return { name: axis.name, avg, pct };
+            });
+
+            // النتيجة الكلية
+            const totalWeighted = axisResults.reduce((acc, r) => acc + (r.pct * 0.2), 0);
+            const finalScore = Math.round(totalWeighted);
+
+            // عرض البيانات
+            document.getElementById('finalInvestScore').innerText = finalScore;
+            document.getElementById('reportClientMeta').innerHTML =
+                `المنشأة: <strong>${client.name}</strong> | المدير: ${client.owner} | النشاط: ${client.industry} | الإيرادات السنوية: ${client.revenue} مليون`;
+
+            document.getElementById('d1').innerText = `${axisResults[0].pct}%`;
+            document.getElementById('d2').innerText = `${axisResults[1].pct}%`;
+            document.getElementById('d3').innerText = `${axisResults[2].pct}%`;
+            document.getElementById('d4').innerText = `${axisResults[3].pct}%`;
+            document.getElementById('d5').innerText = `${axisResults[4].pct}%`;
+
+            // التصنيف
+            const badge = document.getElementById('statusBadge');
+            let cls, recText, statusClass;
+            if (finalScore >= 80) {
+                cls = 'جاذبية عالية - فرصة استثمارية ممتازة';
+                statusClass = 'status-high';
+                recText = 'المشروع جاهز للاستثمار. يُوصى بمراجعة التفاصيل القانونية والمالية النهائية فقط.';
+            } else if (finalScore >= 60) {
+                cls = 'جاذبية متوسطة - تحتاج تحسينات محدودة';
+                statusClass = 'status-mid';
+                recText = 'يحتاج المشروع إلى تعزيز الفريق الإداري أو توثيق الأنظمة قبل ضخ الاستثمار. الأولوية للشفافية المالية.';
+            } else if (finalScore >= 40) {
+                cls = 'جاذبية منخفضة - تحتاج إعادة هيكلة';
+                statusClass = 'status-low';
+                recText = 'ضعف واضح في قابلية التوسع أو الأنظمة. يُنصح المستثمر بضبط الحوكمة أولاً أو الدخول بسعر مخفض.';
+            } else {
+                cls = 'مخاطرة عالية - غير موصى به حالياً';
+                statusClass = 'status-low';
+                recText = 'يعاني المشروع من مشاكل جذرية في الفريق أو السوق. يُفضل إعادة التقييم بعد سنة من التطوير الإداري.';
+            }
+            badge.innerText = `${finalScore}% - ${cls}`;
+            badge.className = 'status-tag ' + statusClass;
+
+            // التوصيات المخصصة حسب أضعف محور
+            const sorted = [...axisResults].sort((a, b) => a.pct - b.pct);
+            const weakest = sorted[0];
+            const strongest = sorted[sorted.length - 1];
+            const recList = document.getElementById('recList');
+            recList.innerHTML = `
+                        <li><strong>✓ نقاط القوة:</strong> ${strongest.name} (${strongest.pct}%) يعتبر الركيزة الأساسية للمشروع.</li>
+                        <li><strong>⚠ نقطة الضعف الحرجة:</strong> ${weakest.name} (${weakest.pct}%) يحتاج إلى تدخل فوري لرفع الجاذبية.</li>
+                        <li><strong>💡 التوصية الأساسية:</strong> ${recText}</li>
+                        <li><strong>📊 العائد المتوقع:</strong> بناءً على هذا التقييم، يبدو المشروع مناسباً لـ ${finalScore >= 70 ? 'توسع رأسمالي طموح' : 'دخول تدريجي بحذر'}.</li>
+                    `;
+
+            // الرسم البياني
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (radarInstance) radarInstance.destroy();
+            radarInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: axisResults.map(r => r.name),
+                    datasets: [{
+                        label: 'درجة الجاذبية',
+                        data: axisResults.map(r => r.pct),
+                        backgroundColor: 'rgba(184, 134, 11, 0.2)',
+                        borderColor: '#b8860b',
+                        pointBackgroundColor: '#d4b15a',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#b8860b',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { stepSize: 20, color: '#aaa' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#ddd', font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // حفظ البيانات للتصدير
+            currentReportData = {
+                client,
+                axisResults,
+                finalScore,
+                cls,
+                recText,
+                strongest,
+                weakest,
+                date: new Date().toLocaleDateString('ar-EG')
+            };
+
+            document.getElementById('reportInvest').style.display = 'block';
+            document.getElementById('reportInvest').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // تعيين قيمة افتراضية للراديوات عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#formBody input[type="radio"][value="5"]').forEach(el => {
+                if (el.checked === false) el.checked = true;
+            });
+        });
+
+        // =============================================
+        // دوال التحميل
+        // =============================================
+        function showLoading(title, msg) {
+            document.getElementById('loadingTitle').textContent = title;
+            document.getElementById('loadingMsg').textContent = msg;
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        // =============================================
+        // تصدير إلى Word
+        // =============================================
+        async function exportToWord() {
+            if (!currentReportData) {
+                alert('الرجاء إجراء التحليل أولاً.');
+                return;
+            }
+            showLoading('جاري إنشاء تقرير Word...', 'تجهيز البيانات والرسوم البيانية');
+            try {
+                const d = currentReportData;
+                const c = d.client;
+
+                // التقاط صورة الرادار
+                const radarCanvas = document.getElementById('radarChart');
+                let radarImg = '';
+                if (radarCanvas) {
+                    const imgData = await html2canvas(radarCanvas, {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        allowTaint: false,
+                        useCORS: true
+                    });
+                    radarImg = imgData.toDataURL('image/png');
+                }
+
+                // بناء الجدول التفصيلي للمحاور
+                let axisRows = '';
+                d.axisResults.forEach(a => {
+                    axisRows += `<tr><td>${a.name}</td><td>${a.pct}%</td></tr>`;
+                });
+
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('ar-EG');
+
+                const htmlContent = `<!DOCTYPE html>
+                <html dir="rtl">
+                <head><meta charset="utf-8"><title>تقرير جاذبية الاستثمار - FAROUK GRUP</title>
+                <style>
+                    body{font-family:'Tajawal',sans-serif;margin:2rem;background:#fff;color:#333;line-height:1.6;}
+                    .cover{text-align:center;border-bottom:4px solid #b8860b;padding-bottom:20px;margin-bottom:30px;}
+                    .cover h1{font-size:32px;color:#b8860b;margin:0;}
+                    .cover h2{font-size:24px;color:#b48554;margin:5px 0;}
+                    .cover p{font-size:1.1rem;color:#555;}
+                    table{width:100%;border-collapse:collapse;margin:20px 0;}
+                    th,td{border:1px solid #b8860b;padding:8px 12px;text-align:center;}
+                    th{background:#fefcf6;color:#b8860b;font-weight:900;}
+                    .radar-img{max-width:100%;height:auto;border:1px solid #b8860b;border-radius:10px;margin:20px 0;}
+                    .rec-box{background:#fefcf6;padding:15px;border-right:4px solid #b8860b;border-radius:8px;}
+                    .rec-box h4{color:#b8860b;margin:0 0 10px 0;}
+                    .rec-box ul{list-style:none;padding:0;}
+                    .rec-box li{padding:5px 0;border-bottom:1px solid #eee;}
+                    .score{font-size:3rem;font-weight:900;color:#b8860b;text-align:center;}
+                    .status{font-size:1.3rem;font-weight:700;text-align:center;padding:10px;border-radius:40px;display:inline-block;margin:10px auto;}
+                    .status-high{background:#28a745;color:#fff;}
+                    .status-mid{background:#ffc107;color:#111;}
+                    .status-low{background:#dc3545;color:#fff;}
+                    .footer{margin-top:40px;border-top:1px dashed #b8860b;padding-top:10px;text-align:center;color:#888;}
+                </style>
+                </head>
+                <body>
+                    <div class="cover">
+                        <h1>مجموعة فاروق للاستشارات والأعمال</h1>
+                        <h2>تقرير مقياس جاذبية الاستثمار</h2>
+                        <p>المنشأة: ${c.name} | المدير: ${c.owner}</p>
+                        <p>النشاط: ${c.industry} | الإيرادات السنوية: ${c.revenue} مليون</p>
+                        <p>التاريخ: ${dateStr}</p>
+                    </div>
+
+                    <h2 style="color:#b8860b;">نتائج المحاور</h2>
+                    <table><thead><tr><th>المحور</th><th>النسبة</th></tr></thead><tbody>${axisRows}</tbody></table>
+
+                    <div class="score">${d.finalScore} / 100</div>
+                    <div style="text-align:center;">
+                        <span class="status ${d.finalScore>=80?'status-high':d.finalScore>=60?'status-mid':'status-low'}">${d.cls}</span>
+                    </div>
+
+                    <h2 style="color:#b8860b;">الرسم البياني</h2>
+                    <img src="${radarImg}" class="radar-img" />
+
+                    <div class="rec-box">
+                        <h4>💡 رؤية المستثمر والتوصيات</h4>
+                        <ul>
+                            <li><strong>✓ نقاط القوة:</strong> ${d.strongest.name} (${d.strongest.pct}%)</li>
+                            <li><strong>⚠ نقطة الضعف الحرجة:</strong> ${d.weakest.name} (${d.weakest.pct}%)</li>
+                            <li><strong>💡 التوصية الأساسية:</strong> ${d.recText}</li>
+                            <li><strong>📊 العائد المتوقع:</strong> بناءً على هذا التقييم، يبدو المشروع مناسباً لـ ${d.finalScore >= 70 ? 'توسع رأسمالي طموح' : 'دخول تدريجي بحذر'}.</li>
+                        </ul>
+                    </div>
+
+                    <div class="footer">تم الإنشاء بواسطة مجموعة فاروق للاستشارات والأعمال © ${now.getFullYear()}</div>
+                </body>
+                </html>`;
+
+                const blob = new Blob(['\uFEFF' + htmlContent], { type: 'application/msword' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `تقرير_جاذبية_${c.name}_${now.toISOString().slice(0,10)}.doc`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+
+            } catch (err) {
+                console.error(err);
+                alert('فشل إنشاء تقرير Word: ' + err.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // =============================================
+        // تصدير إلى Excel
+        // =============================================
+        async function exportToExcel() {
+            if (!currentReportData) {
+                alert('الرجاء إجراء التحليل أولاً.');
+                return;
+            }
+            showLoading('جاري إنشاء تقرير Excel...', 'إنشاء الأوراق والرسوم البيانية');
+            try {
+                const d = currentReportData;
+                const c = d.client;
+
+                // التقاط صورة الرادار
+                const radarCanvas = document.getElementById('radarChart');
+                let radarImgBase64 = '';
+                if (radarCanvas) {
+                    const imgData = await html2canvas(radarCanvas, {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        allowTaint: false,
+                        useCORS: true
+                    });
+                    radarImgBase64 = imgData.toDataURL('image/png');
+                }
+
+                const workbook = new ExcelJS.Workbook();
+                workbook.creator = 'FAROUK GRUP';
+                workbook.created = new Date();
+
+                const G = 'FFB8860B',
+                    GL = 'FFD4B15A',
+                    DB = 'FF0B0E17',
+                    HB = 'FF1A2035',
+                    WH = 'FFFFFFFF',
+                    AR = 'FFFEFCF6';
+
+                // دالة مساعدة للتنسيق
+                function styleCell(cell, bg, color, bold = false, size = 11, align = 'center') {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
+                    cell.font = { name: 'Arial', bold, size, color: { argb: color } };
+                    cell.alignment = { horizontal: align, vertical: 'middle', wrapText: true, readingOrder: 'rtl' };
+                    cell.border = {
+                        top: { style: 'thin', color: { argb: 'FFCCCCCC' } },
+                        bottom: { style: 'thin', color: { argb: 'FFCCCCCC' } },
+                        left: { style: 'thin', color: { argb: 'FFCCCCCC' } },
+                        right: { style: 'thin', color: { argb: 'FFCCCCCC' } }
+                    };
+                }
+
+                // 1. غلاف التقرير
+                const ws1 = workbook.addWorksheet('غلاف التقرير', { views: [{ rightToLeft: true, showGridLines: false }] });
+                ws1.getColumn(1).width = 5;
+                ws1.getColumn(2).width = 45;
+                ws1.getColumn(3).width = 35;
+                ws1.getColumn(4).width = 5;
+                ws1.mergeCells(2, 2, 2, 3);
+                const title = ws1.getCell(2, 2);
+                title.value = 'مجموعة فاروق للاستشارات والأعمال\nFAROUK GRUP';
+                title.font = { name: 'Arial', bold: true, size: 24, color: { argb: GL } };
+                title.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DB } };
+                title.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true, readingOrder: 'rtl' };
+                title.border = { bottom: { style: 'thick', color: { argb: G } } };
+                ws1.getRow(2).height = 80;
+
+                ws1.mergeCells(4, 2, 4, 3);
+                const sub = ws1.getCell(4, 2);
+                sub.value = `تقرير مقياس جاذبية الاستثمار\n${c.name}`;
+                sub.font = { name: 'Arial', bold: true, size: 18, color: { argb: GL } };
+                sub.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DB } };
+                sub.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true, readingOrder: 'rtl' };
+                sub.border = { bottom: { style: 'thick', color: { argb: G } } };
+                ws1.getRow(4).height = 60;
+
+                const info = [
+                    ['المنشأة', c.name],
+                    ['المالك / المدير', c.owner],
+                    ['رقم التواصل', c.contact],
+                    ['النشاط', c.industry],
+                    ['الإيرادات السنوية', c.revenue + ' مليون'],
+                    ['التاريخ', new Date().toLocaleDateString('ar-EG')],
+                    ['الدرجة الكلية', d.finalScore + ' / 100'],
+                    ['التصنيف', d.cls]
+                ];
+                let row = 6;
+                info.forEach(([label, value]) => {
+                    ws1.getRow(row).height = 28;
+                    const lbl = ws1.getCell(row, 2);
+                    const val = ws1.getCell(row, 3);
+                    lbl.value = label;
+                    val.value = value;
+                    const bg = row % 2 === 0 ? AR : WH;
+                    styleCell(lbl, bg, '00695C', true, 11, 'right');
+                    styleCell(val, bg, '333333', false, 11, 'center');
+                    row++;
+                });
+
+                // 2. نتائج المحاور
+                const ws2 = workbook.addWorksheet('نتائج المحاور', { views: [{ rightToLeft: true }] });
+                ws2.columns = [{ width: 5 }, { width: 35 }, { width: 15 }];
+                ws2.mergeCells(1, 2, 1, 3);
+                const hdr2 = ws2.getCell(1, 2);
+                hdr2.value = 'نتائج المحاور الخمسة';
+                hdr2.font = { name: 'Arial', bold: true, size: 14, color: { argb: GL } };
+                hdr2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DB } };
+                hdr2.alignment = { horizontal: 'center', vertical: 'middle', readingOrder: 'rtl' };
+                ws2.getRow(1).height = 40;
+
+                ws2.addRow(['', 'المحور', 'النسبة (%)']);
+                const headerRow2 = ws2.getRow(2);
+                headerRow2.font = { bold: true, color: { argb: 'FFFFFF' } };
+                headerRow2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: G } };
+                headerRow2.eachCell(c => { c.alignment = { horizontal: 'center', vertical: 'middle',
+                    readingOrder: 'rtl' }; });
+
+                d.axisResults.forEach((a, idx) => {
+                    const r = ws2.addRow([idx + 1, a.name, a.pct]);
+                    r.getCell(2).alignment = { horizontal: 'right', readingOrder: 'rtl' };
+                    r.getCell(3).alignment = { horizontal: 'center' };
+                    r.eachCell((cell, col) => {
+                        if (col > 1) {
+                            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: idx %
+                                    2 === 0 ? AR : WH } };
+                        }
+                    });
+                });
+
+                // 3. التوصيات
+                const ws3 = workbook.addWorksheet('التوصيات', { views: [{ rightToLeft: true }] });
+                ws3.columns = [{ width: 5 }, { width: 50 }];
+                ws3.mergeCells(1, 2, 1, 2);
+                const hdr3 = ws3.getCell(1, 2);
+                hdr3.value = 'التوصيات الاستثمارية';
+                hdr3.font = { name: 'Arial', bold: true, size: 14, color: { argb: GL } };
+                hdr3.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DB } };
+                hdr3.alignment = { horizontal: 'center', vertical: 'middle', readingOrder: 'rtl' };
+                ws3.getRow(1).height = 40;
+
+                const recs = [
+                    `نقاط القوة: ${d.strongest.name} (${d.strongest.pct}%)`,
+                    `نقطة الضعف الحرجة: ${d.weakest.name} (${d.weakest.pct}%)`,
+                    `التوصية الأساسية: ${d.recText}`,
+                    `العائد المتوقع: بناءً على هذا التقييم، يبدو المشروع مناسباً لـ ${d.finalScore >= 70 ? 'توسع رأسمالي طموح' : 'دخول تدريجي بحذر'}.`
+                ];
+                recs.forEach((text, idx) => {
+                    const r = ws3.addRow([idx + 1, text]);
+                    r.getCell(2).alignment = { horizontal: 'right', wrapText: true, readingOrder: 'rtl' };
+                    r.getCell(2).font = { name: 'Arial', size: 10 };
+                    r.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: idx %
+                            2 === 0 ? AR : WH } };
+                    r.height = 28;
+                });
+
+                // 4. الرسم البياني (صورة)
+                if (radarImgBase64) {
+                    const ws4 = workbook.addWorksheet('الرسم البياني', { views: [{ rightToLeft: true }] });
+                    ws4.getColumn(2).width = 40;
+                    ws4.getRow(2).height = 350;
+                    ws4.mergeCells(2, 2, 20, 2);
+                    const imageId = workbook.addImage({ base64: radarImgBase64, extension: 'png' });
+                    ws4.addImage(imageId, { tl: { col: 1, row: 1 }, br: { col: 2, row: 20 }, editAs: 'oneCell' });
+                }
+
+                // حفظ الملف
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const now = new Date();
+                saveAs(blob, `تقرير_جاذبية_${c.name}_${now.toISOString().slice(0,10)}.xlsx`);
+
+            } catch (err) {
+                console.error(err);
+                alert('فشل إنشاء ملف Excel: ' + err.message);
+            } finally {
+                hideLoading();
+            }
+        }
+    </script>
+</body>
+</html>
