@@ -3,102 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>لوحة تحكم المبيعات والاشتراكات</title>
+    <title>لوحة تحكم المبيعات والاشتراكات | FAROUK GRUP</title>
     <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1e6u-DPTinDJl_Q9wW3QvGgzFbXO_2sXa">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        /* ===== جميع الأنماط من النسخة القديمة ===== */
+        /* ===== جميع الأنماط السابقة (لم تتغير) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --gold: #b8860b;
             --gold-light: #d4b15a;
-            --dark: #0f0f0f;
-            --dark-light: #1a1a1a;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --border-radius: 16px;
-            --box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --bg-dark: #0b0e17;
-            --bg-panel: rgba(18,24,36,0.75);
-            --border-light: rgba(180,133,84,0.25);
-            --accent-glow: #b48554;
-            --accent-soft: #cfa776;
+            --gold-dark: #8a6d0b;
+            --dark-bg: #0a0e16;
+            --panel-bg: rgba(18,24,36,0.92);
             --text-light: #f0f4fa;
             --text-muted: #aab7d4;
+            --border-gold: rgba(184,134,11,0.3);
+            --shadow: 0 8px 25px rgba(0,0,0,0.4);
+            --radius: 16px;
+            --transition: 0.3s ease;
         }
         body {
             font-family: 'Tajawal', sans-serif;
             background: radial-gradient(circle at 70% 30%, #141c2b, #0a0e16);
-            color: #222;
+            color: var(--text-light);
             min-height: 100vh;
+            overflow-x: hidden;
         }
         .glow-bg {
-            position: fixed; width: 100%; height: 100%; top: 0; left: 0;
-            pointer-events: none; z-index: 0;
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
         }
         .glow-bg span {
             position: absolute; width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(180,133,84,0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(184,134,11,0.12) 0%, transparent 70%);
             border-radius: 50%; filter: blur(80px);
-            animation: glowMove 20s infinite alternate ease-in-out;
+            animation: glowMove 20s infinite alternate;
         }
         .glow-bg span:nth-child(1) { top: -100px; right: -100px; width: 500px; height: 500px; }
-        .glow-bg span:nth-child(2) { bottom: -150px; left: -150px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(100,150,200,0.1) 0%, transparent 70%); }
+        .glow-bg span:nth-child(2) { bottom: -150px; left: -150px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(100,150,200,0.08) 0%, transparent 70%); }
         .glow-bg span:nth-child(3) { top: 30%; left: 30%; width: 300px; height: 300px; animation-delay: -5s; }
         @keyframes glowMove {
             0% { transform: translate(0,0) scale(1); opacity: 0.5; }
             100% { transform: translate(40px,-30px) scale(1.2); opacity: 0.8; }
         }
+
         .login-overlay {
             position: fixed; inset: 0;
-            background: rgba(6,9,15,0.9);
+            background: rgba(6,9,15,0.92);
             backdrop-filter: blur(15px);
-            display: flex;
-            align-items: center; justify-content: center;
-            z-index: 10000;
-            transition: opacity 0.4s;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10000; transition: opacity 0.4s;
         }
         .login-card {
-            background: var(--bg-panel);
+            background: var(--panel-bg);
             backdrop-filter: blur(15px);
-            padding: 2rem 2rem 1.8rem;
+            padding: 2.2rem 2rem 2rem;
             border-radius: 20px;
             width: 90%; max-width: 380px;
             text-align: center;
-            border: 1px solid var(--border-light);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            margin: auto;
+            border: 1px solid var(--border-gold);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
         .login-card .logo-container img {
             width: 100px; height: 100px; object-fit: contain;
-            border: 2px solid var(--accent-glow); border-radius: 8px; background: #fff; padding: 5px;
+            border: 2px solid var(--gold); border-radius: 8px; background: #fff; padding: 5px;
         }
-        .login-card h2 { font-size: 1.3rem; color: var(--text-light); margin-bottom: 0.3rem; font-weight: 900; }
-        .login-card .sub-title { font-size: 0.9rem; color: var(--accent-soft); margin-bottom: 1.5rem; }
-        .login-card .admin-email { font-size: 0.85rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 30px; display: inline-block; margin-bottom: 1.2rem; border: 1px dashed var(--border-light); }
-        .login-input { width: 100%; padding: 0.9rem 1rem; background: rgba(10,14,23,0.8); border: 1px solid var(--border-light); border-radius: 60px; font-family: 'Inter', sans-serif; font-size: 1rem; text-align: center; direction: ltr; margin-bottom: 1.2rem; color: var(--accent-soft); box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); transition: var(--transition); }
-        .login-input:focus { outline: none; border-color: var(--accent-glow); box-shadow: 0 0 0 3px rgba(180,133,84,0.3), inset 0 2px 8px black; }
-        .login-btn { width: 100%; padding: 1rem; background: rgba(180,133,84,0.15); border: 1px solid var(--border-light); border-radius: 60px; font-family: 'Tajawal', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--accent-soft); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.8rem; backdrop-filter: blur(10px); margin-top: 0.3rem; }
-        .login-btn:hover:not(:disabled) { background: rgba(180,133,84,0.3); border-color: var(--accent-glow); color: #fff; box-shadow: 0 0 25px rgba(180,133,84,0.4); transform: translateY(-3px); }
+        .login-card h2 {
+            font-size: 1.4rem; color: var(--text-light); margin: 0.5rem 0 0.2rem; font-weight: 900;
+        }
+        .login-card .sub-title {
+            font-size: 0.95rem; color: var(--gold-light); margin-bottom: 1.2rem;
+        }
+        .login-card .admin-email {
+            font-size: 0.85rem; color: var(--text-muted);
+            background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 30px;
+            display: inline-block; margin-bottom: 1.5rem; border: 1px dashed var(--border-gold);
+        }
+        .login-input {
+            width: 100%; padding: 0.9rem 1.2rem;
+            background: rgba(10,14,23,0.8); border: 1px solid var(--border-gold);
+            border-radius: 60px; font-family: 'Inter', sans-serif; font-size: 1rem;
+            text-align: center; direction: ltr; margin-bottom: 1.2rem;
+            color: var(--gold-light); box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+            transition: var(--transition);
+        }
+        .login-input:focus {
+            outline: none; border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184,134,11,0.3), inset 0 2px 8px black;
+        }
+        .login-btn {
+            width: 100%; padding: 1rem;
+            background: rgba(184,134,11,0.15); border: 1px solid var(--border-gold);
+            border-radius: 60px; font-family: 'Tajawal', sans-serif; font-size: 1.2rem;
+            font-weight: 700; color: var(--gold-light); cursor: pointer;
+            transition: var(--transition); display: flex; align-items: center;
+            justify-content: center; gap: 0.8rem; backdrop-filter: blur(10px);
+        }
+        .login-btn:hover:not(:disabled) {
+            background: rgba(184,134,11,0.3); border-color: var(--gold);
+            color: #fff; box-shadow: 0 0 25px rgba(184,134,11,0.4);
+            transform: translateY(-3px);
+        }
         .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .error-msg { color: #f87171; margin-top: 1.2rem; font-weight: 600; font-size: 0.85rem; }
 
-        .session-expired-overlay { position: fixed; inset: 0; background: rgba(6,9,15,0.92); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; z-index: 20000; }
-        .session-expired-card { background: var(--bg-panel); backdrop-filter: blur(15px); padding: 2rem; border-radius: 20px; width: 90%; max-width: 420px; text-align: center; border: 2px solid #f87171; box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px rgba(248,113,113,0.3); }
+        .session-expired-overlay {
+            position: fixed; inset: 0;
+            background: rgba(6,9,15,0.92); backdrop-filter: blur(15px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 20000;
+        }
+        .session-expired-card {
+            background: var(--panel-bg); padding: 2rem; border-radius: 20px;
+            width: 90%; max-width: 420px; text-align: center;
+            border: 2px solid #f87171; box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px rgba(248,113,113,0.3);
+        }
         .session-expired-card h2 { color: #fca5a5; margin-bottom: 1rem; font-size: 1.4rem; }
         .session-expired-card p { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.7; }
-        .renew-link { display: inline-block; background: rgba(180,133,84,0.25); border: 1px solid var(--accent-glow); border-radius: 50px; padding: 0.9rem 2rem; color: var(--accent-soft); text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: var(--transition); margin: 0.5rem; }
-        .renew-link:hover { background: rgba(180,133,84,0.4); color: #fff; box-shadow: 0 0 25px rgba(180,133,84,0.4); }
-        .relogin-btn { display: inline-block; background: transparent; border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 0.9rem 2rem; color: var(--text-light); cursor: pointer; font-weight: 600; transition: var(--transition); margin: 0.5rem; font-family: 'Tajawal', sans-serif; }
+        .renew-link, .relogin-btn {
+            display: inline-block; border-radius: 50px; padding: 0.9rem 2rem;
+            font-weight: 700; transition: var(--transition); margin: 0.5rem;
+            font-family: 'Tajawal', sans-serif; text-decoration: none;
+        }
+        .renew-link {
+            background: rgba(184,134,11,0.25); border: 1px solid var(--gold);
+            color: var(--gold-light);
+        }
+        .renew-link:hover {
+            background: rgba(184,134,11,0.4); color: #fff; box-shadow: 0 0 25px rgba(184,134,11,0.4);
+        }
+        .relogin-btn {
+            background: transparent; border: 1px solid rgba(255,255,255,0.3);
+            color: var(--text-light); cursor: pointer;
+        }
         .relogin-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
 
         #dashboard { display: none; min-height: 100vh; }
         .dashboard-container { display: flex; }
+
         .sidebar {
             width: 280px;
             background: linear-gradient(180deg, #0f0f0f, #1a1a1a);
@@ -112,104 +156,352 @@
             top: 0;
             overflow-y: auto;
             transition: width 0.3s;
+            z-index: 100;
         }
         .sidebar.collapsed { width: 60px; }
         .sidebar.collapsed .sidebar-logo h2,
         .sidebar.collapsed .sidebar-logo p,
         .sidebar.collapsed .sidebar-btn span,
-        .sidebar.collapsed .custom-platforms-container,
         .sidebar.collapsed .sidebar-footer span,
-        .sidebar.collapsed .sidebar-btn .fa-plus-circle,
-        .sidebar.collapsed .sidebar-btn .fa-sign-out-alt,
-        .sidebar.collapsed .sidebar-section-title { display: none; }
+        .sidebar.collapsed .sidebar-section-title,
+        .sidebar.collapsed .add-platform-btn { display: none; }
         .sidebar.collapsed .sidebar-btn { justify-content: center; padding: 12px; }
         .sidebar.collapsed .sidebar-logo img { width: 40px; height: 40px; }
-        .sidebar-toggle { position: absolute; top: 10px; left: -15px; background: var(--gold); color: #111; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem; z-index: 10; }
 
-        .sidebar-logo { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; position: relative; }
-        .sidebar-logo img { width: 100px; height: 100px; object-fit: contain; border: 2px solid var(--gold); border-radius: 8px; background: #fff; padding: 5px; transition: 0.3s; }
-        .sidebar-logo h2 { font-size: 1.3rem; color: var(--gold); margin-top: 10px; font-weight: 900; }
-        .sidebar-logo p { color: #aaa; font-size: 0.85rem; margin-top: 4px; }
+        .sidebar-toggle {
+            position: absolute; top: 10px; left: -15px;
+            background: var(--gold); color: #111; border: none;
+            border-radius: 50%; width: 30px; height: 30px;
+            cursor: pointer; font-size: 1.2rem; z-index: 10;
+        }
+        .sidebar-logo {
+            text-align: center; margin-bottom: 20px;
+            border-bottom: 1px solid #333; padding-bottom: 15px;
+            position: relative;
+        }
+        .sidebar-logo img {
+            width: 100px; height: 100px; object-fit: contain;
+            border: 2px solid var(--gold); border-radius: 8px;
+            background: #fff; padding: 5px; transition: 0.3s;
+        }
+        .sidebar-logo h2 {
+            font-size: 1.3rem; color: var(--gold); margin-top: 10px; font-weight: 900;
+        }
+        .sidebar-logo p {
+            color: #aaa; font-size: 0.85rem; margin-top: 4px;
+        }
         .sidebar-section { margin-bottom: 10px; }
-        .sidebar-section-title { font-size: 0.8rem; color: #777; margin: 10px 0 5px; padding: 0 8px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-section-title {
+            font-size: 0.8rem; color: #777; margin: 10px 0 5px;
+            padding: 0 8px; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+        }
         .sidebar-section-title:hover { color: #ccc; }
         .sidebar-btn {
-            background: transparent; color: #ccc; border: 1px solid #333; padding: 12px 14px; border-radius: 12px; cursor: pointer; text-align: right;
-            display: flex; align-items: center; gap: 10px; width: 100%; margin-bottom: 6px; transition: var(--transition);
+            background: transparent; color: #ccc; border: 1px solid #333;
+            padding: 12px 14px; border-radius: 12px; cursor: pointer;
+            text-align: right; display: flex; align-items: center;
+            gap: 10px; width: 100%; margin-bottom: 6px;
+            transition: var(--transition); font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
         }
-        .sidebar-btn i { color: var(--gold); width: 22px; text-align: center; }
-        .sidebar-btn:hover, .sidebar-btn.active { background: rgba(184,134,11,0.15); border-color: var(--gold); color: #fff; transform: translateX(-5px); }
-        .custom-platforms-container { flex: 1; overflow-y: auto; margin: 10px 0; padding-left: 5px; border-top: 1px solid #333; border-bottom: 1px solid #333; max-height: 180px; }
-        .custom-platform-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-        .custom-platform-btn { flex: 1; background: #1e2235; border: 1px solid #333; color: #eee; padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .custom-platform-btn i { color: var(--gold); }
-        .remove-platform { background: #2c2f42; border: none; color: var(--danger); width: 32px; height: 32px; border-radius: 8px; cursor: pointer; }
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .content-header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 25px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); margin-bottom: 25px; flex-wrap: wrap; }
-        .datetime { display: flex; gap: 15px; align-items: center; }
+        .sidebar-btn i { color: var(--gold); width: 22px; text-align: center; font-size: 1.1rem; }
+        .sidebar-btn:hover, .sidebar-btn.active {
+            background: rgba(184,134,11,0.15); border-color: var(--gold);
+            color: #fff; transform: translateX(-5px);
+        }
+        .sidebar-footer {
+            margin-top: auto; border-top: 1px solid #333; padding-top: 12px;
+        }
+        .logout-btn { border-color: #442222 !important; }
+        .logout-btn i { color: #e74c3c !important; }
+        .logout-btn:hover { background: rgba(231,76,60,0.15) !important; border-color: #e74c3c !important; }
+
+        .platform-icon-comprehensive { color: #b8860b; }
+        .platform-icon-portaltr { color: #3498db; }
+        .platform-icon-restaurantCourse { color: #2ecc71; }
+        .platform-icon-menuEngineering { color: #e67e22; }
+
+        .main-content {
+            flex: 1; padding: 30px; overflow-y: auto;
+        }
+        .content-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--panel-bg); backdrop-filter: blur(10px);
+            padding: 15px 25px; border-radius: var(--radius);
+            border: 1px solid var(--border-gold);
+            margin-bottom: 25px; flex-wrap: wrap; gap: 10px;
+        }
+        .datetime {
+            display: flex; gap: 15px; align-items: center; flex-wrap: wrap;
+        }
         .datetime i { color: var(--gold); }
-        .refresh-btn { background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: var(--transition); }
+        .refresh-btn {
+            background: transparent; border: 2px solid var(--gold);
+            color: var(--gold); padding: 10px 20px; border-radius: 50px;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            transition: var(--transition); font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+        }
         .refresh-btn:hover { background: var(--gold); color: #111; }
-        .last-update { font-size: 0.85rem; color: #666; margin-right: 15px; }
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 25px; margin-bottom: 30px; }
-        .stat-card { background: #fff; border-radius: var(--border-radius); padding: 25px; box-shadow: var(--box-shadow); border-top: 5px solid var(--gold); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: var(--transition); }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0,0,0,0.2); }
-        .stat-number { font-size: 2.5rem; font-weight: 900; color: var(--gold); }
-        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; margin-bottom: 30px; }
-        .chart-wrapper { background: #fff; border-radius: var(--border-radius); padding: 20px; box-shadow: var(--box-shadow); height: 320px; }
-        .chart-title { font-weight: 700; margin-bottom: 10px; color: #222; }
+        .last-update {
+            font-size: 0.85rem; color: var(--text-muted); margin-right: 15px;
+        }
 
-        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 30px; }
-        .tool-card { background: #fff; border-radius: var(--border-radius); padding: 20px; box-shadow: var(--box-shadow); }
-        .tool-card h3 { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-bottom: 15px; color: var(--gold); }
-        .tool-card textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Tajawal', sans-serif; resize: vertical; margin-bottom: 10px; }
-        .tool-card .input-group { display: flex; gap: 8px; margin-bottom: 10px; }
-        .tool-card .input-group input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
-        .btn-sm { padding: 8px 16px; background: var(--gold); color: #111; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; }
-        .btn-outline-sm { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; }
-        .todo-list, .appointments-list { max-height: 200px; overflow-y: auto; margin-bottom: 10px; }
-        .todo-item, .appointment-item { background: #f9f9f9; border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .todo-item .todo-text { display: flex; align-items: center; gap: 8px; }
-        .todo-item .todo-text input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold); }
+        .cards-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--panel-bg); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-gold); border-radius: var(--radius);
+            padding: 20px; box-shadow: var(--shadow);
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-4px); border-color: var(--gold);
+            box-shadow: 0 12px 30px rgba(184,134,11,0.2);
+        }
+        .stat-card h4 {
+            font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;
+        }
+        .stat-number {
+            font-size: 2.2rem; font-weight: 900; color: var(--gold-light);
+        }
+        .stat-card i {
+            font-size: 2rem; color: var(--gold); opacity: 0.6;
+        }
+
+        .charts-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px; margin-bottom: 30px;
+        }
+        .chart-wrapper {
+            background: var(--panel-bg); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-gold); border-radius: var(--radius);
+            padding: 20px; box-shadow: var(--shadow);
+            height: 320px;
+        }
+        .chart-title {
+            font-weight: 700; margin-bottom: 15px; color: var(--gold-light);
+            font-size: 1.05rem; display: flex; align-items: center; gap: 8px;
+        }
+        .chart-title i { color: var(--gold); }
+
+        .tools-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; margin-bottom: 30px;
+        }
+        .tool-card {
+            background: var(--panel-bg); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-gold); border-radius: var(--radius);
+            padding: 20px; box-shadow: var(--shadow);
+        }
+        .tool-card h3 {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.2rem; border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px; margin-bottom: 15px;
+            color: var(--gold-light);
+        }
+        .tool-card textarea {
+            width: 100%; min-height: 100px; padding: 12px;
+            border: 1px solid #444; border-radius: 8px;
+            background: rgba(0,0,0,0.3); color: #ddd;
+            font-family: 'Tajawal', sans-serif; resize: vertical; margin-bottom: 10px;
+        }
+        .tool-card .input-group {
+            display: flex; gap: 8px; margin-bottom: 10px;
+        }
+        .tool-card .input-group input {
+            flex: 1; padding: 10px; border: 1px solid #444;
+            border-radius: 8px; background: rgba(0,0,0,0.3); color: #ddd;
+        }
+        .btn-sm {
+            padding: 8px 16px; background: var(--gold); color: #111;
+            border: none; border-radius: 8px; cursor: pointer;
+            font-weight: 700; font-family: 'Tajawal', sans-serif;
+        }
+        .btn-outline-sm {
+            background: transparent; border: 1px solid var(--gold);
+            color: var(--gold); padding: 8px 16px; border-radius: 8px;
+            cursor: pointer; font-weight: 700; font-family: 'Tajawal', sans-serif;
+        }
+        .todo-list, .appointments-list {
+            max-height: 200px; overflow-y: auto; margin-bottom: 10px;
+        }
+        .todo-item, .appointment-item {
+            background: rgba(255,255,255,0.05); border-radius: 8px;
+            padding: 8px 12px; margin-bottom: 6px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .todo-item .todo-text {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .todo-item .todo-text input[type="checkbox"] {
+            accent-color: var(--gold); width: 18px; height: 18px;
+        }
         .completed { text-decoration: line-through; color: #888; }
-        .delete-btn { color: var(--danger); cursor: pointer; }
+        .delete-btn { color: #e74c3c; cursor: pointer; }
 
-        .table-container { background: #fff; border-radius: var(--border-radius); padding: 20px; box-shadow: var(--box-shadow); overflow-x: auto; }
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .search-box { padding: 8px 15px; border: 1px solid #ddd; border-radius: 25px; min-width: 250px; font-family: 'Tajawal', sans-serif; }
-        .bulk-actions { display: flex; gap: 8px; align-items: center; }
-        .bulk-actions select, .bulk-actions button { padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; }
-        .pagination button { padding: 8px 15px; border: 1px solid var(--gold); background: #fff; border-radius: 20px; cursor: pointer; color: var(--gold); }
+        .table-container {
+            background: var(--panel-bg); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-gold); border-radius: var(--radius);
+            padding: 20px; box-shadow: var(--shadow); overflow-x: auto;
+        }
+        .table-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+        }
+        .search-box {
+            padding: 8px 15px; border: 1px solid #444;
+            border-radius: 25px; min-width: 220px;
+            background: rgba(0,0,0,0.3); color: #ddd;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .bulk-actions {
+            display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+        }
+        .bulk-actions select, .bulk-actions button {
+            padding: 8px 12px; border-radius: 8px;
+            border: 1px solid #444; background: rgba(0,0,0,0.3);
+            color: #ddd; cursor: pointer; font-family: 'Tajawal', sans-serif;
+        }
+        .pagination {
+            display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-top: 15px;
+        }
+        .pagination button {
+            padding: 8px 15px; border: 1px solid var(--gold);
+            background: transparent; border-radius: 20px;
+            cursor: pointer; color: var(--gold-light);
+            font-family: 'Tajawal', sans-serif;
+        }
         .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .pagination span { font-weight: bold; }
+        .pagination span { font-weight: bold; color: var(--text-muted); }
 
-        table { width: 100%; border-collapse: collapse; min-width: 750px; }
-        th { background: var(--gold); color: #111; padding: 15px; cursor: pointer; }
-        td { padding: 12px 10px; border-bottom: 1px solid #eee; text-align: center; }
-        .status-active { color: var(--success); font-weight: bold; }
-        .status-expired { color: var(--danger); font-weight: bold; }
-        .action-btn { background: #2a2f45; border: none; color: #fff; width: 38px; height: 38px; border-radius: 8px; cursor: pointer; }
-        .edit-btn { background: #2b5c8f; } .delete-btn { background: #8f2b2b; }
+        table {
+            width: 100%; border-collapse: collapse; min-width: 750px;
+        }
+        th {
+            background: rgba(184,134,11,0.2); color: var(--gold-light);
+            padding: 12px; cursor: pointer; font-weight: 700;
+            border-bottom: 2px solid var(--gold);
+        }
+        td {
+            padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: center; color: #ddd;
+        }
+        .status-active { color: #2ecc71; font-weight: bold; }
+        .status-expired { color: #e74c3c; font-weight: bold; }
+        .platform-badge {
+            display: inline-block; background: rgba(184,134,11,0.15);
+            color: var(--gold-light); padding: 4px 12px; border-radius: 30px;
+            font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(184,134,11,0.2);
+        }
+        .action-btn {
+            background: #2a2f45; border: none; color: #fff;
+            width: 36px; height: 36px; border-radius: 8px; cursor: pointer;
+            transition: var(--transition);
+        }
+        .edit-btn { background: #2b5c8f; }
+        .edit-btn:hover { background: #1a3f66; }
+        .delete-btn { background: #8f2b2b; }
+        .delete-btn:hover { background: #6e1f1f; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 30000; justify-content: center; align-items: center; }
-        .modal-content { background: #fff; border-radius: 20px; width: 90%; max-width: 500px; padding: 30px; }
-        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; }
-        .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
-        .btn-save { background: var(--gold); color: #111; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-cancel { background: #ddd; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
-        .toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 40000; }
-        .toast { background: var(--gold); color: #111; padding: 15px 25px; border-radius: 50px; margin-top: 10px; display: flex; align-items: center; gap: 12px; font-weight: bold; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-100%); } to { opacity: 1; transform: translateX(0); } }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        .modal {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+            z-index: 30000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--panel-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--border-gold); border-radius: 20px;
+            width: 90%; max-width: 500px; padding: 30px;
+            max-height: 90vh; overflow-y: auto;
+            color: var(--text-light);
+        }
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%; padding: 12px; margin-bottom: 15px;
+            border: 1px solid #444; border-radius: 8px;
+            background: rgba(0,0,0,0.3); color: #ddd;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .modal-content label {
+            display: block; margin-bottom: 5px; font-weight: 600;
+            color: var(--gold-light);
+        }
+        .modal-buttons {
+            display: flex; gap: 10px; justify-content: flex-end;
+        }
+        .btn-save {
+            background: var(--gold); color: #111; padding: 10px 20px;
+            border: none; border-radius: 8px; cursor: pointer;
+            font-weight: 700; font-family: 'Tajawal', sans-serif;
+        }
+        .btn-cancel {
+            background: #444; color: #fff; padding: 10px 20px;
+            border: none; border-radius: 8px; cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .loader {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite; margin: 20px auto;
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        .toast-container {
+            position: fixed; bottom: 20px; left: 20px; z-index: 40000;
+        }
+        .toast {
+            background: var(--gold); color: #111; padding: 15px 25px;
+            border-radius: 50px; margin-top: 10px; display: flex;
+            align-items: center; gap: 12px; font-weight: bold;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 992px) {
+            .charts-grid { grid-template-columns: 1fr; }
+        }
         @media (max-width: 768px) {
             .dashboard-container { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; }
+            .sidebar {
+                width: 100%; height: auto; position: relative;
+                flex-direction: row; flex-wrap: wrap; padding: 15px;
+                border-left: none; border-bottom: 2px solid var(--gold);
+            }
             .sidebar-logo { width: 100%; }
-            .custom-platforms-container { width: 100%; max-height: 150px; }
+            .sidebar.collapsed { width: 100%; }
+            .sidebar.collapsed .sidebar-logo h2,
+            .sidebar.collapsed .sidebar-logo p,
+            .sidebar.collapsed .sidebar-btn span,
+            .sidebar.collapsed .sidebar-footer span,
+            .sidebar.collapsed .sidebar-section-title { display: block; }
+            .sidebar.collapsed .sidebar-btn { justify-content: flex-start; padding: 12px 14px; }
+            .sidebar.collapsed .sidebar-logo img { width: 60px; height: 60px; }
+            .sidebar-toggle { display: none; }
+            .main-content { padding: 15px; }
+            .content-header { flex-direction: column; align-items: stretch; gap: 10px; }
+            .cards-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
+            .stat-card { padding: 15px; }
+            .stat-number { font-size: 1.8rem; }
+            .chart-wrapper { height: 260px; padding: 15px; }
             .tools-grid { grid-template-columns: 1fr; }
+            .table-header { flex-direction: column; align-items: stretch; }
+            .search-box { min-width: auto; }
+            .bulk-actions { flex-wrap: wrap; }
+        }
+        @media (max-width: 480px) {
+            .cards-grid { grid-template-columns: 1fr; }
+            .login-card { padding: 1.5rem; }
+            .stat-number { font-size: 1.5rem; }
+            .chart-wrapper { height: 220px; }
         }
     </style>
 </head>
@@ -248,6 +540,7 @@
 <!-- ========== لوحة التحكم ========== -->
 <div id="dashboard">
     <div class="dashboard-container">
+        <!-- القائمة الجانبية -->
         <div class="sidebar" id="sidebar">
             <button class="sidebar-toggle" id="sidebarToggle" title="طي/توسيع القائمة"><i class="fas fa-bars"></i></button>
             <div class="sidebar-logo">
@@ -258,29 +551,41 @@
 
             <div class="sidebar-section">
                 <div class="sidebar-section-title" onclick="toggleSection(this)"><span>الرئيسية</span><i class="fas fa-chevron-down"></i></div>
-                <button class="sidebar-btn active" onclick="loadData('all', this)" title="نظرة عامة على جميع المنصات"><i class="fas fa-chart-pie"></i> <span>نظرة عامة</span></button>
-                <button class="sidebar-btn" onclick="openSettingsModal()" title="تخصيص المظهر والعلامة التجارية"><i class="fas fa-cog"></i> <span>إعدادات اللوحة</span></button>
+                <button class="sidebar-btn active" onclick="loadData('all', this)"><i class="fas fa-chart-pie"></i> <span>نظرة عامة</span></button>
+                <button class="sidebar-btn" onclick="openSettingsModal()"><i class="fas fa-cog"></i> <span>إعدادات اللوحة</span></button>
             </div>
 
             <div class="sidebar-section">
                 <div class="sidebar-section-title" onclick="toggleSection(this)"><span>المنصات الأساسية</span><i class="fas fa-chevron-down"></i></div>
-                <button class="sidebar-btn" data-platform="comprehensive" onclick="loadData('comprehensive', this)" title="المنصة الشاملة"><i class="fas fa-briefcase"></i> <span>الشاملة</span></button>
-                <button class="sidebar-btn" data-platform="portaltr" onclick="loadData('portaltr', this)" title="المنصة الشاملة تركي"><i class="fas fa-briefcase"></i> <span>الشاملة تركي</span></button>
-                <button class="sidebar-btn" data-platform="restaurantCourse" onclick="loadData('restaurantCourse', this)" title="دورة إدارة المطاعم"><i class="fas fa-graduation-cap"></i> <span>دورة المطاعم</span></button>
-                <button class="sidebar-btn" data-platform="menuEngineering" onclick="loadData('menuEngineering', this)" title="هندسة المينيو"><i class="fas fa-utensils"></i> <span>هندسة المينيو</span></button>
+                <button class="sidebar-btn" data-platform="comprehensive" onclick="loadData('comprehensive', this)"><i class="fas fa-briefcase platform-icon-comprehensive"></i> <span>الشاملة</span></button>
+                <button class="sidebar-btn" data-platform="portaltr" onclick="loadData('portaltr', this)"><i class="fas fa-globe-asia platform-icon-portaltr"></i> <span>الشاملة تركي</span></button>
+                <button class="sidebar-btn" data-platform="restaurantCourse" onclick="loadData('restaurantCourse', this)"><i class="fas fa-graduation-cap platform-icon-restaurantCourse"></i> <span>دورة المطاعم</span></button>
+                <button class="sidebar-btn" data-platform="menuEngineering" onclick="loadData('menuEngineering', this)"><i class="fas fa-utensils platform-icon-menuEngineering"></i> <span>هندسة المينيو</span></button>
             </div>
 
+            <!-- ===== الأدوات الاستشارية ===== -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title" onclick="toggleSection(this)"><span>منصاتي المخصصة</span><i class="fas fa-chevron-down"></i></div>
-                <div id="customPlatformsContainer" class="custom-platforms-container"></div>
-                <button class="sidebar-btn add-platform-btn" onclick="openAddPlatformModal()" title="إضافة منصة جديدة بقاعدة بيانات خاصة"><i class="fas fa-plus-circle"></i> <span>إضافة قاعدة سكريبت</span></button>
+                <div class="sidebar-section-title" onclick="toggleSection(this)"><span>الأدوات الاستشارية</span><i class="fas fa-chevron-down"></i></div>
+                <button class="sidebar-btn" onclick="window.open('business-audit-60q.html','_blank')" title="التدقيق السريع للأعمال (60 سؤال)">
+                    <i class="fas fa-clipboard-list"></i> <span>التدقيق السريع</span>
+                </button>
+                <button class="sidebar-btn" onclick="window.open('restaurant-audit-150q.html','_blank')" title="التقييم الشامل للمطاعم (150 سؤال)">
+                    <i class="fas fa-utensils"></i> <span>تقييم المطاعم</span>
+                </button>
+                <button class="sidebar-btn" onclick="window.open('business-audit-150q.html','_blank')" title="التقييم الشامل للأعمال (150 سؤال)">
+                    <i class="fas fa-briefcase"></i> <span>تقييم الأعمال</span>
+                </button>
+                <button class="sidebar-btn" onclick="window.open('investment-readiness.html','_blank')" title="مقياس جاذبية الاستثمار (30 سؤال)">
+                    <i class="fas fa-chart-pie"></i> <span>جاذبية الاستثمار</span>
+                </button>
             </div>
 
             <div class="sidebar-footer">
-                <button class="sidebar-btn logout-btn" onclick="logoutAdmin()" title="تسجيل الخروج من اللوحة"><i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span></button>
+                <button class="sidebar-btn logout-btn" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span></button>
             </div>
         </div>
 
+        <!-- المحتوى الرئيسي -->
         <div class="main-content">
             <div class="content-header">
                 <div class="datetime">
@@ -291,26 +596,27 @@
                 </div>
                 <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
                     <span class="last-update" id="lastUpdateLabel">آخر تحديث: --</span>
-                    <button class="refresh-btn" onclick="manualRefresh()" title="تحديث بيانات المشتركين الآن"><i class="fas fa-sync-alt"></i> تحديث</button>
+                    <button class="refresh-btn" onclick="manualRefresh()"><i class="fas fa-sync-alt"></i> تحديث</button>
                 </div>
             </div>
 
-            <!-- الإحصائيات التفاعلية -->
+            <!-- الإحصائيات -->
             <div class="cards-grid">
-                <div class="stat-card" onclick="applyQuickFilter('all')" title="عرض جميع المشتركين">
+                <div class="stat-card" onclick="applyQuickFilter('all')">
                     <div><h4>إجمالي المشتركين</h4><span class="stat-number" id="totalUsers">0</span></div><i class="fas fa-users"></i>
                 </div>
-                <div class="stat-card" onclick="applyQuickFilter('active')" title="عرض المشتركين النشطين فقط">
+                <div class="stat-card" onclick="applyQuickFilter('active')">
                     <div><h4>اشتراكات نشطة</h4><span class="stat-number" id="activeUsers">0</span></div><i class="fas fa-user-check"></i>
                 </div>
-                <div class="stat-card" onclick="applyQuickFilter('expiring7')" title="عرض المشتركين الذين تنتهي اشتراكاتهم خلال 7 أيام">
+                <div class="stat-card" onclick="applyQuickFilter('expiring7')">
                     <div><h4>تنتهي خلال 7 أيام</h4><span class="stat-number" id="expiringUsers">0</span></div><i class="fas fa-exclamation-triangle"></i>
                 </div>
-                <div class="stat-card" onclick="applyQuickFilter('expiring3')" title="عرض المشتركين الذين تنتهي اشتراكاتهم خلال 3 أيام">
+                <div class="stat-card" onclick="applyQuickFilter('expiring3')">
                     <div><h4>تنتهي خلال 3 أيام</h4><span class="stat-number" id="expiringSoonUsers">0</span></div><i class="fas fa-hourglass-end"></i>
                 </div>
             </div>
 
+            <!-- الرسوم البيانية -->
             <div class="charts-grid">
                 <div class="chart-wrapper"><div class="chart-title"><i class="fas fa-chart-bar"></i> توزيع المشتركين حسب المنصة</div><canvas id="subsChart"></canvas></div>
                 <div class="chart-wrapper"><div class="chart-title"><i class="fas fa-chart-pie"></i> نسبة المنصات</div><canvas id="platformPieChart"></canvas></div>
@@ -318,6 +624,7 @@
                 <div class="chart-wrapper"><div class="chart-title"><i class="fas fa-calendar-check"></i> الاشتراكات المنتهية خلال الشهر</div><canvas id="monthlyExpiryChart"></canvas></div>
             </div>
 
+            <!-- الأدوات الإدارية -->
             <div class="tools-grid">
                 <div class="tool-card">
                     <h3><i class="fas fa-sticky-note"></i> ملاحظات سريعة</h3>
@@ -335,7 +642,7 @@
                         <button class="btn-sm" onclick="addTodo()"><i class="fas fa-plus"></i></button>
                     </div>
                     <div class="todo-list" id="todoList"></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #555;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted);">
                         <span>قيد الانتظار: <span id="pendingCount">0</span></span>
                         <span>الإجمالي: <span id="totalCount">0</span></span>
                     </div>
@@ -356,19 +663,19 @@
                 </div>
             </div>
 
-            <!-- جدول المشتركين مع عمود التجميد -->
+            <!-- جدول المشتركين -->
             <div class="table-container">
                 <div class="table-header">
                     <h3><i class="fas fa-list"></i> جدول المشتركين</h3>
                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                         <input type="text" id="searchInput" class="search-box" placeholder="🔍 بحث (اسم، مستخدم، منصة...)" title="ابحث في الجدول الحالي">
-                        <button class="refresh-btn" onclick="exportToCSV()" title="تصدير بيانات الجدول إلى ملف CSV"><i class="fas fa-file-csv"></i> تصدير CSV</button>
-                        <button class="refresh-btn" onclick="openAddUserModal()" style="background: var(--gold); color:#111; border-color:var(--gold);" title="إضافة مشترك جديد"><i class="fas fa-user-plus"></i> إضافة مشترك</button>
+                        <button class="refresh-btn" onclick="exportToCSV()" style="background:var(--gold); color:#111; border-color:var(--gold);"><i class="fas fa-file-csv"></i> تصدير CSV</button>
+                        <button class="refresh-btn" onclick="openAddUserModal()" style="background:var(--gold); color:#111; border-color:var(--gold);"><i class="fas fa-user-plus"></i> إضافة مشترك</button>
                     </div>
                 </div>
                 <div class="bulk-actions" style="margin-bottom:10px;">
-                    <label><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" title="تحديد الكل"> تحديد الكل</label>
-                    <button onclick="bulkDelete()" title="حذف المشتركين المحددين"><i class="fas fa-trash"></i> حذف المحدد</button>
+                    <label><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"> تحديد الكل</label>
+                    <button onclick="bulkDelete()"><i class="fas fa-trash"></i> حذف المحدد</button>
                 </div>
                 <div id="tableLoader" class="loader" style="display: none;"></div>
                 <table id="usersTable">
@@ -381,7 +688,7 @@
                             <th onclick="sortTable('startDate')">تاريخ الانتهاء <i class="fas fa-sort"></i></th>
                             <th onclick="sortTable('daysLeft')">الأيام المتبقية <i class="fas fa-sort"></i></th>
                             <th>الحالة</th>
-                            <th>التجميد</th> <!-- عمود جديد -->
+                            <th>التجميد</th>
                             <th>إجراءات</th>
                         </tr>
                     </thead>
@@ -431,16 +738,6 @@
     </div>
 </div>
 
-<!-- مودال إضافة سكريبت -->
-<div id="addPlatformModal" class="modal">
-    <div class="modal-content">
-        <h3><i class="fas fa-code"></i> إضافة قاعدة سكريبت</h3>
-        <input type="text" id="platformName" placeholder="اسم المنصة">
-        <input type="url" id="platformUrl" placeholder="رابط السكريبت (exec)">
-        <div class="modal-buttons"><button class="btn-save" onclick="saveNewPlatform()">إضافة</button><button class="btn-cancel" onclick="closeModal('addPlatformModal')">إلغاء</button></div>
-    </div>
-</div>
-
 <!-- مودال الإعدادات العامة -->
 <div id="settingsModal" class="modal">
     <div class="modal-content">
@@ -457,37 +754,49 @@
     </div>
 </div>
 
+<!-- Toast -->
 <div class="toast-container" id="toastBox"></div>
 
 <script>
     // =================================================================
-    // الإعدادات الأساسية والمنصات (مع إضافة هندسة المينيو)
+    // الإعدادات الأساسية والمنصات
     // =================================================================
     const GOOGLE_SCRIPT_URL = "https://admin-api-proxy.faroukgrup.workers.dev/";
     const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
     let logoutTimer = null;
 
-    // قائمة المنصات – استخدمنا نفس الروابط القديمة + إضافة menuEngineering
-    let PLATFORMS = {
-        portaltr: "https://script.google.com/macros/s/AKfycbxV3SEgQ4uyT6XDS_H7wx36XqhPypERktgAHjecSji2txu0BaG8A8XZbUwochlFVbesJg/exec",
-        comprehensive: "https://script.google.com/macros/s/AKfycbzU_gRBy_BU1WdFHGOQCkcF-9pdUvwQArK9CrQtpE5PzikIKGWxhUxN6eNXcl1xW6s/exec",
-        restaurantCourse: "https://script.google.com/macros/s/AKfycbwiOxXUhVS7iK70X8rB4yHp2kOl5mC5xrDJP8EzVF6ITB5QGaaaStcZgjtY-Bgkhbz4/exec",
-        menuEngineering: "https://script.google.com/macros/s/AKfycbyoTcDE0MZlSCdbDRjkRc_yEgroWnnpownbFdkvc-sVLekY3m0aEJzwc5xVUYHjJI-k/exec"
+    // قائمة المنصات مع الروابط الصحيحة
+    const PLATFORMS = {
+        comprehensive: "https://script.google.com/macros/s/AKfycbxfOeU1c8vTFgyTb_6xV1JiWy7KuGX92Pl-ASp9wxy14nQnGGi-jW0p4kCDVbkoqaAh/exec",
+        portaltr: "https://script.google.com/macros/s/AKfycbxeXove7aLyXEk-f_iZX2a0gfv0CmQlT0XyEWoTbgr9BIu-6plv4DFLHVKskrvynSLrMg/exec",
+        restaurantCourse: "https://script.google.com/macros/s/AKfycby-sisl935Tk0pdNvHP3x0O796McbGXS-5eXNf4-kCshAcUFoTACH_aECcHTSDrZ3O3/exec",
+        menuEngineering: "https://script.google.com/macros/s/AKfycbworqQJBKf1ahyilXDgp_igqBatUA9TQCTRzItglelMjjBqoAILsnUqIEoEEPoeenRm/exec"
     };
+
+    // تحديد إذا كنا نعمل محلياً (ملف أو localhost) لتفعيل CORS Proxy
+    const USE_PROXY = (location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+
+    // دالة لإضافة وسيط CORS إذا لزم الأمر
+    function getProxyUrl(url) {
+        if (!USE_PROXY) return url;
+        // استخدام وسيط مجاني
+        return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+    }
 
     window.allUsersData = [];
     let displayedUsers = [];
     let currentFilter = 'all';
     let currentSort = { key: null, direction: 'asc' };
     let barChart, pieChart, lineChart, monthlyChart;
-    let REFRESH_INTERVAL = 3600000;
     let refreshIntervalId = null;
     let currentPage = 1;
     const pageSize = 20;
     let totalPages = 1;
     let lastFetchTime = null;
 
-    // ========== دوال الجلسة والمصادقة (من النسخة القديمة) ==========
+    // =================================================================
+    // دوال الجلسة والمصادقة (نفسها)
+    // =================================================================
     function getRemainingSessionTime() {
         const loginTs = localStorage.getItem('loginTimestamp');
         if (!loginTs) return 0;
@@ -629,7 +938,327 @@
     }
     setInterval(updateDateTime, 1000);
 
-    // ========== دوال الفلترة والتحميل (من النسخة القديمة) ==========
+    // =================================================================
+    // دوال الترجمة والأيقونات
+    // =================================================================
+    function translatePlatform(key) {
+        const map = {
+            portaltr: "الشاملة تركي",
+            comprehensive: "الشاملة",
+            restaurantCourse: "دورة المطاعم",
+            menuEngineering: "هندسة المينيو"
+        };
+        return map[key] || key;
+    }
+
+    function getPlatformIcon(key) {
+        const map = {
+            portaltr: "fa-globe-asia",
+            comprehensive: "fa-briefcase",
+            restaurantCourse: "fa-graduation-cap",
+            menuEngineering: "fa-utensils"
+        };
+        return map[key] || "fa-cube";
+    }
+
+    function getPlatformColor(key) {
+        const map = {
+            portaltr: "#3498db",
+            comprehensive: "#b8860b",
+            restaurantCourse: "#2ecc71",
+            menuEngineering: "#e67e22"
+        };
+        return map[key] || "#888";
+    }
+
+    // =================================================================
+    // جلب البيانات (مع دعم CORS Proxy)
+    // =================================================================
+    async function fetchDashboardData(silent = false) {
+        if (!silent) showToast("جاري تحميل البيانات...", "fa-spinner fa-pulse");
+        document.getElementById('tableLoader').style.display = 'block';
+        window.allUsersData = [];
+
+        // حفظ نتائج كل منصة لعرضها في السجلات
+        const platformResults = {};
+
+        for (const [key, url] of Object.entries(PLATFORMS)) {
+            if (!url) continue;
+            let platformData = [];
+            let success = false;
+            let usedMethod = '';
+
+            try {
+                // المحاولة الأولى: fn=getUsers (عبر الوكيل إذا لزم الأمر)
+                let fullUrl = url + "?fn=getUsers&t=" + Date.now();
+                let proxiedUrl = getProxyUrl(fullUrl);
+                let res = await fetch(proxiedUrl, { cache: 'no-store' });
+                let data = await res.json();
+                if (data.status === 'success' && data.data && Array.isArray(data.data)) {
+                    platformData = data.data.map(u => ({
+                        id: u.username || u.id,
+                        username: u.username,
+                        name: u.fullName || u.username,
+                        platform: translatePlatform(key),
+                        platformKey: key,
+                        startDate: u.expiryDate || "غير محدد",
+                        daysLeft: parseInt(u.daysLeft) || 0,
+                        frozen: u.frozen === true || u.frozen === 'TRUE' || u.frozen === 'true',
+                        regDate: u.regDate || null
+                    }));
+                    success = true;
+                    usedMethod = 'fn';
+                    console.log(`✅ ${key}: تم جلب ${platformData.length} مستخدم عبر fn (${USE_PROXY ? 'proxy' : 'direct'})`);
+                } else {
+                    console.warn(`⚠️ ${key}: fn=getUsers فشل (status: ${data.status})، نجرب action`);
+                }
+            } catch(e) {
+                console.warn(`⚠️ ${key}: fn=getUsers استثناء: ${e.message}`);
+            }
+
+            // إذا فشلت fn، جرب action=getUsers
+            if (!success) {
+                try {
+                    let fullUrl = url + "?action=getUsers&t=" + Date.now();
+                    let proxiedUrl = getProxyUrl(fullUrl);
+                    let res = await fetch(proxiedUrl, { cache: 'no-store' });
+                    let data = await res.json();
+                    if (data.status === 'success' && data.data && Array.isArray(data.data)) {
+                        platformData = data.data.map(u => ({
+                            id: u.username || u.id,
+                            username: u.username,
+                            name: u.fullName || u.username,
+                            platform: translatePlatform(key),
+                            platformKey: key,
+                            startDate: u.expiryDate || "غير محدد",
+                            daysLeft: parseInt(u.daysLeft) || 0,
+                            frozen: u.frozen === true || u.frozen === 'TRUE' || u.frozen === 'true',
+                            regDate: u.regDate || null
+                        }));
+                        success = true;
+                        usedMethod = 'action';
+                        console.log(`✅ ${key}: تم جلب ${platformData.length} مستخدم عبر action (${USE_PROXY ? 'proxy' : 'direct'})`);
+                    } else {
+                        console.error(`❌ ${key}: action=getUsers فشل (status: ${data.status})`);
+                    }
+                } catch(e) {
+                    console.error(`❌ ${key}: action=getUsers استثناء: ${e.message}`);
+                }
+            }
+
+            platformResults[key] = { success, count: platformData.length, usedMethod };
+            // إضافة البيانات إلى المجموعة الكلية
+            window.allUsersData.push(...platformData);
+        }
+
+        // عرض ملخص النتائج في وحدة التحكم
+        console.log('📊 ملخص جلب البيانات:', platformResults);
+
+        // إذا لم تنجح أي منصة، أظهر رسالة
+        if (window.allUsersData.length === 0) {
+            showToast("⚠️ لم يتم جلب أي بيانات. تحقق من وحدة التحكم (Console)", "fa-exclamation-triangle");
+        } else {
+            // عرض عدد المستخدمين من كل منصة في حالة نجاح جزئي
+            const platformCounts = {};
+            window.allUsersData.forEach(u => {
+                platformCounts[u.platform] = (platformCounts[u.platform] || 0) + 1;
+            });
+            console.log('📊 توزيع المستخدمين:', platformCounts);
+            if (!silent) {
+                const summary = Object.entries(platformCounts).map(([p, c]) => `${p}: ${c}`).join(' | ');
+                showToast(`✅ تم جلب ${window.allUsersData.length} مستخدم (${summary})`, "fa-check-circle");
+            }
+        }
+
+        lastFetchTime = new Date();
+        document.getElementById('lastUpdateLabel').textContent = 'آخر تحديث: ' + lastFetchTime.toLocaleTimeString('ar-EG');
+        updateStatsCards(window.allUsersData);
+        drawAllCharts(window.allUsersData);
+        applyFilterAndSort();
+        document.getElementById('tableLoader').style.display = 'none';
+        if (!silent && window.allUsersData.length > 0) {
+            // تم عرض الرسالة أعلاه
+        }
+    }
+
+    // =================================================================
+    // باقي الدوال (نفسها)
+    // =================================================================
+    function updateStatsCards(data) {
+        document.getElementById('totalUsers').textContent = data.length;
+        document.getElementById('activeUsers').textContent = data.filter(u => u.daysLeft > 0).length;
+        document.getElementById('expiringUsers').textContent = data.filter(u => u.daysLeft <= 7 && u.daysLeft > 0).length;
+        document.getElementById('expiringSoonUsers').textContent = data.filter(u => u.daysLeft <= 3 && u.daysLeft > 0).length;
+    }
+
+    const chartColors = ['#b8860b', '#3498db', '#2ecc71', '#e67e22', '#e74c3c', '#9b59b6'];
+
+    function drawAllCharts(data) {
+        drawBarChart(data);
+        drawPieChart(data);
+        drawLoginChart(data);
+        drawMonthlyExpiryChart(data);
+    }
+
+    function drawBarChart(data) {
+        const ctx = document.getElementById('subsChart').getContext('2d');
+        if (barChart) barChart.destroy();
+        const platforms = [...new Set(data.map(u => u.platform))];
+        const counts = platforms.map(p => data.filter(u => u.platform === p).length);
+        const bgColors = platforms.map((p, i) => chartColors[i % chartColors.length]);
+        barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: platforms,
+                datasets: [{
+                    label: 'عدد المشتركين',
+                    data: counts,
+                    backgroundColor: bgColors.map(c => c + 'CC'),
+                    borderColor: bgColors,
+                    borderWidth: 1,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#ddd' }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#aaa', stepSize: 1 } },
+                    x: { ticks: { color: '#ccc', font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function drawPieChart(data) {
+        const ctx = document.getElementById('platformPieChart').getContext('2d');
+        if (pieChart) pieChart.destroy();
+        const platforms = [...new Set(data.map(u => u.platform))];
+        const counts = platforms.map(p => data.filter(u => u.platform === p).length);
+        const bgColors = platforms.map((p, i) => chartColors[i % chartColors.length]);
+        pieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: platforms,
+                datasets: [{
+                    data: counts,
+                    backgroundColor: bgColors,
+                    borderColor: '#0b0e17',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#ddd', font: { size: 11 } } }
+                }
+            }
+        });
+    }
+
+    function drawLoginChart(data) {
+        const ctx = document.getElementById('loginChart').getContext('2d');
+        if (lineChart) lineChart.destroy();
+        const today = new Date();
+        const days = [], counts = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            days.push(d.toLocaleDateString('ar-EG', { weekday: 'short' }));
+            const dateStr = d.toISOString().slice(0,10);
+            counts.push(data.filter(u => u.regDate === dateStr).length);
+        }
+        const grad = ctx.createLinearGradient(0,0,0,200);
+        grad.addColorStop(0, 'rgba(184,134,11,0.4)');
+        grad.addColorStop(1, 'rgba(184,134,11,0)');
+        const hasData = counts.some(c => c > 0);
+        lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [{
+                    label: 'مشتركين جدد',
+                    data: counts,
+                    borderColor: '#b8860b',
+                    backgroundColor: grad,
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: '#d4b15a',
+                    pointBorderColor: '#fff',
+                    pointRadius: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: hasData ? '' : '⚠️ لا توجد بيانات للمشتركين الجدد (تأكد من توفر regDate)',
+                        color: '#f39c12',
+                        font: { size: 14, weight: 'bold' }
+                    },
+                    legend: { labels: { color: '#ddd' } }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#aaa', stepSize: 1 } },
+                    x: { ticks: { color: '#ccc' } }
+                }
+            }
+        });
+    }
+
+    function drawMonthlyExpiryChart(data) {
+        const ctx = document.getElementById('monthlyExpiryChart').getContext('2d');
+        if (monthlyChart) monthlyChart.destroy();
+        const months = [], counts = [];
+        const today = new Date();
+        for (let i = 0; i < 6; i++) {
+            const m = new Date(today.getFullYear(), today.getMonth() + i, 1);
+            months.push(m.toLocaleDateString('ar-EG', { month: 'short' }));
+            const count = data.filter(u => {
+                if (!u.startDate || u.startDate === 'غير محدد') return false;
+                const exp = new Date(u.startDate);
+                return exp.getMonth() === m.getMonth() && exp.getFullYear() === m.getFullYear();
+            }).length;
+            counts.push(count);
+        }
+        monthlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'انتهاء الاشتراك',
+                    data: counts,
+                    backgroundColor: '#e74c3cAA',
+                    borderColor: '#e74c3c',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#ddd' } }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#aaa', stepSize: 1 } },
+                    x: { ticks: { color: '#ccc' } }
+                }
+            }
+        });
+    }
+
+    // =================================================================
+    // الفلترة والفرز والجدول (نفسها)
+    // =================================================================
     window.applyQuickFilter = function(type) {
         currentFilter = type;
         document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
@@ -711,16 +1340,16 @@
             if (days <= 0) color = '#e74c3c';
             else if (days <= 7) color = '#f39c12';
             const uniqueId = `${u.id}|${u.platformKey}`;
-            // عرض حالة التجميد: إذا كان الحقل موجوداً ويساوي true
-            const frozen = u.frozen === true || u.frozen === 'TRUE' || u.frozen === 'true';
-            const frozenIcon = frozen ? '🔒' : '✅';
-            const frozenColor = frozen ? '#e74c3c' : '#2ecc71';
+            const icon = getPlatformIcon(u.platformKey);
+            const platColor = getPlatformColor(u.platformKey);
+            const frozenIcon = u.frozen ? '🔒' : '✅';
+            const frozenColor = u.frozen ? '#e74c3c' : '#2ecc71';
             tbody.innerHTML += `
                 <tr data-platform="${u.platformKey}">
                     <td><input type="checkbox" class="row-checkbox" data-uid="${uniqueId}"></td>
                     <td>${escapeHtml(u.name)}</td>
                     <td>${escapeHtml(u.username)}</td>
-                    <td><span class="platform-badge">${u.platform}</span></td>
+                    <td><span class="platform-badge" style="border-color:${platColor};"><i class="fas ${icon}" style="color:${platColor};margin-left:5px;"></i> ${u.platform}</span></td>
                     <td>${u.startDate}</td>
                     <td style="color:${color}; font-weight:900;">${days}</td>
                     <td class="${days>0?'status-active':'status-expired'}">${days>0?'نشط':'منتهي'}</td>
@@ -741,7 +1370,9 @@
         applyFilterAndSort();
     };
 
-    // ========== تحديد الكل والعمليات الجماعية ==========
+    // =================================================================
+    // تحديد الكل والعمليات الجماعية (نفسها)
+    // =================================================================
     function toggleSelectAll(source) {
         const checkboxes = document.querySelectorAll('.row-checkbox');
         checkboxes.forEach(cb => cb.checked = source.checked);
@@ -775,13 +1406,11 @@
         await fetchDashboardData();
     };
 
-    // ========== تصدير CSV مع دعم التجميد ==========
     window.exportToCSV = function() {
         if (!displayedUsers.length) { showToast("لا بيانات للتصدير","fa-times"); return; }
         let csv = "الاسم,اسم المستخدم,المنصة,تاريخ الانتهاء,الأيام المتبقية,الحالة,مجمد\n";
         displayedUsers.forEach(u => {
-            const frozen = u.frozen === true || u.frozen === 'TRUE' || u.frozen === 'true';
-            csv += `"${u.name}","${u.username}","${u.platform}","${u.startDate}",${u.daysLeft},"${u.daysLeft>0?'نشط':'منتهي'}","${frozen?'نعم':'لا'}"\n`;
+            csv += `"${u.name}","${u.username}","${u.platform}","${u.startDate}",${u.daysLeft},"${u.daysLeft>0?'نشط':'منتهي'}","${u.frozen?'نعم':'لا'}"\n`;
         });
         const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
         const link = document.createElement('a');
@@ -791,7 +1420,9 @@
         showToast("تم التصدير", "fa-file-csv");
     };
 
-    // ========== البحث الفوري ==========
+    // =================================================================
+    // البحث الفوري
+    // =================================================================
     document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
@@ -807,208 +1438,16 @@
                         u.startDate.includes(query)
                     );
                     currentPage = 1;
-                    const start = 0;
-                    renderTable(filtered.slice(start, pageSize));
-                    // لا نغير displayedUsers الأصلية
+                    renderTable(filtered.slice(0, pageSize));
+                    renderPagination();
                 }
             });
         }
     });
 
-    // ========== دالة جلب البيانات – النسخة القديمة الناجحة (action=getUsers) ==========
-    async function fetchDashboardData(silent = false) {
-        if (!silent) showToast("جاري تحميل البيانات...", "fa-spinner fa-pulse");
-        document.getElementById('tableLoader').style.display = 'block';
-        window.allUsersData = [];
-        const promises = Object.entries(PLATFORMS).map(async ([key, url]) => {
-            if (!url) return [];
-            try {
-                const res = await fetch(url + "?action=getUsers&t=" + Date.now(), { cache: 'no-store' });
-                const data = await res.json();
-                if (data.status === 'success' && data.data) {
-                    return data.data.map(u => ({
-                        id: u.id || u.username,
-                        username: u.username,
-                        name: u.fullName || u.username,
-                        platform: translatePlatform(key),
-                        platformKey: key,
-                        startDate: u.expiryDate || "غير محدد",
-                        daysLeft: parseInt(u.daysLeft) || 0,
-                        frozen: u.frozen === true || u.frozen === 'TRUE' || u.frozen === 'true', // دعم frozen
-                        regDate: u.regDate || null
-                    }));
-                } else {
-                    console.warn(`⚠️ فشل جلب بيانات ${key}:`, data.message || 'استجابة غير متوقعة');
-                }
-            } catch(e) {
-                console.error(`❌ فشل الاتصال بـ ${key}`, e);
-            }
-            return [];
-        });
-
-        const results = await Promise.allSettled(promises);
-        window.allUsersData = results
-            .filter(r => r.status === 'fulfilled')
-            .map(r => r.value)
-            .flat();
-
-        lastFetchTime = new Date();
-        document.getElementById('lastUpdateLabel').textContent = 'آخر تحديث: ' + lastFetchTime.toLocaleTimeString('ar-EG');
-        updateStatsCards(window.allUsersData);
-        drawAllCharts(window.allUsersData);
-        applyFilterAndSort();
-        document.getElementById('tableLoader').style.display = 'none';
-        if (!silent) showToast("تم تحديث البيانات", "fa-check-circle");
-    }
-
-    function translatePlatform(key) {
-        const map = {
-            portaltr: "الشاملة تركي",
-            comprehensive: "الشاملة",
-            restaurantCourse: "دورة إدارة المطاعم",
-            menuEngineering: "هندسة المينيو"
-        };
-        return map[key] || key;
-    }
-
-    function updateStatsCards(data) {
-        document.getElementById('totalUsers').textContent = data.length;
-        document.getElementById('activeUsers').textContent = data.filter(u => u.daysLeft > 0).length;
-        document.getElementById('expiringUsers').textContent = data.filter(u => u.daysLeft <= 7 && u.daysLeft > 0).length;
-        document.getElementById('expiringSoonUsers').textContent = data.filter(u => u.daysLeft <= 3 && u.daysLeft > 0).length;
-    }
-
-    // ========== الرسوم البيانية (من النسخة القديمة) ==========
-    const colors = {
-        gold: 'rgba(184,134,11,0.8)',
-        goldBorder: '#b8860b',
-        blue: 'rgba(52,152,219,0.8)',
-        green: 'rgba(46,204,113,0.8)',
-        red: 'rgba(231,76,60,0.8)'
-    };
-
-    function drawAllCharts(data) {
-        drawBarChart(data);
-        drawPieChart(data);
-        drawLoginChart(data);
-        drawMonthlyExpiryChart(data);
-    }
-
-    function drawBarChart(data) {
-        const ctx = document.getElementById('subsChart').getContext('2d');
-        if (barChart) barChart.destroy();
-        const platforms = [...new Set(data.map(u => u.platform))];
-        const counts = platforms.map(p => data.filter(u => u.platform === p).length);
-        barChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: platforms,
-                datasets: [{
-                    label: 'عدد المشتركين',
-                    data: counts,
-                    backgroundColor: colors.gold,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
-
-    function drawPieChart(data) {
-        const ctx = document.getElementById('platformPieChart').getContext('2d');
-        if (pieChart) pieChart.destroy();
-        const platforms = [...new Set(data.map(u => u.platform))];
-        const counts = platforms.map(p => data.filter(u => u.platform === p).length);
-        pieChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: platforms,
-                datasets: [{
-                    data: counts,
-                    backgroundColor: [colors.gold, colors.blue, colors.green, colors.red],
-                    borderWidth: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%'
-            }
-        });
-    }
-
-    function drawLoginChart(data) {
-        const ctx = document.getElementById('loginChart').getContext('2d');
-        if (lineChart) lineChart.destroy();
-        const today = new Date();
-        const days = [], counts = [];
-        for (let i = 6; i >= 0; i--) {
-            const d = new Date(today);
-            d.setDate(today.getDate() - i);
-            days.push(d.toLocaleDateString('ar-EG', { weekday: 'short' }));
-            const dateStr = d.toISOString().slice(0, 10);
-            counts.push(data.filter(u => u.regDate === dateStr).length);
-        }
-        const grad = ctx.createLinearGradient(0, 0, 0, 300);
-        grad.addColorStop(0, 'rgba(184,134,11,0.5)');
-        grad.addColorStop(1, 'rgba(184,134,11,0)');
-        lineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: days,
-                datasets: [{
-                    label: 'مشتركين جدد',
-                    data: counts,
-                    borderColor: colors.goldBorder,
-                    backgroundColor: grad,
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
-
-    function drawMonthlyExpiryChart(data) {
-        const ctx = document.getElementById('monthlyExpiryChart').getContext('2d');
-        if (monthlyChart) monthlyChart.destroy();
-        const months = [], counts = [];
-        const today = new Date();
-        for (let i = 0; i < 6; i++) {
-            const m = new Date(today.getFullYear(), today.getMonth() + i, 1);
-            months.push(m.toLocaleDateString('ar-EG', { month: 'short' }));
-            const count = data.filter(u => {
-                if (!u.startDate || u.startDate === 'غير محدد') return false;
-                const exp = new Date(u.startDate);
-                return exp.getMonth() === m.getMonth() && exp.getFullYear() === m.getFullYear();
-            }).length;
-            counts.push(count);
-        }
-        monthlyChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: 'انتهاء الاشتراك',
-                    data: counts,
-                    backgroundColor: colors.red
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
-
-    // ========== دوال المستخدمين (إضافة، تعديل، حذف) ==========
+    // =================================================================
+    // دوال المستخدمين (إضافة، تعديل، حذف) - نفسها
+    // =================================================================
     function findUserByUniqueId(uid) {
         const [id, pk] = uid.split('|');
         return window.allUsersData.find(u => u.id === id && u.platformKey === pk);
@@ -1023,26 +1462,25 @@
         const platformKey = document.getElementById('newUserPlatform').value;
         const expiry = document.getElementById('newExpiryDate').value;
         if (!username || !password || !fullName || !platformKey || !expiry) {
-            showToast("يرجى ملء جميع الحقول", "fa-times");
-            return;
+            showToast("يرجى ملء جميع الحقول","fa-times"); return;
         }
         const url = PLATFORMS[platformKey];
-        if (!url) { showToast("رابط المنصة غير موجود", "fa-times"); return; }
+        if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
         try {
             const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ action: 'addUser', username, password, fullName, expiryDate: expiry })
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({ action:'addUser', username, password, fullName, expiryDate:expiry })
             });
             const data = await res.json();
             if (data.status === 'success') {
-                showToast("تمت الإضافة بنجاح", "fa-check");
+                showToast("تمت الإضافة بنجاح","fa-check");
                 closeModal('addUserModal');
                 await fetchDashboardData();
             } else {
-                showToast("فشل الإضافة: " + data.message, "fa-times");
+                showToast("فشل الإضافة: "+data.message,"fa-times");
             }
-        } catch (e) { showToast("خطأ في الاتصال", "fa-times"); }
+        } catch(e) { showToast("خطأ في الاتصال","fa-times"); }
     };
 
     window.openEditUserModal = function(uid) {
@@ -1067,28 +1505,27 @@
         const platformKey = document.getElementById('editUserPlatform').value;
         const expiry = document.getElementById('editExpiryDate').value;
         if (!username || !fullName || !platformKey || !expiry) {
-            showToast("يرجى ملء الحقول المطلوبة", "fa-times");
-            return;
+            showToast("يرجى ملء الحقول المطلوبة","fa-times"); return;
         }
         const url = PLATFORMS[platformKey];
-        if (!url) { showToast("رابط المنصة غير موجود", "fa-times"); return; }
-        const params = new URLSearchParams({ action: 'updateUser', username: user.id, newUsername: username, fullName, expiryDate: expiry });
+        if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
+        const params = new URLSearchParams({ action:'updateUser', username:user.id, newUsername:username, fullName, expiryDate:expiry });
         if (password) params.append('password', password);
         try {
             const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
                 body: params
             });
             const data = await res.json();
             if (data.status === 'success') {
-                showToast("تم التحديث بنجاح", "fa-check");
+                showToast("تم التحديث بنجاح","fa-check");
                 closeModal('editUserModal');
                 await fetchDashboardData();
             } else {
-                showToast("فشل التحديث: " + data.message, "fa-times");
+                showToast("فشل التحديث: "+data.message,"fa-times");
             }
-        } catch (e) { showToast("خطأ في الاتصال", "fa-times"); }
+        } catch(e) { showToast("خطأ في الاتصال","fa-times"); }
     };
 
     window.deleteUser = async function(uid) {
@@ -1096,180 +1533,44 @@
         const user = findUserByUniqueId(uid);
         if (!user) return;
         const url = PLATFORMS[user.platformKey];
-        if (!url) { showToast("رابط المنصة غير موجود", "fa-times"); return; }
+        if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
         try {
             const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ action: 'deleteUser', username: user.id })
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({ action:'deleteUser', username:user.id })
             });
             const data = await res.json();
             if (data.status === 'success') {
-                showToast("تم الحذف بنجاح", "fa-check");
+                showToast("تم الحذف بنجاح","fa-check");
                 await fetchDashboardData();
             } else {
-                showToast("فشل الحذف: " + data.message, "fa-times");
+                showToast("فشل الحذف: "+data.message,"fa-times");
             }
-        } catch (e) { showToast("خطأ في الاتصال", "fa-times"); }
+        } catch(e) { showToast("خطأ في الاتصال","fa-times"); }
     };
 
-    // ========== المنصات المخصصة ==========
-    function saveCustomPlatforms() {
-        const custom = {};
-        for (let k in PLATFORMS) {
-            if (!['portaltr', 'comprehensive', 'restaurantCourse', 'menuEngineering'].includes(k)) {
-                custom[k] = PLATFORMS[k];
-            }
-        }
-        localStorage.setItem('customPlatforms', JSON.stringify(custom));
-    }
-
-    function loadCustomPlatforms() {
-        const stored = localStorage.getItem('customPlatforms');
-        if (stored) {
-            const custom = JSON.parse(stored);
-            for (let k in custom) {
-                if (!PLATFORMS[k]) {
-                    PLATFORMS[k] = custom[k];
-                    addPlatformButton(k, custom[k]);
-                    addPlatformOption(k, k);
-                }
-            }
-        }
-    }
-
-    function addPlatformButton(key, url) {
-        const container = document.getElementById('customPlatformsContainer');
-        if (!container) return;
-        if (document.querySelector(`.custom-platform-item[data-platform-key="${key}"]`)) return;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'custom-platform-item';
-        wrapper.setAttribute('data-platform-key', key);
-        const btn = document.createElement('button');
-        btn.className = 'custom-platform-btn';
-        btn.innerHTML = `<i class="fas fa-cube"></i> ${key}`;
-        btn.onclick = () => loadData(key, btn);
-        const del = document.createElement('button');
-        del.className = 'remove-platform';
-        del.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        del.onclick = (e) => { e.stopPropagation(); removePlatform(key); };
-        wrapper.appendChild(btn);
-        wrapper.appendChild(del);
-        container.appendChild(wrapper);
-    }
-
-    function addPlatformOption(key, name) {
-        const selects = ['newUserPlatform', 'editUserPlatform'];
-        selects.forEach(id => {
-            const select = document.getElementById(id);
-            if (!select) return;
-            const exists = Array.from(select.options).some(opt => opt.value === key);
-            if (!exists) {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = name;
-                select.appendChild(opt);
-            }
-        });
-    }
-
-    window.removePlatform = function(key) {
-        if (!confirm(`حذف منصة "${key}"؟`)) return;
-        delete PLATFORMS[key];
-        saveCustomPlatforms();
-        const wrapper = document.querySelector(`.custom-platform-item[data-platform-key="${key}"]`);
-        if (wrapper) wrapper.remove();
-        ['newUserPlatform', 'editUserPlatform'].forEach(id => {
-            const select = document.getElementById(id);
-            if (!select) return;
-            for (let i = 0; i < select.options.length; i++) {
-                if (select.options[i].value === key) {
-                    select.remove(i);
-                    break;
-                }
-            }
-        });
-        window.allUsersData = window.allUsersData.filter(u => u.platformKey !== key);
-        applyFilterAndSort();
-        drawAllCharts(window.allUsersData);
-        updateStatsCards(window.allUsersData);
-        showToast(`تم حذف المنصة ${key}`, "fa-check");
-    };
-
-    window.saveNewPlatform = function() {
-        const name = document.getElementById('platformName').value.trim();
-        const url = document.getElementById('platformUrl').value.trim();
-        if (!name || !url) {
-            showToast("الرجاء إدخال اسم ورابط المنصة", "fa-times");
-            return;
-        }
-        const key = name.replace(/\s+/g, '_').toLowerCase();
-        if (PLATFORMS[key]) {
-            showToast("منصة بهذا الاسم موجودة", "fa-times");
-            return;
-        }
-        PLATFORMS[key] = url;
-        saveCustomPlatforms();
-        addPlatformButton(key, url);
-        addPlatformOption(key, name);
-        showToast(`تم إضافة المنصة ${name}`, "fa-plus-circle");
-        closeModal('addPlatformModal');
-        document.getElementById('platformName').value = '';
-        document.getElementById('platformUrl').value = '';
-        // جلب بيانات المنصة الجديدة
-        fetchCustomPlatformData(key, url);
-    };
-
-    async function fetchCustomPlatformData(key, url) {
-        try {
-            const res = await fetch(url + "?action=getUsers&t=" + Date.now(), { cache: 'no-store' });
-            const data = await res.json();
-            if (data.status === 'success') {
-                const users = data.data.map(u => ({
-                    id: u.id || u.username,
-                    username: u.username,
-                    name: u.fullName || u.username,
-                    platform: key,
-                    platformKey: key,
-                    startDate: u.expiryDate,
-                    daysLeft: u.daysLeft,
-                    frozen: u.frozen === true || u.frozen === 'TRUE' || u.frozen === 'true',
-                    regDate: u.regDate || null
-                }));
-                window.allUsersData.push(...users);
-                applyFilterAndSort();
-                drawAllCharts(window.allUsersData);
-                updateStatsCards(window.allUsersData);
-                showToast(`تم جلب ${users.length} مشترك من ${key}`, "fa-check");
-            } else {
-                showToast(`فشل جلب بيانات ${key}`, "fa-times");
-            }
-        } catch (e) {
-            showToast(`فشل جلب بيانات ${key}`, "fa-times");
-        }
-    }
-
+    // =================================================================
+    // دوال التحديث التلقائي واليدوي
+    // =================================================================
     window.manualRefresh = async () => await fetchDashboardData(false);
 
     function startAutoRefresh() {
         if (refreshIntervalId) clearInterval(refreshIntervalId);
-        refreshIntervalId = setInterval(() => fetchDashboardData(true), REFRESH_INTERVAL);
+        refreshIntervalId = setInterval(() => fetchDashboardData(true), 3600000);
     }
 
     function stopAutoRefresh() {
-        if (refreshIntervalId) {
-            clearInterval(refreshIntervalId);
-            refreshIntervalId = null;
-        }
+        if (refreshIntervalId) { clearInterval(refreshIntervalId); refreshIntervalId = null; }
     }
 
-    window.openAddPlatformModal = () => document.getElementById('addPlatformModal').style.display = 'flex';
-
-    // ========== القائمة الجانبية القابلة للطي ==========
+    // =================================================================
+    // القائمة الجانبية القابلة للطي
+    // =================================================================
     function toggleSection(titleElem) {
         const icon = titleElem.querySelector('i');
         const section = titleElem.parentElement;
-        const buttons = section.querySelectorAll('.sidebar-btn, .custom-platforms-container');
+        const buttons = section.querySelectorAll('.sidebar-btn');
         buttons.forEach(el => el.style.display = el.style.display === 'none' ? '' : 'none');
         icon.classList.toggle('fa-chevron-down');
         icon.classList.toggle('fa-chevron-up');
@@ -1278,7 +1579,9 @@
         document.getElementById('sidebar').classList.toggle('collapsed');
     });
 
-    // ========== إعدادات المظهر ==========
+    // =================================================================
+    // إعدادات المظهر
+    // =================================================================
     function openSettingsModal() {
         document.getElementById('settingsLogoUrl').value = localStorage.getItem('logoUrl') || '';
         document.getElementById('settingsAppTitle').value = localStorage.getItem('appTitle') || 'مجموعة فاروق';
@@ -1319,7 +1622,9 @@
         document.documentElement.style.setProperty('--accent-soft', color);
     }
 
-    // ========== الميزات الإدارية المحلية ==========
+    // =================================================================
+    // الميزات الإدارية المحلية (نفسها)
+    // =================================================================
     function saveNotes() {
         localStorage.setItem('adminNotes', document.getElementById('notesArea').value);
         showToast("تم حفظ الملاحظات", "fa-check");
@@ -1331,10 +1636,10 @@
     }
 
     function exportNotes() {
-        const blob = new Blob([document.getElementById('notesArea').value], { type: 'text/plain' });
+        const blob = new Blob([document.getElementById('notesArea').value], {type:'text/plain'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `notes_${new Date().toISOString().slice(0, 10)}.txt`;
+        a.download = `notes_${new Date().toISOString().slice(0,10)}.txt`;
         a.click();
         showToast("تم تصدير الملاحظات", "fa-download");
     }
@@ -1359,12 +1664,10 @@
         todos = stored ? JSON.parse(stored) : [];
         renderTodos();
     }
-
     function saveTodos() {
         localStorage.setItem('adminTodos', JSON.stringify(todos));
         renderTodos();
     }
-
     function renderTodos() {
         const list = document.getElementById('todoList');
         list.innerHTML = '';
@@ -1376,8 +1679,8 @@
             div.className = 'todo-item';
             div.innerHTML = `
                 <div class="todo-text">
-                    <input type="checkbox" ${todo.completed ? 'checked' : ''} data-index="${idx}">
-                    <span class="${todo.completed ? 'completed' : ''}">${escapeHtml(todo.text)}</span>
+                    <input type="checkbox" ${todo.completed?'checked':''} data-index="${idx}">
+                    <span class="${todo.completed?'completed':''}">${escapeHtml(todo.text)}</span>
                 </div>
                 <span class="delete-btn" data-index="${idx}"><i class="fas fa-trash-alt"></i></span>
             `;
@@ -1398,7 +1701,6 @@
             });
         });
     }
-
     function addTodo() {
         const text = document.getElementById('todoInput').value.trim();
         if (!text) return;
@@ -1414,24 +1716,22 @@
         appointments = stored ? JSON.parse(stored) : [];
         renderAppointments();
     }
-
     function saveAppointments() {
         localStorage.setItem('adminAppointments', JSON.stringify(appointments));
         renderAppointments();
     }
-
     function renderAppointments() {
         const list = document.getElementById('appointmentsList');
         list.innerHTML = '';
-        const sorted = [...appointments].sort((a, b) => a.date.localeCompare(b.date));
+        const sorted = [...appointments].sort((a,b) => a.date.localeCompare(b.date));
         sorted.forEach((app, idx) => {
-            const dateStr = new Date(app.date).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
+            const dateStr = new Date(app.date).toLocaleDateString('ar-EG', { day:'numeric', month:'short' });
             list.innerHTML += `
                 <div class="appointment-item">
                     <div>
                         <span class="appointment-date">${dateStr}</span>
                         <span class="appointment-title">${escapeHtml(app.title)}</span>
-                        ${app.desc ? `<div class="appointment-desc" style="font-size:0.8rem;color:#555;">📝 ${escapeHtml(app.desc)}</div>` : ''}
+                        ${app.desc ? `<div class="appointment-desc" style="font-size:0.8rem;color:#aaa;">📝 ${escapeHtml(app.desc)}</div>` : ''}
                     </div>
                     <span class="delete-btn" data-idx="${idx}"><i class="fas fa-trash-alt"></i></span>
                 </div>
@@ -1445,39 +1745,30 @@
             });
         });
     }
-
     function addAppointment() {
         const title = document.getElementById('appTitle').value.trim();
         const date = document.getElementById('appDate').value;
         const desc = document.getElementById('appDesc').value.trim();
-        if (!title || !date) {
-            showToast("أدخل العنوان والتاريخ", "fa-times");
-            return;
-        }
+        if (!title || !date) { showToast("أدخل العنوان والتاريخ","fa-times"); return; }
         appointments.push({ title, date, desc });
         saveAppointments();
         document.getElementById('appTitle').value = '';
         document.getElementById('appDate').value = '';
         document.getElementById('appDesc').value = '';
-        showToast("تم إضافة الموعد", "fa-calendar-plus");
+        showToast("تم إضافة الموعد","fa-calendar-plus");
     }
-
     function exportAppointments() {
-        if (!appointments.length) {
-            showToast("لا توجد مواعيد", "fa-info");
-            return;
-        }
-        const csv = "التاريخ,العنوان,الوصف\n" + appointments.map(a => `${a.date},"${a.title}","${a.desc || ''}"`).join('\n');
-        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv' });
+        if (!appointments.length) { showToast("لا توجد مواعيد","fa-info"); return; }
+        const csv = "التاريخ,العنوان,الوصف\n" + appointments.map(a => `${a.date},"${a.title}","${a.desc||''}"`).join('\n');
+        const blob = new Blob(['\uFEFF'+csv], {type:'text/csv'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `appointments_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.download = `appointments_${new Date().toISOString().slice(0,10)}.csv`;
         a.click();
-        showToast("تم التصدير", "fa-file-csv");
+        showToast("تم التصدير","fa-file-csv");
     }
 
     function loadAllData() {
-        loadCustomPlatforms();
         fetchDashboardData();
         startAutoRefresh();
         updateDateTime();
@@ -1487,7 +1778,9 @@
         loadAppointments();
     }
 
-    // ========== ربط الأحداث ==========
+    // =================================================================
+    // ربط الأحداث
+    // =================================================================
     document.getElementById('loginBtn').addEventListener('click', attemptLogin);
     document.getElementById('passwordInput').addEventListener('keypress', e => { if (e.key === 'Enter') attemptLogin(); });
     document.getElementById('reloginBtn').addEventListener('click', () => {
