@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        /* ===== جميع الأنماط السابقة (لم تتغير) ===== */
+        /* ===== نفس الأنماط السابقة (لم تتغير) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --gold: #b8860b;
@@ -759,7 +759,7 @@
 
 <script>
     // =================================================================
-    // الإعدادات الأساسية والمنصات
+    // الإعدادات الأساسية والمنصات (تم تحديث الروابط)
     // =================================================================
     const GOOGLE_SCRIPT_URL = "https://admin-api-proxy.faroukgrup.workers.dev/";
     const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
@@ -768,20 +768,10 @@
     // قائمة المنصات مع الروابط الصحيحة
     const PLATFORMS = {
         comprehensive: "https://script.google.com/macros/s/AKfycbxfOeU1c8vTFgyTb_6xV1JiWy7KuGX92Pl-ASp9wxy14nQnGGi-jW0p4kCDVbkoqaAh/exec",
-        portaltr: "https://script.google.com/macros/s/AKfycbxeXove7aLyXEk-f_iZX2a0gfv0CmQlT0XyEWoTbgr9BIu-6plv4DFLHVKskrvynSLrMg/exec",
-        restaurantCourse: "https://script.google.com/macros/s/AKfycby-sisl935Tk0pdNvHP3x0O796McbGXS-5eXNf4-kCshAcUFoTACH_aECcHTSDrZ3O3/exec",
+        portaltr: "https://script.google.com/macros/s/AKfycbyj2m9RnDsXkLGO58d9ie-Blc3unLhZ1De3Pxjfzr5ERetwnpUrYpGhe_e4-pEEdUes/exec",
+        restaurantCourse: "https://script.google.com/macros/s/AKfycbwQrkKVgFdI9Gh5RlTjctXMfLbevl09HwPEE1EqlcE6sV5w7CYymr3fKsXhTGwEVbXS/exec",
         menuEngineering: "https://script.google.com/macros/s/AKfycbworqQJBKf1ahyilXDgp_igqBatUA9TQCTRzItglelMjjBqoAILsnUqIEoEEPoeenRm/exec"
     };
-
-    // تحديد إذا كنا نعمل محلياً (ملف أو localhost) لتفعيل CORS Proxy
-    const USE_PROXY = (location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
-
-    // دالة لإضافة وسيط CORS إذا لزم الأمر
-    function getProxyUrl(url) {
-        if (!USE_PROXY) return url;
-        // استخدام وسيط مجاني
-        return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-    }
 
     window.allUsersData = [];
     let displayedUsers = [];
@@ -972,7 +962,7 @@
     }
 
     // =================================================================
-    // جلب البيانات (مع دعم CORS Proxy)
+    // جلب البيانات (المعدل لإظهار المنصات الأربع)
     // =================================================================
     async function fetchDashboardData(silent = false) {
         if (!silent) showToast("جاري تحميل البيانات...", "fa-spinner fa-pulse");
@@ -989,10 +979,9 @@
             let usedMethod = '';
 
             try {
-                // المحاولة الأولى: fn=getUsers (عبر الوكيل إذا لزم الأمر)
+                // المحاولة الأولى: fn=getUsers
                 let fullUrl = url + "?fn=getUsers&t=" + Date.now();
-                let proxiedUrl = getProxyUrl(fullUrl);
-                let res = await fetch(proxiedUrl, { cache: 'no-store' });
+                let res = await fetch(fullUrl, { cache: 'no-store' });
                 let data = await res.json();
                 if (data.status === 'success' && data.data && Array.isArray(data.data)) {
                     platformData = data.data.map(u => ({
@@ -1008,7 +997,7 @@
                     }));
                     success = true;
                     usedMethod = 'fn';
-                    console.log(`✅ ${key}: تم جلب ${platformData.length} مستخدم عبر fn (${USE_PROXY ? 'proxy' : 'direct'})`);
+                    console.log(`✅ ${key}: تم جلب ${platformData.length} مستخدم عبر fn`);
                 } else {
                     console.warn(`⚠️ ${key}: fn=getUsers فشل (status: ${data.status})، نجرب action`);
                 }
@@ -1020,8 +1009,7 @@
             if (!success) {
                 try {
                     let fullUrl = url + "?action=getUsers&t=" + Date.now();
-                    let proxiedUrl = getProxyUrl(fullUrl);
-                    let res = await fetch(proxiedUrl, { cache: 'no-store' });
+                    let res = await fetch(fullUrl, { cache: 'no-store' });
                     let data = await res.json();
                     if (data.status === 'success' && data.data && Array.isArray(data.data)) {
                         platformData = data.data.map(u => ({
@@ -1037,7 +1025,7 @@
                         }));
                         success = true;
                         usedMethod = 'action';
-                        console.log(`✅ ${key}: تم جلب ${platformData.length} مستخدم عبر action (${USE_PROXY ? 'proxy' : 'direct'})`);
+                        console.log(`✅ ${key}: تم جلب ${platformData.length} مستخدم عبر action`);
                     } else {
                         console.error(`❌ ${key}: action=getUsers فشل (status: ${data.status})`);
                     }
@@ -1082,7 +1070,7 @@
     }
 
     // =================================================================
-    // باقي الدوال (نفسها)
+    // باقي الدوال (نفسها) – لم تتغير
     // =================================================================
     function updateStatsCards(data) {
         document.getElementById('totalUsers').textContent = data.length;
