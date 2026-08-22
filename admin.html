@@ -770,7 +770,7 @@
         comprehensive: "https://script.google.com/macros/s/AKfycbzPFb6DfaOU-OMW1THliE5Gf-atnTET0sb0mE4hPccpYhDwM-q9InioDpkN_DfIYQyC/exec",
         portaltr: "https://script.google.com/macros/s/AKfycbxqx4DrCfDhhGqYpQykvP51pFnPHOS3euVgDX4Uzk4DwA-fCGVgs4YlJX_419_MIFDHNg/exec",
         restaurantCourse: "https://script.google.com/macros/s/AKfycbx9XjJQBoM1iOJPhJKJUTGizQT8o9hL2ajyguCpy093f4OgZSI22vePlI4mw8ItHFAP/exec",
-        menuEngineering: "https://script.google.com/macros/s/AKfycbyZXiTItX-DQ0ZW5yVum6syi7INS9GODBhFBnfScImeWDT-HzsKiL44-3rX6v8U1weD/exec"
+        menuEngineering: "https://script.google.com/macros/s/AKfycbxJtkw9FkLjnH6j-HlBS6HHrIDKE0WVjoNg1xeD5SLAq2qxwxc9hl2Hj0aminzl_b-N/exec"
     };
 
     window.allUsersData = [];
@@ -1381,14 +1381,22 @@
             const url = PLATFORMS[user.platformKey];
             if (!url) continue;
             try {
+                // تحديد طريقة الإرسال حسب المنصة
+                let body;
+                if (user.platformKey === 'menuEngineering') {
+                    // استخدام fn مع restaurantEmail
+                    body = new URLSearchParams({ fn: 'deleteUser', restaurantEmail: user.id, username: user.id });
+                } else {
+                    body = new URLSearchParams({ action: 'deleteUser', username: user.id });
+                }
                 const res = await fetch(url, {
                     method:'POST',
                     headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                    body: new URLSearchParams({ action:'deleteUser', username:user.id })
+                    body: body
                 });
                 const data = await res.json();
-                if (data.status === 'success') success++;
-            } catch(e) {}
+                if (data.status === 'success' || data.success === true) success++;
+            } catch(e) { console.warn(e); }
         }
         showToast(`تم حذف ${success} من ${selected.length}`, "fa-check");
         await fetchDashboardData();
@@ -1434,7 +1442,7 @@
     });
 
     // =================================================================
-    // دوال المستخدمين (إضافة، تعديل، حذف) - نفسها
+    // دوال المستخدمين (إضافة، تعديل، حذف) - معدلة لدعم السكريبت الجديد
     // =================================================================
     function findUserByUniqueId(uid) {
         const [id, pk] = uid.split('|');
@@ -1455,18 +1463,32 @@
         const url = PLATFORMS[platformKey];
         if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
         try {
+            let body;
+            if (platformKey === 'menuEngineering') {
+                // استخدام fn مع المعاملات المطلوبة
+                body = new URLSearchParams({
+                    fn: 'addUser',
+                    restaurantEmail: username,
+                    username: username,
+                    password: password,
+                    fullName: fullName,
+                    expiryDate: expiry
+                });
+            } else {
+                body = new URLSearchParams({ action:'addUser', username, password, fullName, expiryDate:expiry });
+            }
             const res = await fetch(url, {
                 method:'POST',
                 headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                body: new URLSearchParams({ action:'addUser', username, password, fullName, expiryDate:expiry })
+                body: body
             });
             const data = await res.json();
-            if (data.status === 'success') {
+            if (data.status === 'success' || data.success === true) {
                 showToast("تمت الإضافة بنجاح","fa-check");
                 closeModal('addUserModal');
                 await fetchDashboardData();
             } else {
-                showToast("فشل الإضافة: "+data.message,"fa-times");
+                showToast("فشل الإضافة: " + (data.message || data.error || 'خطأ غير معروف'),"fa-times");
             }
         } catch(e) { showToast("خطأ في الاتصال","fa-times"); }
     };
@@ -1497,21 +1519,35 @@
         }
         const url = PLATFORMS[platformKey];
         if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
-        const params = new URLSearchParams({ action:'updateUser', username:user.id, newUsername:username, fullName, expiryDate:expiry });
-        if (password) params.append('password', password);
         try {
+            let body;
+            if (platformKey === 'menuEngineering') {
+                // استخدام fn مع restaurantEmail
+                body = new URLSearchParams({
+                    fn: 'updateUser',
+                    restaurantEmail: user.id,
+                    username: username,
+                    fullName: fullName,
+                    expiryDate: expiry
+                });
+                if (password) body.append('password', password);
+            } else {
+                const params = new URLSearchParams({ action:'updateUser', username:user.id, newUsername:username, fullName, expiryDate:expiry });
+                if (password) params.append('password', password);
+                body = params;
+            }
             const res = await fetch(url, {
                 method:'POST',
                 headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                body: params
+                body: body
             });
             const data = await res.json();
-            if (data.status === 'success') {
+            if (data.status === 'success' || data.success === true) {
                 showToast("تم التحديث بنجاح","fa-check");
                 closeModal('editUserModal');
                 await fetchDashboardData();
             } else {
-                showToast("فشل التحديث: "+data.message,"fa-times");
+                showToast("فشل التحديث: " + (data.message || data.error || 'خطأ غير معروف'),"fa-times");
             }
         } catch(e) { showToast("خطأ في الاتصال","fa-times"); }
     };
@@ -1523,17 +1559,23 @@
         const url = PLATFORMS[user.platformKey];
         if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
         try {
+            let body;
+            if (user.platformKey === 'menuEngineering') {
+                body = new URLSearchParams({ fn: 'deleteUser', restaurantEmail: user.id, username: user.id });
+            } else {
+                body = new URLSearchParams({ action:'deleteUser', username:user.id });
+            }
             const res = await fetch(url, {
                 method:'POST',
                 headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                body: new URLSearchParams({ action:'deleteUser', username:user.id })
+                body: body
             });
             const data = await res.json();
-            if (data.status === 'success') {
+            if (data.status === 'success' || data.success === true) {
                 showToast("تم الحذف بنجاح","fa-check");
                 await fetchDashboardData();
             } else {
-                showToast("فشل الحذف: "+data.message,"fa-times");
+                showToast("فشل الحذف: " + (data.message || data.error || 'خطأ غير معروف'),"fa-times");
             }
         } catch(e) { showToast("خطأ في الاتصال","fa-times"); }
     };
