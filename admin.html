@@ -221,6 +221,7 @@
         .platform-icon-portaltr { color: #3498db; }
         .platform-icon-restaurantCourse { color: #2ecc71; }
         .platform-icon-menuEngineering { color: #e67e22; }
+        .platform-icon-newCourse { color: #9b59b6; }
 
         .main-content {
             flex: 1; padding: 30px; overflow-y: auto;
@@ -561,6 +562,8 @@
                 <button class="sidebar-btn" data-platform="portaltr" onclick="loadData('portaltr', this)"><i class="fas fa-globe-asia platform-icon-portaltr"></i> <span>الشاملة تركي</span></button>
                 <button class="sidebar-btn" data-platform="restaurantCourse" onclick="loadData('restaurantCourse', this)"><i class="fas fa-graduation-cap platform-icon-restaurantCourse"></i> <span>دورة المطاعم</span></button>
                 <button class="sidebar-btn" data-platform="menuEngineering" onclick="loadData('menuEngineering', this)"><i class="fas fa-utensils platform-icon-menuEngineering"></i> <span>هندسة المينيو</span></button>
+                <!-- ===== المنصة الجديدة ===== -->
+                <button class="sidebar-btn" data-platform="newCourse" onclick="loadData('newCourse', this)"><i class="fas fa-book platform-icon-newCourse"></i> <span>دورة الماليات</span></button>
             </div>
 
             <!-- ===== الأدوات الاستشارية ===== -->
@@ -713,6 +716,7 @@
             <option value="comprehensive">الشاملة</option>
             <option value="restaurantCourse">دورة إدارة المطاعم</option>
             <option value="menuEngineering">هندسة المينيو</option>
+            <option value="newCourse">دورة الماليات</option>
         </select>
         <input type="date" id="newExpiryDate" placeholder="تاريخ الانتهاء (ExpiryDate)" required>
         <div class="modal-buttons"><button class="btn-save" onclick="addNewUser()">حفظ</button><button class="btn-cancel" onclick="closeModal('addUserModal')">إلغاء</button></div>
@@ -732,6 +736,7 @@
             <option value="comprehensive">الشاملة</option>
             <option value="restaurantCourse">دورة المطاعم</option>
             <option value="menuEngineering">هندسة المينيو</option>
+            <option value="newCourse">دورة الماليات</option>
         </select>
         <input type="date" id="editExpiryDate" required>
         <div class="modal-buttons"><button class="btn-save" onclick="updateUser()">حفظ التعديلات</button><button class="btn-cancel" onclick="closeModal('editUserModal')">إلغاء</button></div>
@@ -759,18 +764,19 @@
 
 <script>
     // =================================================================
-    // الإعدادات الأساسية والمنصات (تم تحديث الروابط)
+    // الإعدادات الأساسية والمنصات (تم تحديث الروابط بإضافة المنصة الجديدة)
     // =================================================================
     const GOOGLE_SCRIPT_URL = "https://admin-api-proxy.faroukgrup.workers.dev/";
     const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
     let logoutTimer = null;
 
-    // قائمة المنصات مع الروابط الصحيحة
+    // قائمة المنصات مع الروابط الصحيحة (تمت إضافة المنصة الجديدة)
     const PLATFORMS = {
         comprehensive: "https://script.google.com/macros/s/AKfycbzPFb6DfaOU-OMW1THliE5Gf-atnTET0sb0mE4hPccpYhDwM-q9InioDpkN_DfIYQyC/exec",
         portaltr: "https://script.google.com/macros/s/AKfycbxqx4DrCfDhhGqYpQykvP51pFnPHOS3euVgDX4Uzk4DwA-fCGVgs4YlJX_419_MIFDHNg/exec",
         restaurantCourse: "https://script.google.com/macros/s/AKfycbx9XjJQBoM1iOJPhJKJUTGizQT8o9hL2ajyguCpy093f4OgZSI22vePlI4mw8ItHFAP/exec",
-        menuEngineering: "https://script.google.com/macros/s/AKfycbxJtkw9FkLjnH6j-HlBS6HHrIDKE0WVjoNg1xeD5SLAq2qxwxc9hl2Hj0aminzl_b-N/exec"
+        menuEngineering: "https://script.google.com/macros/s/AKfycbxJtkw9FkLjnH6j-HlBS6HHrIDKE0WVjoNg1xeD5SLAq2qxwxc9hl2Hj0aminzl_b-N/exec",
+        newCourse: "https://script.google.com/macros/s/AKfycbxuYQQa06ZDYYUd8y8Res02KIxLoNEIpl0FQ35LAuAOwNIz0wPG7pFKmsUur4oYNs-d/exec"
     };
 
     window.allUsersData = [];
@@ -929,14 +935,15 @@
     setInterval(updateDateTime, 1000);
 
     // =================================================================
-    // دوال الترجمة والأيقونات
+    // دوال الترجمة والأيقونات (تم إضافة المنصة الجديدة)
     // =================================================================
     function translatePlatform(key) {
         const map = {
             portaltr: "الشاملة تركي",
             comprehensive: "الشاملة",
             restaurantCourse: "دورة المطاعم",
-            menuEngineering: "هندسة المينيو"
+            menuEngineering: "هندسة المينيو",
+            newCourse: "دورة الماليات"
         };
         return map[key] || key;
     }
@@ -946,7 +953,8 @@
             portaltr: "fa-globe-asia",
             comprehensive: "fa-briefcase",
             restaurantCourse: "fa-graduation-cap",
-            menuEngineering: "fa-utensils"
+            menuEngineering: "fa-utensils",
+            newCourse: "fa-book"
         };
         return map[key] || "fa-cube";
     }
@@ -956,13 +964,14 @@
             portaltr: "#3498db",
             comprehensive: "#b8860b",
             restaurantCourse: "#2ecc71",
-            menuEngineering: "#e67e22"
+            menuEngineering: "#e67e22",
+            newCourse: "#9b59b6"
         };
         return map[key] || "#888";
     }
 
     // =================================================================
-    // جلب البيانات (المعدل لإظهار المنصات الأربع)
+    // جلب البيانات (نفسها مع دعم المنصة الجديدة تلقائياً)
     // =================================================================
     async function fetchDashboardData(silent = false) {
         if (!silent) showToast("جاري تحميل البيانات...", "fa-spinner fa-pulse");
@@ -1079,7 +1088,7 @@
         document.getElementById('expiringSoonUsers').textContent = data.filter(u => u.daysLeft <= 3 && u.daysLeft > 0).length;
     }
 
-    const chartColors = ['#b8860b', '#3498db', '#2ecc71', '#e67e22', '#e74c3c', '#9b59b6'];
+    const chartColors = ['#b8860b', '#3498db', '#2ecc71', '#e67e22', '#9b59b6', '#e74c3c'];
 
     function drawAllCharts(data) {
         drawBarChart(data);
@@ -1383,7 +1392,7 @@
             try {
                 // تحديد طريقة الإرسال حسب المنصة
                 let body;
-                if (user.platformKey === 'menuEngineering') {
+                if (user.platformKey === 'menuEngineering' || user.platformKey === 'newCourse') {
                     // استخدام fn مع restaurantEmail
                     body = new URLSearchParams({ fn: 'deleteUser', restaurantEmail: user.id, username: user.id });
                 } else {
@@ -1442,7 +1451,7 @@
     });
 
     // =================================================================
-    // دوال المستخدمين (إضافة، تعديل، حذف) - معدلة لدعم السكريبت الجديد
+    // دوال المستخدمين (إضافة، تعديل، حذف) - معدلة لدعم المنصة الجديدة
     // =================================================================
     function findUserByUniqueId(uid) {
         const [id, pk] = uid.split('|');
@@ -1464,8 +1473,8 @@
         if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
         try {
             let body;
-            if (platformKey === 'menuEngineering') {
-                // استخدام fn مع المعاملات المطلوبة
+            if (platformKey === 'menuEngineering' || platformKey === 'newCourse') {
+                // استخدام fn مع restaurantEmail
                 body = new URLSearchParams({
                     fn: 'addUser',
                     restaurantEmail: username,
@@ -1521,7 +1530,7 @@
         if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
         try {
             let body;
-            if (platformKey === 'menuEngineering') {
+            if (platformKey === 'menuEngineering' || platformKey === 'newCourse') {
                 // استخدام fn مع restaurantEmail
                 body = new URLSearchParams({
                     fn: 'updateUser',
@@ -1560,7 +1569,7 @@
         if (!url) { showToast("رابط المنصة غير موجود","fa-times"); return; }
         try {
             let body;
-            if (user.platformKey === 'menuEngineering') {
+            if (user.platformKey === 'menuEngineering' || user.platformKey === 'newCourse') {
                 body = new URLSearchParams({ fn: 'deleteUser', restaurantEmail: user.id, username: user.id });
             } else {
                 body = new URLSearchParams({ action:'deleteUser', username:user.id });
