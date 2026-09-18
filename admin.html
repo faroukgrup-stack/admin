@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        /* ===== نفس الأنماط السابقة (لم تتغير) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --gold: #b8860b;
@@ -562,11 +561,9 @@
                 <button class="sidebar-btn" data-platform="portaltr" onclick="loadData('portaltr', this)"><i class="fas fa-globe-asia platform-icon-portaltr"></i> <span>الشاملة تركي</span></button>
                 <button class="sidebar-btn" data-platform="restaurantCourse" onclick="loadData('restaurantCourse', this)"><i class="fas fa-graduation-cap platform-icon-restaurantCourse"></i> <span>دورة المطاعم</span></button>
                 <button class="sidebar-btn" data-platform="menuEngineering" onclick="loadData('menuEngineering', this)"><i class="fas fa-utensils platform-icon-menuEngineering"></i> <span>هندسة المينيو</span></button>
-                <!-- ===== المنصة الجديدة ===== -->
                 <button class="sidebar-btn" data-platform="newCourse" onclick="loadData('newCourse', this)"><i class="fas fa-book platform-icon-newCourse"></i> <span>دورة الماليات</span></button>
             </div>
 
-            <!-- ===== الأدوات الاستشارية ===== -->
             <div class="sidebar-section">
                 <div class="sidebar-section-title" onclick="toggleSection(this)"><span>الأدوات الاستشارية</span><i class="fas fa-chevron-down"></i></div>
                 <button class="sidebar-btn" onclick="window.open('business-audit-60q.html','_blank')" title="التدقيق السريع للأعمال (60 سؤال)">
@@ -764,13 +761,12 @@
 
 <script>
     // =================================================================
-    // الإعدادات الأساسية والمنصات (تم تحديث الروابط بإضافة المنصة الجديدة)
+    // الإعدادات الأساسية والمنصات
     // =================================================================
     const GOOGLE_SCRIPT_URL = "https://admin-api-proxy.faroukgrup.workers.dev/";
     const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
     let logoutTimer = null;
 
-    // قائمة المنصات مع الروابط الصحيحة (تمت إضافة المنصة الجديدة)
     const PLATFORMS = {
         comprehensive: "https://script.google.com/macros/s/AKfycbywsH3-7IghfhpRAkKWCmzlsJeSb6Ba0-ut3vd8Z_Qkn4G1vJICJ2pYI6FeeGVfRp2Y/exec",
         portaltr: "https://script.google.com/macros/s/AKfycbxqx4DrCfDhhGqYpQykvP51pFnPHOS3euVgDX4Uzk4DwA-fCGVgs4YlJX_419_MIFDHNg/exec",
@@ -791,7 +787,7 @@
     let lastFetchTime = null;
 
     // =================================================================
-    // دوال الجلسة والمصادقة (نفسها)
+    // دوال الجلسة والمصادقة
     // =================================================================
     function getRemainingSessionTime() {
         const loginTs = localStorage.getItem('loginTimestamp');
@@ -839,22 +835,47 @@
         document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
     }
 
+    // =================================================================
+    // ✅ دالة تسجيل الدخول المُعدَّلة (URLSearchParams + JSON.parse محمي)
+    // =================================================================
     async function attemptLogin() {
         const username = 'faroukgrup@gmail.com';
         const password = document.getElementById('passwordInput').value.trim();
-        if (!password) { document.getElementById('errorMsg').textContent = '❌ يرجى إدخال كلمة المرور'; return; }
+        if (!password) {
+            document.getElementById('errorMsg').textContent = '❌ يرجى إدخال كلمة المرور';
+            return;
+        }
         const loginBtn = document.getElementById('loginBtn');
         const errorMsg = document.getElementById('errorMsg');
         loginBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري التحقق...';
         loginBtn.disabled = true;
         errorMsg.textContent = '';
+
         try {
-            const formData = new FormData();
-            formData.append('action', 'login');
-            formData.append('username', username);
-            formData.append('password', password);
-            const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-            const result = await response.json();
+            // ✅ الإصلاح: URLSearchParams بدل FormData
+            const body = new URLSearchParams();
+            body.append('action', 'login');
+            body.append('username', username);
+            body.append('password', password);
+
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: body.toString(),
+                redirect: 'follow'
+            });
+
+            // ✅ الإصلاح: قراءة النص أولاً ثم JSON
+            const raw = await response.text();
+            console.log('RAW RESPONSE:', raw);
+
+            let result;
+            try {
+                result = JSON.parse(raw);
+            } catch (parseError) {
+                throw new Error('استجابة غير صالحة من السيرفر: ' + raw.substring(0, 200));
+            }
+
             if (result.status === 'success') {
                 localStorage.setItem('userToken', result.token);
                 localStorage.setItem('userName', result.name);
@@ -872,7 +893,8 @@
                 errorMsg.textContent = '❌ ' + (result.message || 'بيانات الدخول غير صحيحة');
             }
         } catch (error) {
-            errorMsg.textContent = '❌ فشل الاتصال بالسيرفر. تأكد من اتصالك بالإنترنت.';
+            console.error('Login error:', error);
+            errorMsg.textContent = '❌ ' + error.message;
         } finally {
             loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
             loginBtn.disabled = false;
@@ -891,16 +913,40 @@
         validateWithServerInBackground(token);
     }
 
+    // =================================================================
+    // ✅ دالة التحقق من التوكن في الخلفية (مُعدَّلة)
+    // =================================================================
     async function validateWithServerInBackground(token) {
         try {
-            const formData = new FormData();
-            formData.append('action', 'validate');
-            formData.append('token', token);
-            const resp = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-            const result = await resp.json();
-            if (result.status === 'expired') forceLogout('انتهى اشتراكك. يرجى تجديد الإشتراك.', true);
-            else if (result.status === 'success') localStorage.setItem('daysLeft', result.daysLeft);
-        } catch (e) { console.warn('تعذر التحقق من السيرفر.'); }
+            // ✅ الإصلاح: URLSearchParams بدل FormData
+            const body = new URLSearchParams();
+            body.append('action', 'validate');
+            body.append('token', token);
+
+            const resp = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: body.toString(),
+                redirect: 'follow'
+            });
+
+            const raw = await resp.text();
+            let result;
+            try {
+                result = JSON.parse(raw);
+            } catch (e) {
+                console.warn('استجابة validate غير صالحة:', raw.substring(0, 200));
+                return;
+            }
+
+            if (result.status === 'expired') {
+                forceLogout('انتهى اشتراكك. يرجى تجديد الإشتراك.', true);
+            } else if (result.status === 'success') {
+                localStorage.setItem('daysLeft', result.daysLeft);
+            }
+        } catch (e) {
+            console.warn('تعذر التحقق من السيرفر:', e.message);
+        }
     }
 
     window.logoutAdmin = function() {
@@ -935,7 +981,7 @@
     setInterval(updateDateTime, 1000);
 
     // =================================================================
-    // دوال الترجمة والأيقونات (تم إضافة المنصة الجديدة)
+    // دوال الترجمة والأيقونات
     // =================================================================
     function translatePlatform(key) {
         const map = {
@@ -971,14 +1017,13 @@
     }
 
     // =================================================================
-    // جلب البيانات (نفسها مع دعم المنصة الجديدة تلقائياً)
+    // جلب البيانات
     // =================================================================
     async function fetchDashboardData(silent = false) {
         if (!silent) showToast("جاري تحميل البيانات...", "fa-spinner fa-pulse");
         document.getElementById('tableLoader').style.display = 'block';
         window.allUsersData = [];
 
-        // حفظ نتائج كل منصة لعرضها في السجلات
         const platformResults = {};
 
         for (const [key, url] of Object.entries(PLATFORMS)) {
@@ -988,7 +1033,6 @@
             let usedMethod = '';
 
             try {
-                // المحاولة الأولى: fn=getUsers
                 let fullUrl = url + "?fn=getUsers&t=" + Date.now();
                 let res = await fetch(fullUrl, { cache: 'no-store' });
                 let data = await res.json();
@@ -1014,7 +1058,6 @@
                 console.warn(`⚠️ ${key}: fn=getUsers استثناء: ${e.message}`);
             }
 
-            // إذا فشلت fn، جرب action=getUsers
             if (!success) {
                 try {
                     let fullUrl = url + "?action=getUsers&t=" + Date.now();
@@ -1044,18 +1087,14 @@
             }
 
             platformResults[key] = { success, count: platformData.length, usedMethod };
-            // إضافة البيانات إلى المجموعة الكلية
             window.allUsersData.push(...platformData);
         }
 
-        // عرض ملخص النتائج في وحدة التحكم
         console.log('📊 ملخص جلب البيانات:', platformResults);
 
-        // إذا لم تنجح أي منصة، أظهر رسالة
         if (window.allUsersData.length === 0) {
             showToast("⚠️ لم يتم جلب أي بيانات. تحقق من وحدة التحكم (Console)", "fa-exclamation-triangle");
         } else {
-            // عرض عدد المستخدمين من كل منصة في حالة نجاح جزئي
             const platformCounts = {};
             window.allUsersData.forEach(u => {
                 platformCounts[u.platform] = (platformCounts[u.platform] || 0) + 1;
@@ -1073,14 +1112,8 @@
         drawAllCharts(window.allUsersData);
         applyFilterAndSort();
         document.getElementById('tableLoader').style.display = 'none';
-        if (!silent && window.allUsersData.length > 0) {
-            // تم عرض الرسالة أعلاه
-        }
     }
 
-    // =================================================================
-    // باقي الدوال (نفسها) – لم تتغير
-    // =================================================================
     function updateStatsCards(data) {
         document.getElementById('totalUsers').textContent = data.length;
         document.getElementById('activeUsers').textContent = data.filter(u => u.daysLeft > 0).length;
@@ -1254,7 +1287,7 @@
     }
 
     // =================================================================
-    // الفلترة والفرز والجدول (نفسها)
+    // الفلترة والفرز والجدول
     // =================================================================
     window.applyQuickFilter = function(type) {
         currentFilter = type;
@@ -1367,9 +1400,6 @@
         applyFilterAndSort();
     };
 
-    // =================================================================
-    // تحديد الكل والعمليات الجماعية (نفسها)
-    // =================================================================
     function toggleSelectAll(source) {
         const checkboxes = document.querySelectorAll('.row-checkbox');
         checkboxes.forEach(cb => cb.checked = source.checked);
@@ -1390,10 +1420,8 @@
             const url = PLATFORMS[user.platformKey];
             if (!url) continue;
             try {
-                // تحديد طريقة الإرسال حسب المنصة
                 let body;
                 if (user.platformKey === 'menuEngineering' || user.platformKey === 'newCourse') {
-                    // استخدام fn مع restaurantEmail
                     body = new URLSearchParams({ fn: 'deleteUser', restaurantEmail: user.id, username: user.id });
                 } else {
                     body = new URLSearchParams({ action: 'deleteUser', username: user.id });
@@ -1425,9 +1453,6 @@
         showToast("تم التصدير", "fa-file-csv");
     };
 
-    // =================================================================
-    // البحث الفوري
-    // =================================================================
     document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
@@ -1451,7 +1476,7 @@
     });
 
     // =================================================================
-    // دوال المستخدمين (إضافة، تعديل، حذف) - معدلة لدعم المنصة الجديدة
+    // دوال المستخدمين
     // =================================================================
     function findUserByUniqueId(uid) {
         const [id, pk] = uid.split('|');
@@ -1474,7 +1499,6 @@
         try {
             let body;
             if (platformKey === 'menuEngineering' || platformKey === 'newCourse') {
-                // استخدام fn مع restaurantEmail
                 body = new URLSearchParams({
                     fn: 'addUser',
                     restaurantEmail: username,
@@ -1531,7 +1555,6 @@
         try {
             let body;
             if (platformKey === 'menuEngineering' || platformKey === 'newCourse') {
-                // استخدام fn مع restaurantEmail
                 body = new URLSearchParams({
                     fn: 'updateUser',
                     restaurantEmail: user.id,
@@ -1590,7 +1613,7 @@
     };
 
     // =================================================================
-    // دوال التحديث التلقائي واليدوي
+    // التحديث التلقائي واليدوي
     // =================================================================
     window.manualRefresh = async () => await fetchDashboardData(false);
 
@@ -1662,7 +1685,7 @@
     }
 
     // =================================================================
-    // الميزات الإدارية المحلية (نفسها)
+    // الميزات الإدارية المحلية
     // =================================================================
     function saveNotes() {
         localStorage.setItem('adminNotes', document.getElementById('notesArea').value);
