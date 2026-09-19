@@ -4,19 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>شكراً | FAROUK GRUP</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- intl-tel-input -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.4/css/intlTelInput.css">
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #F0F2F5; /* رمادي أعمق وأنقى */
+      background: #F0F2F5;
       font-family: 'Tajawal', sans-serif;
       min-height: 100vh;
       display: flex;
@@ -30,17 +31,17 @@
       max-width: 650px;
       width: 100%;
       background: #ffffff;
-      border-radius: 24px; /* زيادة قليلة للنعومة */
+      border-radius: 24px;
       padding: 50px 45px 40px;
-      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1); /* ظل أعمق وأكثر أناقة */
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1);
       text-align: center;
-      border-top: 4px solid #B4945C; /* ذهبي أغمق وأكثر فخامة */
+      border-top: 4px solid #B4945C;
     }
 
     .icon-circle {
       width: 85px;
       height: 85px;
-      background: #B4945C; /* ذهبي فخم */
+      background: #B4945C;
       border: 6px solid #ffffff;
       border-radius: 50%;
       margin: -90px auto 25px;
@@ -49,13 +50,13 @@
       justify-content: center;
       font-size: 34px;
       color: #ffffff;
-      box-shadow: 0 8px 20px rgba(180, 148, 92, 0.4); /* توهج ذهبي ناعم */
+      box-shadow: 0 8px 20px rgba(180, 148, 92, 0.4);
     }
 
     h1 {
       font-size: 2.4rem;
       font-weight: 800;
-      color: #1E1E1E; /* أسود أنعم */
+      color: #1E1E1E;
       margin-bottom: 5px;
     }
 
@@ -68,7 +69,7 @@
     }
 
     .book-box {
-      background: #F9FAFB; /* رمادي فاتح جداً */
+      background: #F9FAFB;
       border-radius: 14px;
       padding: 16px 30px;
       display: inline-flex;
@@ -77,14 +78,11 @@
       font-size: 1.3rem;
       font-weight: 700;
       color: #232323;
-      border: 1px solid #E0E4E8; /* حدود أفتح */
+      border: 1px solid #E0E4E8;
       margin-bottom: 40px;
     }
 
-    .book-box i {
-      color: #B4945C;
-      font-size: 1.6rem;
-    }
+    .book-box i { color: #B4945C; font-size: 1.6rem; }
 
     .grid {
       display: flex;
@@ -98,7 +96,7 @@
       flex: 1 1 200px;
       background: #ffffff;
       border: 1.5px solid #E0E4E8;
-      border-radius: 16px; /* نعومة أكبر */
+      border-radius: 16px;
       padding: 22px 15px;
       text-decoration: none;
       color: #232323;
@@ -115,26 +113,17 @@
       transition: transform 0.3s ease;
     }
 
-    .btn .format {
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-    .btn .small {
-      font-size: 0.9rem;
-      color: #888888;
-    }
+    .btn .format { font-size: 1.3rem; font-weight: 700; }
+    .btn .small { font-size: 0.9rem; color: #888888; }
 
     .btn:hover {
       border-color: #B4945C;
-      background: #FCFAF7; /* لمسة دافئة */
+      background: #FCFAF7;
       transform: translateY(-3px);
       box-shadow: 0 15px 25px -10px rgba(180, 148, 92, 0.2);
     }
 
-    .btn:hover i {
-      transform: translateY(-3px);
-    }
+    .btn:hover i { transform: translateY(-3px); }
 
     .info-card {
       background: #F9FAFB;
@@ -151,27 +140,23 @@
       margin-bottom: 15px;
     }
 
-    .info-item:last-child {
-      margin-bottom: 0;
-    }
+    .info-item:last-child { margin-bottom: 0; }
 
     .info-item i {
       font-size: 1.6rem;
-      color: #4A5568; /* رمادي داكن أنيق */
+      color: #4A5568;
       width: 35px;
       text-align: center;
     }
 
     .info-item p {
       flex: 1;
-      color: #5A5F6E; /* تدرج رمادي راقي */
+      color: #5A5F6E;
       font-size: 0.95rem;
       line-height: 1.6;
     }
 
-    .info-item strong {
-      color: #1E1E1E;
-    }
+    .info-item strong { color: #1E1E1E; }
 
     .footer-links {
       margin-top: 45px;
@@ -195,26 +180,213 @@
       transition: all 0.3s;
     }
 
-    .back-link:hover {
-      background: #1E1E1E;
-      color: #ffffff;
+    .back-link:hover { background: #1E1E1E; color: #ffffff; }
+
+    .copyright { font-size: 0.85rem; color: #8E9AA9; }
+
+    /* ============ بوابة الاسم والإيميل والهاتف ============ */
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 30, 30, 0.72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
     }
 
-    .copyright {
-      font-size: 0.85rem;
-      color: #8E9AA9; /* رمادي أنيق */
+    .gate-card {
+      background: #fff;
+      max-width: 480px;
+      width: 100%;
+      border-radius: 24px;
+      padding: 35px 30px 30px;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.35);
+      border-top: 4px solid #B4945C;
+      text-align: right;
+      font-family: 'Tajawal', sans-serif;
+      margin: auto;
+    }
+
+    .gate-card h2 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      color: #1E1E1E;
+      text-align: center;
+    }
+
+    .gate-card > p {
+      color: #6C6C6C;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .gate-card label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #232323;
+      font-size: 0.95rem;
+    }
+
+    .gate-card input[type="text"],
+    .gate-card input[type="email"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #E0E4E8;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 1rem;
+      margin-bottom: 18px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #F9FAFB;
+    }
+
+    .gate-card input[type="text"]:focus,
+    .gate-card input[type="email"]:focus {
+      border-color: #B4945C;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(180, 148, 92, 0.15);
+    }
+
+    /* ====== حقل الهاتف ====== */
+    .phone-wrap {
+      margin-bottom: 18px;
+      direction: ltr;
+    }
+
+    .iti { width: 100%; }
+
+    .iti input {
+      width: 100% !important;
+      padding: 14px 16px 14px 100px !important;
+      border: 1.5px solid #E0E4E8 !important;
+      border-radius: 12px !important;
+      font-family: 'Tajawal', sans-serif !important;
+      font-size: 1rem !important;
+      background: #F9FAFB !important;
+      height: auto !important;
+      outline: none !important;
+      transition: border-color 0.2s, box-shadow 0.2s !important;
+      text-align: left !important;
+      margin-bottom: 0 !important;
+    }
+
+    .iti input:focus {
+      border-color: #B4945C !important;
+      background: #fff !important;
+      box-shadow: 0 0 0 3px rgba(180, 148, 92, 0.15) !important;
+    }
+
+    .iti--separate-dial-code .iti__selected-flag {
+      background: #F9FAFB;
+      border-radius: 12px 0 0 12px;
+      border: 1.5px solid #E0E4E8;
+      border-left: 0;
+      padding: 0 12px;
+      height: 100%;
+    }
+
+    .iti__selected-dial-code {
+      font-family: 'Tajawal', sans-serif;
+      color: #232323;
+      font-weight: 700;
+    }
+
+    .iti__country-list {
+      direction: ltr;
+      text-align: left;
+      font-family: 'Tajawal', sans-serif;
+      max-height: 260px;
+    }
+
+    .iti__country-name { direction: ltr; }
+
+    /* ====== زر الإرسال ====== */
+    .gate-card button {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 12px;
+      background: #B4945C;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .gate-card button:hover { background: #9f7f4b; }
+    .gate-card button:disabled { opacity: 0.7; cursor: wait; }
+
+    .gate-error {
+      color: #c0392b;
+      font-size: 0.9rem;
+      margin: -8px 0 14px;
+      display: none;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* روابط مقفلة قبل التسجيل */
+    .btn.locked {
+      pointer-events: none;
+      opacity: 0.45;
+      filter: grayscale(0.3);
+      user-select: none;
     }
 
     @media (max-width: 600px) {
       body { padding: 40px 15px; }
       .card { padding: 45px 25px 30px; }
       h1 { font-size: 2.1rem; }
-      .book-box { font-size: 1.1rem; flex-direction: column; text-align: center; gap: 8px; }
+      .book-box {
+        font-size: 1.1rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+      }
+      .gate-card { padding: 28px 20px 24px; }
     }
   </style>
 </head>
-<body>
 
+<body data-book-id="book1">
+
+  <!-- ============ بوابة التسجيل ============ -->
+  <div class="gate-overlay" id="gateOverlay">
+    <div class="gate-card">
+      <h2>تأكيد بيانات الشراء</h2>
+      <p>يرجى إدخال بياناتك لتفعيل روابط التحميل.</p>
+
+      <form id="gateForm" novalidate>
+        <label for="buyerName">الاسم الكامل</label>
+        <input type="text" id="buyerName" autocomplete="name" placeholder="الاسم المسجل أثناء عملية الدفع" required>
+
+        <label for="buyerEmail">البريد الإلكتروني</label>
+        <input type="email" id="buyerEmail" autocomplete="email" placeholder="example@email.com" required>
+
+        <label for="buyerPhone">رقم الهاتف (مع كود الدولة)</label>
+        <div class="phone-wrap">
+          <input type="tel" id="buyerPhone" autocomplete="tel" placeholder="555 123 4567" required>
+        </div>
+
+        <div class="gate-error" id="gateError"></div>
+
+        <button type="submit" id="gateBtn">تفعيل التحميل</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ الكارت ============ -->
   <div class="card">
     <div class="icon-circle">
       <i class="fas fa-check"></i>
@@ -241,16 +413,17 @@
       </a>
     </div>
 
-  <div class="device-note">
-        <strong>ملاحظات مهمة عند تحميل (ePub)</strong><br><br>
-<div class="info-card">
-      <div class="info-item">
-        <i class="fab fa-android"></i>
-        <p><strong>أندرويد:</strong> نوصي باستخدام تطبيق Google Play Books لأفضل تجربة قراءة.</p>
-      </div>
-      <div class="info-item">
-        <i class="fab fa-apple"></i>
-        <p><strong>آيفون:</strong> سيتم فتح الكتاب تلقائياً وبشكل متوافق داخل تطبيق Apple Books.</p>
+    <div class="device-note">
+      <strong>ملاحظات مهمة عند تحميل (ePub)</strong><br><br>
+      <div class="info-card">
+        <div class="info-item">
+          <i class="fab fa-android"></i>
+          <p><strong>أندرويد:</strong> نوصي باستخدام تطبيق Google Play Books لأفضل تجربة قراءة.</p>
+        </div>
+        <div class="info-item">
+          <i class="fab fa-apple"></i>
+          <p><strong>آيفون:</strong> سيتم فتح الكتاب تلقائياً وبشكل متوافق داخل تطبيق Apple Books.</p>
+        </div>
       </div>
     </div>
 
@@ -259,11 +432,185 @@
         <i class="fas fa-arrow-left"></i> العودة إلى المتجر
       </a>
       <div class="copyright">
-  <p>جميع الحقوق محفوظة © FAROUK GRUP TRAINING 2025</p>
-  <p>للتواصل: faroukgrup@gmail.com | +90 555 019 6682</p>
+        <p>جميع الحقوق محفوظة © FAROUK GRUP TRAINING 2025</p>
+        <p>للتواصل: faroukgrup@gmail.com | +90 555 019 6682</p>
       </div>
     </div>
   </div>
+
+  <!-- intl-tel-input JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.4/js/intlTelInput.min.js"></script>
+
+  <script>
+    // ============================================================
+    // رابط Google Apps Script (Web App)
+    // ============================================================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_mMCMGPN4IcciatiW_F2GeWhJh232RMbHs4n-xzeVRXBKIOBBTvShs4znj2HACVflNA/exec';
+
+    (function () {
+      const gate = document.getElementById('gateOverlay');
+      const form = document.getElementById('gateForm');
+      const nameInput = document.getElementById('buyerName');
+      const emailInput = document.getElementById('buyerEmail');
+      const phoneInput = document.getElementById('buyerPhone');
+      const errorBox = document.getElementById('gateError');
+      const submitBtn = document.getElementById('gateBtn');
+      const links = document.querySelectorAll('.btn');
+
+      // ============================================================
+      // تهيئة حقل الهاتف
+      // ============================================================
+      const iti = window.intlTelInput(phoneInput, {
+        initialCountry: 'tr',
+        preferredCountries: ['tr', 'sa', 'ae', 'eg', 'sy', 'jo', 'iq', 'ma', 'dz', 'tn', 'kw', 'qa', 'bh', 'om', 'ye', 'lb', 'ps', 'sd', 'ly'],
+        separateDialCode: true,
+        autoPlaceholder: 'aggressive',
+        formatOnDisplay: true,
+        utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.4/js/utils.js'
+      });
+
+      // ============================================================
+      // بيانات اختيارية من بوابة الدفع (?email=&name=)
+      // ============================================================
+      const params = new URLSearchParams(window.location.search);
+      const expectedEmail = (params.get('email') || '').trim().toLowerCase();
+      const expectedName = (params.get('name') || '').trim();
+
+      // ============================================================
+      // قفل روابط التحميل قبل التسجيل
+      // ============================================================
+      links.forEach(link => {
+        const realHref = link.getAttribute('href');
+        if (realHref && realHref !== '#' && realHref !== 'javascript:void(0)') {
+          link.dataset.realHref = realHref;
+        }
+        link.setAttribute('href', 'javascript:void(0)');
+        link.classList.add('locked');
+      });
+
+      // ============================================================
+      // دوال مساعدة
+      // ============================================================
+      const isValidEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      const normalizeText = s => s.replace(/\s+/g, ' ').trim();
+
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.style.display = 'block';
+      }
+
+      function unlockDownloads() {
+        links.forEach(link => {
+          const real = link.dataset.realHref;
+          if (real) link.setAttribute('href', real);
+          link.classList.remove('locked');
+        });
+        gate.style.display = 'none';
+      }
+
+      // ============================================================
+      // عند الإرسال
+      // ============================================================
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const name = normalizeText(nameInput.value);
+        const email = emailInput.value.trim().toLowerCase();
+
+        errorBox.style.display = 'none';
+
+        // التحقق من الاسم
+        if (name.length < 3) {
+          showError('يرجى إدخال الاسم الكامل (3 أحرف على الأقل).');
+          nameInput.focus();
+          return;
+        }
+
+        // التحقق من الإيميل
+        if (!isValidEmail(email)) {
+          showError('يرجى إدخال بريد إلكتروني صحيح.');
+          emailInput.focus();
+          return;
+        }
+
+        // التحقق من الهاتف
+        if (!phoneInput.value.trim()) {
+          showError('يرجى إدخال رقم الهاتف.');
+          phoneInput.focus();
+          return;
+        }
+
+        if (!iti.isValidNumber()) {
+          showError('رقم الهاتف غير صحيح، يرجى التأكد من الرقم وكود الدولة.');
+          phoneInput.focus();
+          return;
+        }
+
+        // مطابقة الإيميل من بوابة الدفع (اختياري)
+        if (expectedEmail && email !== expectedEmail) {
+          showError('البريد الإلكتروني غير مطابق للإيميل المستخدم في الدفع.');
+          emailInput.focus();
+          return;
+        }
+
+        if (expectedName && name !== normalizeText(expectedName)) {
+          showError('الاسم غير مطابق للاسم المستخدم في الدفع.');
+          nameInput.focus();
+          return;
+        }
+
+        // ============================================================
+        // تجهيز بيانات الهاتف
+        // ============================================================
+        const countryData = iti.getSelectedCountryData();
+        const dialCode = countryData.dialCode;
+        const fullPhone = iti.getNumber();
+        const prettyPhone = '+' + dialCode + ' ' + phoneInput.value.trim();
+
+        // ============================================================
+        // تجهيز البيانات المُرسلة
+        // ============================================================
+        const bookName = document.querySelector('.book-box span')?.textContent.trim() || '';
+        const bookId = document.body.dataset.bookId || 'general';
+
+        const payload = {
+          name: name,
+          email: email,
+          phone: prettyPhone,
+          dialCode: '+' + dialCode,
+          fullPhone: fullPhone,
+          book: bookName,
+          bookId: bookId,
+          page: location.href,
+          userAgent: navigator.userAgent
+        };
+
+        // تعطيل الزر
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الحفظ...';
+
+        // ============================================================
+        // إرسال البيانات إلى Google Sheet
+        // ============================================================
+        try {
+          await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+        } catch (err) {
+          console.warn('Send failed:', err);
+        }
+
+        // ننتظر قليلًا ثم نفتح التحميل
+        setTimeout(() => {
+          submitBtn.textContent = '✅ تم التفعيل';
+          setTimeout(unlockDownloads, 300);
+        }, 500);
+      });
+    })();
+  </script>
 
 </body>
 </html>
