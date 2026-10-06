@@ -1257,13 +1257,109 @@
         document.getElementById('totalSub').textContent = `${Object.keys(PLATFORMS).length} منصات`;
     }
 
+    // تتبع المواعيد التي تم التنبيه عليها حتى لا يتكرر الصوت كل ثانية
+    const notifiedApps = new Set(JSON.parse(localStorage.getItem('notifiedApps') || '[]'));
+
+    function markAppNotified(id) {
+        notifiedApps.add(id);
+        try {
+            const arr = [...notifiedApps].slice(-50); // احتفظ بآخر 50 فقط
+            localStorage.setItem('notifiedApps', JSON.stringify(arr));
+        } catch (e) {}
+    }
+
+    function getLocalDateStr(d) {
+        const dt = d || new Date();
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const day = String(dt.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    function getMinutesNow() {
+        const now = new Date();
+        return now.getHours() * 60 + now.getMinutes();
+    }
+
+    function appTimeToMinutes(timeStr) {
+        if (!timeStr) return null;
+        const parts = timeStr.split(':');
+        if (parts.length < 2) return null;
+        return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+    }
+
+    // فحص المواعيد حسب الوقت الفعلي (يُستدعى كل 30 ثانية)
+    function checkAppointmentTimes() {
+        const todayStr = getLocalDateStr();
+        const nowMins = getMinutesNow();
+        let triggered = false;
+
+        appointments.forEach(a => {
+            if (!a.time || a.date !== todayStr) return;
+            if (notifiedApps.has(a.id)) return;
+
+            const appMins = appTimeToMinutes(a.time);
+            if (appMins === null) return;
+
+            // تنبيه عند حلول الوقت أو خلال الدقيقتين السابقتين حتى دقيقة بعد
+            const diff = appMins - nowMins;
+            if (diff <= 2 && diff >= -1) {
+                triggered = true;
+                markAppNotified(a.id);
+                playBeep('urgent');
+                showToast(`⏰ موعد الآن: ${a.title}${a.time ? ' — ' + a.time : ''}`, 'fa-bell', 'danger');
+
+                if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+                    try {
+                        new Notification('موعد الآن — مجموعة فاروق', {
+                            body: a.title + (a.time ? ' الساعة ' + a.time : ''),
+                            icon: 'https://lh3.googleusercontent.com/d/1e6u-DPTinDJl_Q9wW3QvGgzFbXO_2sXa',
+                            requireInteraction: true
+                        });
+                    } catch (e) {}
+                }
+
+                alertDismissed = false;
+                const bar = document.getElementById('alertsBar');
+                const text = document.getElementById('alertsText');
+                const icon = document.getElementById('alertIcon');
+                bar.classList.add('show', 'urgent');
+                icon.className = 'fas fa-exclamation-circle';
+                icon.style.color = 'var(--danger)';
+                text.innerHTML = `⏰ <strong>موعد الآن:</strong> ${escapeHtml(a.title)} — الساعة ${a.time}`;
+            }
+        });
+
+        const dueTodos = todos.filter(t => !t.completed && t.due === todayStr);
+        dueTodos.forEach(t => {
+            if (notifiedApps.has('todo-' + t.id)) return;
+            if (nowMins >= 8 * 60 && nowMins <= 9 * 60) {
+                markAppNotified('todo-' + t.id);
+                playBeep('warn');
+                showToast(`📋 مهمة مستحقة اليوم: ${t.text}`, 'fa-tasks', 'warn');
+            }
+        });
+
+        return triggered;
+    }
+
     function checkAllAlerts(data) {
         if (alertDismissed) return;
-        const exp3 = data.filter(u => u.daysLeft <= 3 && u.daysLeft > 0);
-        const exp7 = data.filter(u => u.daysLeft <= 7 && u.daysLeft > 0);
-        const todayStr = new Date().toISOString().slice(0, 10);
+        const exp3 = (data || []).filter(u => u.daysLeft <= 3 && u.daysLeft > 0);
+        const exp7 = (data || []).filter(u => u.daysLeft <= 7 && u.daysLeft > 0);
+        const todayStr = getLocalDateStr();
         const dueTodos = todos.filter(t => !t.completed && t.due && t.due <= todayStr);
         const todayApps = appointments.filter(a => a.date === todayStr);
+
+        // مواعيد حان وقتها أو خلال دقيقتين
+        const nowMins = getMinutesNow();
+        const dueNowApps = appointments.filter(a => {
+            if (a.date !== todayStr || !a.time) return false;
+            const appMins = appTimeToMinutes(a.time);
+            if (appMins === null) return false;
+            const diff = appMins - nowMins;
+            return diff <= 2 && diff >= -5; // من دقيقتين قبل حتى 5 دقائق بعد
+        });
 
         const bar = document.getElementById('alertsBar');
         const text = document.getElementById('alertsText');
@@ -1271,6 +1367,10 @@
         let messages = [];
         let isUrgent = false;
 
+        if (dueNowApps.length > 0) {
+            messages.push(`⏰ <strong>موعد الآن:</strong> ${dueNowApps.map(a => a.title).join('، ')}`);
+            isUrgent = true;
+        }
         if (exp3.length > 0) {
             messages.push(`<strong>${exp3.length}</strong> اشتراك ينتهي خلال 3 أيام أو أقل`);
             isUrgent = true;
@@ -1281,7 +1381,7 @@
             messages.push(`<strong>${dueTodos.length}</strong> مهمة مستحقة أو متأخرة`);
             isUrgent = true;
         }
-        if (todayApps.length > 0) {
+        if (todayApps.length > 0 && dueNowApps.length === 0) {
             messages.push(`<strong>${todayApps.length}</strong> موعد اليوم`);
         }
 
@@ -1293,11 +1393,10 @@
             text.innerHTML = messages.join(' — ');
             document.getElementById('viewExpiringBtn').style.display = (exp3.length || exp7.length) ? '' : 'none';
 
-            // صوت مرة واحدة عند وجود تنبيه عاجل
             if (isUrgent && !window._alertSoundPlayed) {
                 playBeep('urgent');
                 window._alertSoundPlayed = true;
-                setTimeout(() => { window._alertSoundPlayed = false; }, 60000);
+                setTimeout(() => { window._alertSoundPlayed = false; }, 45000);
             }
         } else {
             bar.classList.remove('show', 'urgent');
@@ -1307,6 +1406,13 @@
     function dismissAlert() {
         alertDismissed = true;
         document.getElementById('alertsBar').classList.remove('show', 'urgent');
+    }
+
+    // طلب صلاحية إشعارات المتصفح مرة واحدة
+    function requestNotificationPermission() {
+        if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+            Notification.requestPermission().catch(() => {});
+        }
     }
 
     // =================================================================
@@ -1712,7 +1818,7 @@
             list.innerHTML = '<div class="empty-state"><i class="fas fa-clipboard-list"></i>لا توجد مهام</div>';
             return;
         }
-        const today = new Date().toISOString().slice(0, 10);
+        const today = getLocalDateStr();
         const sorted = [...todos].sort((a, b) => {
             if (a.completed !== b.completed) return a.completed ? 1 : -1;
             if (a.priority === 'high' && b.priority !== 'high') return -1;
@@ -1818,7 +1924,7 @@
             list.innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i>لا توجد مواعيد</div>';
             return;
         }
-        const today = new Date().toISOString().slice(0, 10);
+        const today = getLocalDateStr();
         const sorted = [...appointments].sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
         sorted.forEach(a => {
             const isToday = a.date === today;
@@ -1857,13 +1963,20 @@
         if (editingAppId) {
             const a = appointments.find(x => x.id === editingAppId);
             if (a) { a.title = title; a.date = date; a.time = time; a.desc = desc; }
+            // إعادة تفعيل التنبيه بعد التعديل
+            notifiedApps.delete(editingAppId);
+            try { localStorage.setItem('notifiedApps', JSON.stringify([...notifiedApps])); } catch (e) {}
             editingAppId = null;
             document.getElementById('appSubmitBtn').innerHTML = '<i class="fas fa-calendar-plus"></i> إضافة موعد';
             showToast("تم تعديل الموعد", "fa-check");
+            // فحص فوري إذا كان الموعد قريباً
+            setTimeout(() => checkAppointmentTimes(), 500);
         } else {
-            appointments.push({ id: 'a' + Date.now(), title, date, time, desc });
+            const newId = 'a' + Date.now();
+            appointments.push({ id: newId, title, date, time, desc });
             showToast("تم إضافة الموعد", "fa-check");
             playBeep('info');
+            setTimeout(() => checkAppointmentTimes(), 500);
         }
         document.getElementById('appTitle').value = '';
         document.getElementById('appDate').value = '';
@@ -2007,8 +2120,15 @@
         loadNotes();
         loadTodos();
         loadAppointments();
-        // فحص تنبيهات كل دقيقة
+        requestNotificationPermission();
+        // فحص عام كل دقيقة
         setInterval(() => checkAllAlerts(window.allUsersData), 60000);
+        // فحص أوقات المواعيد كل 30 ثانية (للتنبيه الدقيق)
+        setInterval(() => {
+            checkAppointmentTimes();
+        }, 30000);
+        // فحص فوري بعد التحميل
+        setTimeout(() => checkAppointmentTimes(), 2000);
     }
 
     // Events
