@@ -2,10 +2,18 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <meta name="theme-color" content="#0a0e16">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="فاروق - لوحة التحكم">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="فاروق - لوحة التحكم">
+    <meta name="description" content="لوحة تحكم المبيعات والاشتراكات - مجموعة فاروق للاستشارات والأعمال">
     <title>لوحة تحكم المبيعات والاشتراكات | FAROUK GRUP</title>
     <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1e6u-DPTinDJl_Q9wW3QvGgzFbXO_2sXa">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1e6u-DPTinDJl_Q9wW3QvGgzFbXO_2sXa">
+    <link rel="manifest" href="manifest.webmanifest">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -455,32 +463,113 @@
         }
         .sound-toggle.on { border-color: var(--gold); color: var(--gold-light); }
 
+        /* PWA install banner */
+        .pwa-install-bar {
+            display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 35000;
+            background: linear-gradient(135deg, #161616, #0d0d0d); border-top: 2px solid var(--gold);
+            padding: 12px 16px; align-items: center; gap: 12px; flex-wrap: wrap;
+            box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
+        }
+        .pwa-install-bar.show { display: flex; }
+        .pwa-install-bar img { width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--gold); background: #fff; }
+        .pwa-install-bar .pwa-text { flex: 1; font-size: 0.88rem; }
+        .pwa-install-bar .pwa-text strong { color: var(--gold-light); display: block; }
+        .pwa-install-bar button {
+            padding: 8px 16px; border-radius: 20px; border: none; font-family: 'Tajawal', sans-serif;
+            font-weight: 700; cursor: pointer; font-size: 0.88rem;
+        }
+        .pwa-install-bar .pwa-install-btn { background: var(--gold); color: #111; }
+        .pwa-install-bar .pwa-dismiss-btn { background: transparent; border: 1px solid #555; color: #aaa; }
+
+        .sync-status {
+            font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;
+        }
+        .sync-status.synced { color: var(--success); }
+        .sync-status.syncing { color: var(--warning); }
+        .sync-status.error { color: var(--danger); }
+
         @media (max-width: 992px) { .charts-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
             .dashboard-container { flex-direction: column; }
             .sidebar {
                 width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap;
-                padding: 12px; border-left: none; border-bottom: 2px solid var(--gold);
+                padding: 10px 8px; border-left: none; border-bottom: 2px solid var(--gold);
+                gap: 4px;
             }
-            .sidebar-logo { width: 100%; }
+            .sidebar-logo {
+                width: 100%; display: flex; align-items: center; gap: 10px; text-align: right;
+                border-bottom: 1px solid #2a2a2a; padding-bottom: 8px; margin-bottom: 6px;
+            }
+            .sidebar-logo img { width: 48px; height: 48px; flex-shrink: 0; }
+            .sidebar-logo h2 { font-size: 1.05rem; margin-top: 0; }
+            .sidebar-logo p { font-size: 0.75rem; margin-top: 0; }
             .sidebar.collapsed { width: 100%; }
             .sidebar.collapsed .sidebar-logo h2, .sidebar.collapsed .sidebar-logo p,
             .sidebar.collapsed .sidebar-btn span, .sidebar.collapsed .sidebar-footer span,
             .sidebar.collapsed .sidebar-section-title { display: block; }
             .sidebar.collapsed .sidebar-btn { justify-content: flex-start; padding: 10px 12px; }
-            .sidebar.collapsed .sidebar-logo img { width: 52px; height: 52px; }
+            .sidebar.collapsed .sidebar-logo img { width: 48px; height: 48px; }
             .sidebar-toggle { display: none; }
-            .main-content { padding: 12px; }
-            .content-header { flex-direction: column; align-items: stretch; }
-            .cards-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .stat-number { font-size: 1.5rem; }
-            .chart-wrapper { height: 240px; }
-            .tools-grid { grid-template-columns: 1fr; }
+            .sidebar-section { width: 100%; }
+            .sidebar-section-title { margin: 4px 0 2px; }
+            .sidebar-btn {
+                padding: 9px 10px; font-size: 0.85rem; margin-bottom: 3px;
+            }
+            .sidebar-footer { width: 100%; margin-top: 6px; padding-top: 6px; }
+            .main-content { padding: 10px; padding-bottom: 70px; }
+            .content-header {
+                flex-direction: column; align-items: stretch; padding: 10px 12px; gap: 8px;
+            }
+            .datetime { font-size: 0.82rem; gap: 8px; }
+            .header-actions { justify-content: space-between; }
+            .cards-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .stat-card { padding: 12px 10px; }
+            .stat-number { font-size: 1.4rem; }
+            .stat-card h4 { font-size: 0.72rem; }
+            .stat-sub { font-size: 0.68rem; }
+            .stat-card i { font-size: 1.25rem; }
+            .chart-wrapper { height: 220px; padding: 10px; }
+            .chart-title { font-size: 0.88rem; }
+            .tools-grid { grid-template-columns: 1fr; gap: 12px; }
+            .tool-card { padding: 12px; }
+            .tool-card h3 { font-size: 1rem; }
             .search-box { min-width: auto; width: 100%; }
+            .table-header { flex-direction: column; align-items: stretch; }
+            .table-header > div { width: 100%; }
+            .filter-chips { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+            .filter-chip { flex-shrink: 0; }
+            .bulk-actions { flex-wrap: wrap; gap: 6px; }
+            table { min-width: 640px; font-size: 0.82rem; }
+            th, td { padding: 8px 6px; }
+            .platform-status { font-size: 0.72rem; gap: 5px; }
+            .plat-status-item { padding: 3px 8px; }
+            .alerts-bar { padding: 10px 12px; font-size: 0.85rem; }
+            .item-list { max-height: 220px; }
+            .modal-content { width: 95%; padding: 18px; max-height: 85vh; }
+            .toast-container { bottom: 70px; left: 10px; right: 10px; }
+            .toast { font-size: 0.85rem; padding: 10px 14px; }
+            .login-card { padding: 1.6rem 1.2rem; }
+            .login-card .logo-container img { width: 72px; height: 72px; }
         }
         @media (max-width: 480px) {
-            .cards-grid { grid-template-columns: 1fr; }
-            .stat-number { font-size: 1.35rem; }
+            .cards-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .stat-number { font-size: 1.25rem; }
+            .stat-card { padding: 10px 8px; }
+            .stat-card h4 { font-size: 0.68rem; }
+            .main-content { padding: 8px; padding-bottom: 70px; }
+            .charts-grid { gap: 10px; }
+            .chart-wrapper { height: 200px; }
+            .sidebar-btn { font-size: 0.8rem; padding: 8px; gap: 6px; }
+            .sidebar-logo img { width: 40px; height: 40px; }
+            .sidebar-logo h2 { font-size: 0.95rem; }
+            .btn-sm, .btn-outline-sm { font-size: 0.8rem; padding: 7px 10px; }
+            .action-btn { width: 28px; height: 28px; font-size: 0.78rem; }
+        }
+        /* Safe area for notched phones when installed as PWA */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .main-content { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+            .pwa-install-bar { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+            .toast-container { bottom: calc(70px + env(safe-area-inset-bottom)); }
         }
     </style>
 </head>
@@ -564,6 +653,7 @@
                     <button class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="تشغيل/إيقاف الصوت">
                         <i class="fas fa-volume-up"></i> <span>صوت</span>
                     </button>
+                    <span class="sync-status" id="syncStatus" title="حالة مزامنة المهام والملاحظات"><i class="fas fa-cloud"></i> محلي</span>
                     <span class="last-update" id="lastUpdateLabel">آخر تحديث: --</span>
                     <span class="last-update" id="cacheStatus" style="opacity:0.7;"></span>
                     <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()"><i class="fas fa-sync-alt"></i> تحديث</button>
@@ -788,6 +878,17 @@
     </div>
 </div>
 
+<!-- شريط تثبيت PWA -->
+<div class="pwa-install-bar" id="pwaInstallBar">
+    <img src="https://lh3.googleusercontent.com/d/1e6u-DPTinDJl_Q9wW3QvGgzFbXO_2sXa" alt="شعار">
+    <div class="pwa-text">
+        <strong>ثبّت لوحة التحكم</strong>
+        <span>أضفها للشاشة الرئيسية للوصول السريع من الجوال أو الكمبيوتر</span>
+    </div>
+    <button class="pwa-install-btn" id="pwaInstallBtn"><i class="fas fa-download"></i> تثبيت</button>
+    <button class="pwa-dismiss-btn" id="pwaDismissBtn">لاحقاً</button>
+</div>
+
 <div class="toast-container" id="toastBox"></div>
 
 <script>
@@ -797,6 +898,7 @@
     const GOOGLE_SCRIPT_URL = "https://admin-api-proxy.faroukgrup.workers.dev/";
     const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
     const CACHE_KEY = 'farouk_admin_cache_v3';
+    const PERSONAL_DATA_KEY = 'farouk_personal_data_v1';
     const CACHE_TTL_MS = 5 * 60 * 1000;
     let logoutTimer = null;
     let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
@@ -1797,6 +1899,141 @@
     });
 
     // =================================================================
+    // مزامنة البيانات الشخصية (ملاحظات + مهام + مواعيد) مع Google Sheets
+    // عبر الـ proxy: action=getPersonalData / savePersonalData
+    // إذا لم يكن الـ backend جاهزاً بعد → يعمل محلياً (localStorage)
+    // =================================================================
+    let personalSyncTimer = null;
+    let lastPersonalSync = null;
+
+    function setSyncUI(state, msg) {
+        const el = document.getElementById('syncStatus');
+        if (!el) return;
+        el.className = 'sync-status ' + state;
+        if (state === 'synced') el.innerHTML = '<i class="fas fa-cloud"></i> ' + (msg || 'مزامن');
+        else if (state === 'syncing') el.innerHTML = '<i class="fas fa-sync fa-spin"></i> ' + (msg || 'جاري المزامنة...');
+        else if (state === 'error') el.innerHTML = '<i class="fas fa-cloud-slash"></i> ' + (msg || 'محلي فقط');
+        else el.innerHTML = '<i class="fas fa-cloud"></i> ' + (msg || 'محلي');
+    }
+
+    function getLocalPersonalData() {
+        return {
+            notes: localStorage.getItem('adminNotes') || '',
+            todos: (() => { try { return JSON.parse(localStorage.getItem('adminTodosV2') || '[]'); } catch (e) { return []; } })(),
+            appointments: (() => { try { return JSON.parse(localStorage.getItem('adminAppsV2') || '[]'); } catch (e) { return []; } })(),
+            updatedAt: localStorage.getItem(PERSONAL_DATA_KEY + '_ts') || '0'
+        };
+    }
+
+    function applyPersonalData(data, source) {
+        if (!data) return;
+        if (typeof data.notes === 'string') {
+            localStorage.setItem('adminNotes', data.notes);
+            const area = document.getElementById('notesArea');
+            if (area) area.value = data.notes;
+        }
+        if (Array.isArray(data.todos)) {
+            todos = data.todos;
+            localStorage.setItem('adminTodosV2', JSON.stringify(todos));
+            renderTodos();
+        }
+        if (Array.isArray(data.appointments)) {
+            appointments = data.appointments;
+            localStorage.setItem('adminAppsV2', JSON.stringify(appointments));
+            renderAppointments();
+        }
+        if (data.updatedAt) localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(data.updatedAt));
+        lastPersonalSync = Date.now();
+        setSyncUI('synced', source === 'server' ? 'مزامن ✓' : 'محلي');
+        checkAllAlerts(window.allUsersData);
+    }
+
+    async function fetchPersonalDataFromServer() {
+        const token = localStorage.getItem('userToken');
+        if (!token) { setSyncUI('error', 'محلي'); return null; }
+        setSyncUI('syncing');
+        try {
+            const body = new URLSearchParams();
+            body.append('action', 'getPersonalData');
+            body.append('token', token);
+            const res = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: body.toString(),
+                redirect: 'follow'
+            });
+            const raw = await res.text();
+            let result;
+            try { result = JSON.parse(raw); } catch (e) { throw new Error('invalid json'); }
+            if (result.status === 'success' && result.data) {
+                const serverTs = String(result.data.updatedAt || '0');
+                const localTs = localStorage.getItem(PERSONAL_DATA_KEY + '_ts') || '0';
+                // استخدم الأحدث
+                if (serverTs >= localTs) {
+                    applyPersonalData(result.data, 'server');
+                    return result.data;
+                } else {
+                    // المحلي أحدث → ارفع للسيرفر
+                    await pushPersonalDataToServer();
+                    setSyncUI('synced', 'مزامن ✓');
+                    return getLocalPersonalData();
+                }
+            }
+            // الـ backend لا يدعم بعد → محلي
+            setSyncUI('error', 'محلي (API)');
+            return null;
+        } catch (e) {
+            console.warn('Personal sync fetch failed:', e.message);
+            setSyncUI('error', 'محلي');
+            return null;
+        }
+    }
+
+    async function pushPersonalDataToServer() {
+        const token = localStorage.getItem('userToken');
+        if (!token) return false;
+        const payload = {
+            notes: document.getElementById('notesArea')?.value || localStorage.getItem('adminNotes') || '',
+            todos: todos,
+            appointments: appointments,
+            updatedAt: Date.now()
+        };
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(payload.updatedAt));
+        setSyncUI('syncing');
+        try {
+            const body = new URLSearchParams();
+            body.append('action', 'savePersonalData');
+            body.append('token', token);
+            body.append('data', JSON.stringify(payload));
+            const res = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: body.toString(),
+                redirect: 'follow'
+            });
+            const raw = await res.text();
+            let result;
+            try { result = JSON.parse(raw); } catch (e) { throw new Error('invalid'); }
+            if (result.status === 'success') {
+                setSyncUI('synced', 'مزامن ✓');
+                lastPersonalSync = Date.now();
+                return true;
+            }
+            setSyncUI('error', 'محلي');
+            return false;
+        } catch (e) {
+            console.warn('Personal sync push failed:', e.message);
+            setSyncUI('error', 'محلي');
+            return false;
+        }
+    }
+
+    function schedulePersonalSync() {
+        if (personalSyncTimer) clearTimeout(personalSyncTimer);
+        personalSyncTimer = setTimeout(() => { pushPersonalDataToServer(); }, 1200);
+    }
+
+    // =================================================================
     // المهام المطورة (CRUD + أولوية + تاريخ)
     // =================================================================
     function loadTodos() {
@@ -1805,8 +2042,10 @@
     }
     function persistTodos() {
         localStorage.setItem('adminTodosV2', JSON.stringify(todos));
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(Date.now()));
         renderTodos();
         checkAllAlerts(window.allUsersData);
+        schedulePersonalSync();
     }
 
     function renderTodos() {
@@ -1912,8 +2151,10 @@
     }
     function persistAppointments() {
         localStorage.setItem('adminAppsV2', JSON.stringify(appointments));
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(Date.now()));
         renderAppointments();
         checkAllAlerts(window.allUsersData);
+        schedulePersonalSync();
     }
 
     function renderAppointments() {
@@ -2025,7 +2266,9 @@
     // Notes
     function saveNotes() {
         localStorage.setItem('adminNotes', document.getElementById('notesArea').value);
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(Date.now()));
         showToast("تم حفظ الملاحظات", "fa-check");
+        schedulePersonalSync();
     }
     function loadNotes() {
         const s = localStorage.getItem('adminNotes');
@@ -2120,6 +2363,8 @@
         loadNotes();
         loadTodos();
         loadAppointments();
+        // مزامنة البيانات الشخصية من السيرفر (مهام/ملاحظات/مواعيد)
+        fetchPersonalDataFromServer();
         requestNotificationPermission();
         // فحص عام كل دقيقة
         setInterval(() => checkAllAlerts(window.allUsersData), 60000);
@@ -2129,6 +2374,52 @@
         }, 30000);
         // فحص فوري بعد التحميل
         setTimeout(() => checkAppointmentTimes(), 2000);
+        // مزامنة دورية كل 10 دقائق
+        setInterval(() => { if (document.visibilityState === 'visible') fetchPersonalDataFromServer(); }, 10 * 60 * 1000);
+    }
+
+    // =================================================================
+    // PWA: تسجيل Service Worker + شريط التثبيت
+    // =================================================================
+    let deferredInstallPrompt = null;
+
+    function initPWA() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then((reg) => {
+                console.log('SW registered', reg.scope);
+            }).catch((err) => console.warn('SW register failed', err));
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            if (!localStorage.getItem('pwaDismissed')) {
+                document.getElementById('pwaInstallBar')?.classList.add('show');
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('pwaInstallBar')?.classList.remove('show');
+            deferredInstallPrompt = null;
+            showToast('تم تثبيت التطبيق بنجاح ✓', 'fa-check');
+        });
+
+        document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
+            if (!deferredInstallPrompt) {
+                showToast('استخدم قائمة المتصفح: إضافة إلى الشاشة الرئيسية', 'fa-info');
+                return;
+            }
+            deferredInstallPrompt.prompt();
+            const { outcome } = await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            document.getElementById('pwaInstallBar')?.classList.remove('show');
+            if (outcome === 'accepted') showToast('جاري التثبيت...', 'fa-download');
+        });
+
+        document.getElementById('pwaDismissBtn')?.addEventListener('click', () => {
+            document.getElementById('pwaInstallBar')?.classList.remove('show');
+            localStorage.setItem('pwaDismissed', '1');
+        });
     }
 
     // Events
@@ -2139,8 +2430,12 @@
         showLoginScreen();
     });
     document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && document.getElementById('dashboard').style.display === 'block' && isSessionExpired()) {
-            forceLogout('انتهت الجلسة أثناء غيابك.', false);
+        if (document.visibilityState === 'visible') {
+            if (document.getElementById('dashboard').style.display === 'block' && isSessionExpired()) {
+                forceLogout('انتهت الجلسة أثناء غيابك.', false);
+            } else if (document.getElementById('dashboard').style.display === 'block') {
+                fetchPersonalDataFromServer();
+            }
         }
     });
 
@@ -2148,6 +2443,7 @@
         initialSessionCheck();
         updateDateTime();
         setInterval(updateDateTime, 1000);
+        initPWA();
     });
 </script>
 </body>
