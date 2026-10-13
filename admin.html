@@ -1967,6 +1967,10 @@
     // =================================================================
     let personalSyncTimer = null;
     let lastPersonalSync = null;
+    let personalDataDirty = false;
+    // عناصر محذوفة (لحفظ الحذف عبر الأجهزة) — { id, deletedAt }
+    let deletedTodoIds = [];
+    let deletedAppIds = [];
 
     function setSyncUI(state, msg) {
         const el = document.getElementById('syncStatus');
@@ -1978,12 +1982,118 @@
         else el.innerHTML = '<i class="fas fa-cloud"></i> ' + (msg || 'محلي');
     }
 
+    function nowTs() { return Date.now(); }
+
+    function toNumTs(v) {
+        const n = Number(v);
+        return isNaN(n) ? 0 : n;
+    }
+
+    function loadDeletedIds() {
+        try { deletedTodoIds = JSON.parse(localStorage.getItem('adminDeletedTodos') || '[]'); } catch (e) { deletedTodoIds = []; }
+        try { deletedAppIds = JSON.parse(localStorage.getItem('adminDeletedApps') || '[]'); } catch (e) { deletedAppIds = []; }
+        if (!Array.isArray(deletedTodoIds)) deletedTodoIds = [];
+        if (!Array.isArray(deletedAppIds)) deletedAppIds = [];
+    }
+
+    function saveDeletedIds() {
+        localStorage.setItem('adminDeletedTodos', JSON.stringify(deletedTodoIds));
+        localStorage.setItem('adminDeletedApps', JSON.stringify(deletedAppIds));
+    }
+
+    function markDeleted(list, id) {
+        const ts = nowTs();
+        const rest = list.filter(x => x.id !== id);
+        rest.push({ id, deletedAt: ts });
+        // احتفظ بآخر 200 حذف فقط
+        return rest.slice(-200);
+    }
+
     function getLocalPersonalData() {
+        const notes = document.getElementById('notesArea')?.value ?? (localStorage.getItem('adminNotes') || '');
         return {
-            notes: localStorage.getItem('adminNotes') || '',
+            notes: notes,
+            notesUpdatedAt: toNumTs(localStorage.getItem(PERSONAL_DATA_KEY + '_notes_ts') || 0),
             todos: (() => { try { return JSON.parse(localStorage.getItem('adminTodosV2') || '[]'); } catch (e) { return []; } })(),
             appointments: (() => { try { return JSON.parse(localStorage.getItem('adminAppsV2') || '[]'); } catch (e) { return []; } })(),
-            updatedAt: localStorage.getItem(PERSONAL_DATA_KEY + '_ts') || '0'
+            deletedTodos: deletedTodoIds,
+            deletedAppointments: deletedAppIds,
+            updatedAt: toNumTs(localStorage.getItem(PERSONAL_DATA_KEY + '_ts') || 0)
+        };
+    }
+
+    /**
+     * دمج قائمتين حسب id + updatedAt (الأحدث يفوز)
+     * ثم تطبيق قائمة الحذف إن كان deletedAt أحدث من العنصر
+     */
+    function mergeItemLists(localList, serverList, deletedLocal, deletedServer) {
+        const map = new Map();
+        const touch = (item) => {
+            if (!item || !item.id) return;
+            const prev = map.get(item.id);
+            const ts = toNumTs(item.updatedAt || item.created || 0);
+            if (!prev || toNumTs(prev.updatedAt || prev.created || 0) < ts) {
+                map.set(item.id, { ...item, updatedAt: ts || toNumTs(item.updatedAt) || nowTs() });
+            }
+        };
+        (serverList || []).forEach(touch);
+        (localList || []).forEach(touch);
+
+        // دمج سجلات الحذف — الأحدث
+        const delMap = new Map();
+        const touchDel = (d) => {
+            if (!d || !d.id) return;
+            const ts = toNumTs(d.deletedAt);
+            const prev = delMap.get(d.id);
+            if (!prev || toNumTs(prev.deletedAt) < ts) delMap.set(d.id, { id: d.id, deletedAt: ts });
+        };
+        (deletedServer || []).forEach(touchDel);
+        (deletedLocal || []).forEach(touchDel);
+
+        const merged = [];
+        map.forEach((item, id) => {
+            const del = delMap.get(id);
+            if (del && toNumTs(del.deletedAt) >= toNumTs(item.updatedAt || 0)) {
+                // محذوف بعد آخر تعديل → لا يظهر
+                return;
+            }
+            merged.push(item);
+        });
+        return {
+            items: merged,
+            deleted: Array.from(delMap.values()).slice(-200)
+        };
+    }
+
+    function mergePersonalData(local, server) {
+        const localTs = toNumTs(local.updatedAt);
+        const serverTs = toNumTs(server.updatedAt);
+        const localNotesTs = toNumTs(local.notesUpdatedAt || local.updatedAt);
+        const serverNotesTs = toNumTs(server.notesUpdatedAt || server.updatedAt);
+
+        const notes = localNotesTs >= serverNotesTs ? (local.notes || '') : (server.notes || '');
+        const notesUpdatedAt = Math.max(localNotesTs, serverNotesTs);
+
+        const todosMerged = mergeItemLists(
+            local.todos || [], server.todos || [],
+            local.deletedTodos || [], server.deletedTodos || server.deletedTodos || []
+        );
+        // server may use deletedTodos or deletedAppointments
+        const appsMerged = mergeItemLists(
+            local.appointments || [], server.appointments || [],
+            local.deletedAppointments || [], server.deletedAppointments || []
+        );
+
+        const updatedAt = Math.max(localTs, serverTs, notesUpdatedAt, nowTs());
+
+        return {
+            notes,
+            notesUpdatedAt,
+            todos: todosMerged.items,
+            appointments: appsMerged.items,
+            deletedTodos: todosMerged.deleted,
+            deletedAppointments: appsMerged.deleted,
+            updatedAt
         };
     }
 
@@ -1993,6 +2103,9 @@
             localStorage.setItem('adminNotes', data.notes);
             const area = document.getElementById('notesArea');
             if (area) area.value = data.notes;
+        }
+        if (data.notesUpdatedAt != null) {
+            localStorage.setItem(PERSONAL_DATA_KEY + '_notes_ts', String(toNumTs(data.notesUpdatedAt)));
         }
         if (Array.isArray(data.todos)) {
             todos = data.todos;
@@ -2004,16 +2117,26 @@
             localStorage.setItem('adminAppsV2', JSON.stringify(appointments));
             renderAppointments();
         }
-        if (data.updatedAt) localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(data.updatedAt));
+        if (Array.isArray(data.deletedTodos)) {
+            deletedTodoIds = data.deletedTodos;
+        }
+        if (Array.isArray(data.deletedAppointments)) {
+            deletedAppIds = data.deletedAppointments;
+        }
+        saveDeletedIds();
+        const ts = toNumTs(data.updatedAt) || nowTs();
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(ts));
         lastPersonalSync = Date.now();
-        setSyncUI('synced', source === 'server' ? 'مزامن ✓' : 'محلي');
+        setSyncUI('synced', source === 'server' ? 'مزامن ✓' : (source === 'merged' ? 'مدموج ✓' : 'محلي'));
         checkAllAlerts(window.allUsersData);
+        pushAppointmentsToSW();
     }
 
     async function fetchPersonalDataFromServer() {
         const token = localStorage.getItem('userToken');
         if (!token) { setSyncUI('error', 'محلي'); return null; }
         setSyncUI('syncing');
+        loadDeletedIds();
         try {
             const body = new URLSearchParams();
             body.append('action', 'getPersonalData');
@@ -2028,20 +2151,25 @@
             let result;
             try { result = JSON.parse(raw); } catch (e) { throw new Error('invalid json'); }
             if (result.status === 'success' && result.data) {
-                const serverTs = String(result.data.updatedAt || '0');
-                const localTs = localStorage.getItem(PERSONAL_DATA_KEY + '_ts') || '0';
-                // استخدم الأحدث
-                if (serverTs >= localTs) {
-                    applyPersonalData(result.data, 'server');
-                    return result.data;
-                } else {
-                    // المحلي أحدث → ارفع للسيرفر
+                const local = getLocalPersonalData();
+                const server = result.data;
+                // دمج ذكي حسب توقيت كل عنصر (مش استبدال كامل)
+                const merged = mergePersonalData(local, server);
+                applyPersonalData(merged, 'merged');
+                // إذا المحلي كان فيه تعديلات أو الدمج أضاف شيء — ارفع النتيجة
+                const serverTs = toNumTs(server.updatedAt);
+                const needPush = personalDataDirty || toNumTs(merged.updatedAt) > serverTs ||
+                    (merged.todos.length !== (server.todos || []).length) ||
+                    (merged.appointments.length !== (server.appointments || []).length);
+                if (needPush) {
+                    personalDataDirty = false;
                     await pushPersonalDataToServer();
+                } else {
+                    personalDataDirty = false;
                     setSyncUI('synced', 'مزامن ✓');
-                    return getLocalPersonalData();
                 }
+                return merged;
             }
-            // الـ backend لا يدعم بعد → محلي
             setSyncUI('error', 'محلي (API)');
             return null;
         } catch (e) {
@@ -2054,13 +2182,22 @@
     async function pushPersonalDataToServer() {
         const token = localStorage.getItem('userToken');
         if (!token) return false;
+        loadDeletedIds();
+        const notes = document.getElementById('notesArea')?.value || localStorage.getItem('adminNotes') || '';
         const payload = {
-            notes: document.getElementById('notesArea')?.value || localStorage.getItem('adminNotes') || '',
+            notes: notes,
+            notesUpdatedAt: toNumTs(localStorage.getItem(PERSONAL_DATA_KEY + '_notes_ts') || 0) || nowTs(),
             todos: todos,
             appointments: appointments,
-            updatedAt: Date.now()
+            deletedTodos: deletedTodoIds,
+            deletedAppointments: deletedAppIds,
+            updatedAt: nowTs()
         };
         localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(payload.updatedAt));
+        localStorage.setItem('adminNotes', notes);
+        localStorage.setItem('adminTodosV2', JSON.stringify(todos));
+        localStorage.setItem('adminAppsV2', JSON.stringify(appointments));
+        saveDeletedIds();
         setSyncUI('syncing');
         try {
             const body = new URLSearchParams();
@@ -2079,6 +2216,7 @@
             if (result.status === 'success') {
                 setSyncUI('synced', 'مزامن ✓');
                 lastPersonalSync = Date.now();
+                personalDataDirty = false;
                 return true;
             }
             setSyncUI('error', 'محلي');
@@ -2090,50 +2228,50 @@
         }
     }
 
-    let personalDataDirty = false;
-
     function schedulePersonalSync() {
         // حفظ محلي فقط — الشبكة عند الفتح/الإغلاق أو زر «مزامنة»
         personalDataDirty = true;
-        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(Date.now()));
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(nowTs()));
     }
 
-    /** مزامنة يدوية: رفع ثم جلب */
+    /** مزامنة يدوية: دمج من السيرفر ثم رفع */
     window.manualPersonalSync = async function() {
         setSyncUI('syncing', 'جاري المزامنة...');
-        const ok = await pushPersonalDataToServer();
+        // أولاً ارفع التعديلات المحلية ثم اجلب وادمج
+        if (personalDataDirty) {
+            await pushPersonalDataToServer();
+        }
         await fetchPersonalDataFromServer();
-        personalDataDirty = false;
-        if (ok) showToast('تمت المزامنة ✓', 'fa-cloud');
-        else showToast('حُفظ محلياً — تعذّر الاتصال بالسيرفر', 'fa-exclamation-triangle', 'warn');
+        showToast('تمت المزامنة ✓', 'fa-cloud');
     };
 
     /** رفع عند الإغلاق / إخفاء الصفحة */
     function syncOnClose() {
         if (!localStorage.getItem('userToken')) return;
         if (!personalDataDirty) return;
-        // محاولة رفع سريع (navigator.sendBeacon إن أمكن، وإلا fetch keepalive)
-        const token = localStorage.getItem('userToken');
-        if (!token) return;
+        const notes = document.getElementById('notesArea')?.value || localStorage.getItem('adminNotes') || '';
         const payload = {
-            notes: document.getElementById('notesArea')?.value || localStorage.getItem('adminNotes') || '',
+            notes: notes,
+            notesUpdatedAt: toNumTs(localStorage.getItem(PERSONAL_DATA_KEY + '_notes_ts') || 0) || nowTs(),
             todos: todos,
             appointments: appointments,
-            updatedAt: Date.now()
+            deletedTodos: deletedTodoIds,
+            deletedAppointments: deletedAppIds,
+            updatedAt: nowTs()
         };
         localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(payload.updatedAt));
-        localStorage.setItem('adminNotes', payload.notes);
+        localStorage.setItem('adminNotes', notes);
         localStorage.setItem('adminTodosV2', JSON.stringify(todos));
         localStorage.setItem('adminAppsV2', JSON.stringify(appointments));
+        saveDeletedIds();
         try {
             const body = new URLSearchParams();
             body.append('action', 'savePersonalData');
-            body.append('token', token);
+            body.append('token', localStorage.getItem('userToken'));
             body.append('data', JSON.stringify(payload));
             const blob = new Blob([body.toString()], { type: 'application/x-www-form-urlencoded;charset=UTF-8' });
             if (navigator.sendBeacon) {
                 navigator.sendBeacon(GOOGLE_SCRIPT_URL, blob);
-                personalDataDirty = false;
             } else {
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
@@ -2141,8 +2279,8 @@
                     body: body.toString(),
                     keepalive: true
                 }).catch(() => {});
-                personalDataDirty = false;
             }
+            personalDataDirty = false;
         } catch (e) {}
     }
 
@@ -2178,6 +2316,7 @@
     // =================================================================
     function loadTodos() {
         try { todos = JSON.parse(localStorage.getItem('adminTodosV2') || '[]'); } catch (e) { todos = []; }
+        loadDeletedIds();
         renderTodos();
     }
     function persistTodos() {
@@ -2237,14 +2376,15 @@
         if (!text) { showToast("أدخل نص المهمة", "fa-times"); return; }
         const due = document.getElementById('todoDue').value || null;
         const priority = document.getElementById('todoPriority').value;
+        const ts = Date.now();
         if (editingTodoId) {
             const t = todos.find(x => x.id === editingTodoId);
-            if (t) { t.text = text; t.due = due; t.priority = priority; }
+            if (t) { t.text = text; t.due = due; t.priority = priority; t.updatedAt = ts; }
             editingTodoId = null;
             document.getElementById('todoSubmitBtn').innerHTML = '<i class="fas fa-plus"></i> إضافة مهمة';
             showToast("تم تعديل المهمة", "fa-check");
         } else {
-            todos.push({ id: 't' + Date.now(), text, due, priority, completed: false, created: new Date().toISOString() });
+            todos.push({ id: 't' + ts, text, due, priority, completed: false, created: new Date().toISOString(), updatedAt: ts });
             showToast("تمت إضافة المهمة", "fa-check");
             playBeep('info');
         }
@@ -2267,12 +2407,14 @@
 
     window.toggleTodo = function(id) {
         const t = todos.find(x => x.id === id);
-        if (t) { t.completed = !t.completed; persistTodos(); }
+        if (t) { t.completed = !t.completed; t.updatedAt = Date.now(); persistTodos(); }
     };
 
     window.deleteTodo = function(id) {
         if (!confirm('حذف هذه المهمة؟')) return;
         todos = todos.filter(t => t.id !== id);
+        deletedTodoIds = markDeleted(deletedTodoIds, id);
+        saveDeletedIds();
         if (editingTodoId === id) {
             editingTodoId = null;
             document.getElementById('todoSubmitBtn').innerHTML = '<i class="fas fa-plus"></i> إضافة مهمة';
@@ -2342,20 +2484,19 @@
         const time = document.getElementById('appTime').value || null;
         const desc = document.getElementById('appDesc').value.trim();
         if (!title || !date) { showToast("أدخل العنوان والتاريخ", "fa-times"); return; }
+        const ts = Date.now();
         if (editingAppId) {
             const a = appointments.find(x => x.id === editingAppId);
-            if (a) { a.title = title; a.date = date; a.time = time; a.desc = desc; }
-            // إعادة تفعيل التنبيه بعد التعديل
+            if (a) { a.title = title; a.date = date; a.time = time; a.desc = desc; a.updatedAt = ts; }
             notifiedApps.delete(editingAppId);
             try { localStorage.setItem('notifiedApps', JSON.stringify([...notifiedApps])); } catch (e) {}
             editingAppId = null;
             document.getElementById('appSubmitBtn').innerHTML = '<i class="fas fa-calendar-plus"></i> إضافة موعد';
             showToast("تم تعديل الموعد", "fa-check");
-            // فحص فوري إذا كان الموعد قريباً
             setTimeout(() => checkAppointmentTimes(), 500);
         } else {
-            const newId = 'a' + Date.now();
-            appointments.push({ id: newId, title, date, time, desc });
+            const newId = 'a' + ts;
+            appointments.push({ id: newId, title, date, time, desc, updatedAt: ts });
             showToast("تم إضافة الموعد", "fa-check");
             playBeep('info');
             setTimeout(() => checkAppointmentTimes(), 500);
@@ -2367,7 +2508,7 @@
         persistAppointments();
     }
 
-    window.editAppointment = function(id) {
+    window.editAppointmentwindow.editAppointment = function(id) {
         const a = appointments.find(x => x.id === id);
         if (!a) return;
         editingAppId = id;
@@ -2382,6 +2523,8 @@
     window.deleteAppointment = function(id) {
         if (!confirm('حذف هذا الموعد؟')) return;
         appointments = appointments.filter(a => a.id !== id);
+        deletedAppIds = markDeleted(deletedAppIds, id);
+        saveDeletedIds();
         if (editingAppId === id) {
             editingAppId = null;
             document.getElementById('appSubmitBtn').innerHTML = '<i class="fas fa-calendar-plus"></i> إضافة موعد';
@@ -2407,7 +2550,9 @@
     // Notes
     function saveNotes() {
         localStorage.setItem('adminNotes', document.getElementById('notesArea').value);
-        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(Date.now()));
+        const ts = Date.now();
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(ts));
+        localStorage.setItem(PERSONAL_DATA_KEY + '_notes_ts', String(ts));
         showToast("تم حفظ الملاحظات", "fa-check");
         schedulePersonalSync();
     }
