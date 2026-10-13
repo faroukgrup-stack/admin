@@ -489,39 +489,66 @@
         .sync-status.error { color: var(--danger); }
 
         @media (max-width: 992px) { .charts-grid { grid-template-columns: 1fr; } }
+        /* شريط علوي للجوال + هامبرغر */
+        .mobile-topbar {
+            display: none; align-items: center; gap: 10px;
+            background: linear-gradient(180deg, #0d0d0d, #161616);
+            border-bottom: 2px solid var(--gold); padding: 10px 12px;
+            position: sticky; top: 0; z-index: 200;
+        }
+        .mobile-topbar .hamburger-btn {
+            background: rgba(184,134,11,0.15); border: 1px solid var(--gold); color: var(--gold-light);
+            width: 42px; height: 42px; border-radius: 10px; cursor: pointer;
+            font-size: 1.2rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .mobile-topbar .mobile-brand {
+            display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
+        }
+        .mobile-topbar .mobile-brand img {
+            width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--gold);
+            background: #fff; object-fit: contain; flex-shrink: 0;
+        }
+        .mobile-topbar .mobile-brand span {
+            font-weight: 900; color: var(--gold); font-size: 0.95rem;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .sidebar-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+            z-index: 250; backdrop-filter: blur(2px);
+        }
+        .sidebar-overlay.show { display: block; }
+
         @media (max-width: 768px) {
+            .mobile-topbar { display: flex; }
             .dashboard-container { flex-direction: column; }
             .sidebar {
-                width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap;
-                padding: 10px 8px; border-left: none; border-bottom: 2px solid var(--gold);
-                gap: 4px;
+                position: fixed; top: 0; right: 0; bottom: 0; width: min(300px, 85vw);
+                height: 100vh; height: 100dvh; z-index: 300;
+                transform: translateX(105%); transition: transform 0.28s ease;
+                border-left: 2px solid var(--gold); border-bottom: none;
+                flex-direction: column; flex-wrap: nowrap; padding: 16px 12px;
+                overflow-y: auto; -webkit-overflow-scrolling: touch;
+                box-shadow: -8px 0 30px rgba(0,0,0,0.5);
             }
-            .sidebar-logo {
-                width: 100%; display: flex; align-items: center; gap: 10px; text-align: right;
-                border-bottom: 1px solid #2a2a2a; padding-bottom: 8px; margin-bottom: 6px;
-            }
-            .sidebar-logo img { width: 48px; height: 48px; flex-shrink: 0; }
-            .sidebar-logo h2 { font-size: 1.05rem; margin-top: 0; }
-            .sidebar-logo p { font-size: 0.75rem; margin-top: 0; }
-            .sidebar.collapsed { width: 100%; }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-toggle { display: none; }
+            .sidebar.collapsed { width: min(300px, 85vw); }
             .sidebar.collapsed .sidebar-logo h2, .sidebar.collapsed .sidebar-logo p,
             .sidebar.collapsed .sidebar-btn span, .sidebar.collapsed .sidebar-footer span,
             .sidebar.collapsed .sidebar-section-title { display: block; }
             .sidebar.collapsed .sidebar-btn { justify-content: flex-start; padding: 10px 12px; }
-            .sidebar.collapsed .sidebar-logo img { width: 48px; height: 48px; }
-            .sidebar-toggle { display: none; }
-            .sidebar-section { width: 100%; }
-            .sidebar-section-title { margin: 4px 0 2px; }
-            .sidebar-btn {
-                padding: 9px 10px; font-size: 0.85rem; margin-bottom: 3px;
-            }
-            .sidebar-footer { width: 100%; margin-top: 6px; padding-top: 6px; }
-            .main-content { padding: 10px; padding-bottom: 70px; }
+            .sidebar.collapsed .sidebar-logo img { width: 64px; height: 64px; }
+            .sidebar-logo { text-align: center; margin-bottom: 12px; }
+            .sidebar-logo img { width: 64px; height: 64px; }
+            .sidebar-logo h2 { font-size: 1.1rem; }
+            .sidebar-btn { padding: 11px 12px; font-size: 0.9rem; margin-bottom: 4px; }
+            .sidebar-footer { margin-top: auto; }
+            .main-content { padding: 10px; padding-bottom: 70px; width: 100%; }
             .content-header {
                 flex-direction: column; align-items: stretch; padding: 10px 12px; gap: 8px;
             }
             .datetime { font-size: 0.82rem; gap: 8px; }
-            .header-actions { justify-content: space-between; }
+            .header-actions { justify-content: flex-start; gap: 8px; }
             .cards-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
             .stat-card { padding: 12px 10px; }
             .stat-number { font-size: 1.4rem; }
@@ -550,6 +577,7 @@
             .toast { font-size: 0.85rem; padding: 10px 14px; }
             .login-card { padding: 1.6rem 1.2rem; }
             .login-card .logo-container img { width: 72px; height: 72px; }
+            body.menu-open { overflow: hidden; }
         }
         @media (max-width: 480px) {
             .cards-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -608,6 +636,14 @@
 
 <!-- DASHBOARD -->
 <div id="dashboard">
+    <div class="mobile-topbar" id="mobileTopbar">
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="القائمة"><i class="fas fa-bars"></i></button>
+        <div class="mobile-brand">
+            <img id="mobileLogo" src="https://lh3.googleusercontent.com/d/1e6u-DPTinDJl_Q9wW3QvGgzFbXO_2sXa" alt="شعار">
+            <span id="mobileBrandTitle">مجموعة فاروق</span>
+        </div>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <button class="sidebar-toggle" id="sidebarToggle" title="طي/توسيع"><i class="fas fa-bars"></i></button>
@@ -654,6 +690,9 @@
                         <i class="fas fa-volume-up"></i> <span>صوت</span>
                     </button>
                     <span class="sync-status" id="syncStatus" title="حالة مزامنة المهام والملاحظات"><i class="fas fa-cloud"></i> محلي</span>
+                    <button class="refresh-btn" id="syncPersonalBtn" onclick="manualPersonalSync()" title="مزامنة المهام والملاحظات والمواعيد">
+                        <i class="fas fa-cloud-upload-alt"></i> مزامنة
+                    </button>
                     <span class="last-update" id="lastUpdateLabel">آخر تحديث: --</span>
                     <span class="last-update" id="cacheStatus" style="opacity:0.7;"></span>
                     <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()"><i class="fas fa-sync-alt"></i> تحديث</button>
@@ -1411,15 +1450,11 @@
                 playBeep('urgent');
                 showToast(`⏰ موعد الآن: ${a.title}${a.time ? ' — ' + a.time : ''}`, 'fa-bell', 'danger');
 
-                if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-                    try {
-                        new Notification('موعد الآن — مجموعة فاروق', {
-                            body: a.title + (a.time ? ' الساعة ' + a.time : ''),
-                            icon: 'https://lh3.googleusercontent.com/d/1e6u-DPTinDJl_Q9wW3QvGgzFbXO_2sXa',
-                            requireInteraction: true
-                        });
-                    } catch (e) {}
-                }
+                showSWNotification(
+                    'موعد الآن — مجموعة فاروق',
+                    a.title + (a.time ? ' الساعة ' + a.time : ''),
+                    'app-now-' + a.id
+                );
 
                 alertDismissed = false;
                 const bar = document.getElementById('alertsBar');
@@ -1439,6 +1474,7 @@
                 markAppNotified('todo-' + t.id);
                 playBeep('warn');
                 showToast(`📋 مهمة مستحقة اليوم: ${t.text}`, 'fa-tasks', 'warn');
+                showSWNotification('مهمة مستحقة — مجموعة فاروق', t.text, 'todo-' + t.id);
             }
         });
 
@@ -1512,10 +1548,36 @@
 
     // طلب صلاحية إشعارات المتصفح مرة واحدة
     function requestNotificationPermission() {
-        if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-            Notification.requestPermission().catch(() => {});
+        if (typeof Notification === 'undefined') return;
+        if (Notification.permission === 'granted') {
+            pushAppointmentsToSW();
+            return;
+        }
+        if (Notification.permission === 'default') {
+            // طلب الصلاحية عند تفاعل المستخدم أفضل — نحاول مرة بهدوء
+            Notification.requestPermission().then((p) => {
+                if (p === 'granted') {
+                    showToast('تم تفعيل الإشعارات ✓', 'fa-bell');
+                    pushAppointmentsToSW();
+                }
+            }).catch(() => {});
         }
     }
+
+    window.enableNotifications = function() {
+        if (typeof Notification === 'undefined') {
+            showToast('المتصفح لا يدعم الإشعارات', 'fa-times', 'danger');
+            return;
+        }
+        Notification.requestPermission().then((p) => {
+            if (p === 'granted') {
+                showToast('تم تفعيل الإشعارات — ستصلك تذكيرات المواعيد', 'fa-bell');
+                pushAppointmentsToSW();
+            } else {
+                showToast('يجب السماح بالإشعارات من إعدادات المتصفح', 'fa-exclamation-triangle', 'warn');
+            }
+        });
+    };
 
     // =================================================================
     // Charts
@@ -2028,9 +2090,87 @@
         }
     }
 
+    let personalDataDirty = false;
+
     function schedulePersonalSync() {
-        if (personalSyncTimer) clearTimeout(personalSyncTimer);
-        personalSyncTimer = setTimeout(() => { pushPersonalDataToServer(); }, 1200);
+        // حفظ محلي فقط — الشبكة عند الفتح/الإغلاق أو زر «مزامنة»
+        personalDataDirty = true;
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(Date.now()));
+    }
+
+    /** مزامنة يدوية: رفع ثم جلب */
+    window.manualPersonalSync = async function() {
+        setSyncUI('syncing', 'جاري المزامنة...');
+        const ok = await pushPersonalDataToServer();
+        await fetchPersonalDataFromServer();
+        personalDataDirty = false;
+        if (ok) showToast('تمت المزامنة ✓', 'fa-cloud');
+        else showToast('حُفظ محلياً — تعذّر الاتصال بالسيرفر', 'fa-exclamation-triangle', 'warn');
+    };
+
+    /** رفع عند الإغلاق / إخفاء الصفحة */
+    function syncOnClose() {
+        if (!localStorage.getItem('userToken')) return;
+        if (!personalDataDirty) return;
+        // محاولة رفع سريع (navigator.sendBeacon إن أمكن، وإلا fetch keepalive)
+        const token = localStorage.getItem('userToken');
+        if (!token) return;
+        const payload = {
+            notes: document.getElementById('notesArea')?.value || localStorage.getItem('adminNotes') || '',
+            todos: todos,
+            appointments: appointments,
+            updatedAt: Date.now()
+        };
+        localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(payload.updatedAt));
+        localStorage.setItem('adminNotes', payload.notes);
+        localStorage.setItem('adminTodosV2', JSON.stringify(todos));
+        localStorage.setItem('adminAppsV2', JSON.stringify(appointments));
+        try {
+            const body = new URLSearchParams();
+            body.append('action', 'savePersonalData');
+            body.append('token', token);
+            body.append('data', JSON.stringify(payload));
+            const blob = new Blob([body.toString()], { type: 'application/x-www-form-urlencoded;charset=UTF-8' });
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(GOOGLE_SCRIPT_URL, blob);
+                personalDataDirty = false;
+            } else {
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                    body: body.toString(),
+                    keepalive: true
+                }).catch(() => {});
+                personalDataDirty = false;
+            }
+        } catch (e) {}
+    }
+
+    /** إرسال المواعيد لـ Service Worker لجدولة الإشعارات */
+    function pushAppointmentsToSW() {
+        if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+        try {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'SCHEDULE_APPS',
+                appointments: appointments || []
+            });
+        } catch (e) {}
+    }
+
+    /** إشعار عبر Service Worker (أفضل على الجوال) */
+    function showSWNotification(title, body, tag) {
+        if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+        if (!('serviceWorker' in navigator)) {
+            try { new Notification(title, { body, icon: './icon-192.png', requireInteraction: true }); } catch (e) {}
+            return;
+        }
+        navigator.serviceWorker.ready.then((reg) => {
+            if (reg.active) {
+                reg.active.postMessage({ type: 'SHOW_NOTIFICATION', title, body, tag: tag || 'farouk-reminder' });
+            } else {
+                try { new Notification(title, { body, icon: './icon-192.png', requireInteraction: true }); } catch (e) {}
+            }
+        }).catch(() => {});
     }
 
     // =================================================================
@@ -2155,6 +2295,7 @@
         renderAppointments();
         checkAllAlerts(window.allUsersData);
         schedulePersonalSync();
+        pushAppointmentsToSW();
     }
 
     function renderAppointments() {
@@ -2312,8 +2453,38 @@
         icon.classList.toggle('fa-chevron-down');
         icon.classList.toggle('fa-chevron-up');
     }
-    document.getElementById('sidebarToggle').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('collapsed');
+    function openMobileMenu() {
+        document.getElementById('sidebar')?.classList.add('open');
+        document.getElementById('sidebarOverlay')?.classList.add('show');
+        document.body.classList.add('menu-open');
+    }
+    function closeMobileMenu() {
+        document.getElementById('sidebar')?.classList.remove('open');
+        document.getElementById('sidebarOverlay')?.classList.remove('show');
+        document.body.classList.remove('menu-open');
+    }
+    function toggleMobileMenu() {
+        if (document.getElementById('sidebar')?.classList.contains('open')) closeMobileMenu();
+        else openMobileMenu();
+    }
+
+    document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+        // سطح المكتب: طي الشريط
+        if (window.innerWidth > 768) {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        } else {
+            toggleMobileMenu();
+        }
+    });
+    document.getElementById('hamburgerBtn')?.addEventListener('click', toggleMobileMenu);
+    document.getElementById('sidebarOverlay')?.addEventListener('click', closeMobileMenu);
+
+    // إغلاق القائمة عند اختيار عنصر على الجوال
+    document.getElementById('sidebar')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('.sidebar-btn');
+        if (btn && window.innerWidth <= 768) {
+            setTimeout(closeMobileMenu, 150);
+        }
     });
 
     function openSettingsModal() {
@@ -2352,6 +2523,10 @@
         document.getElementById('loginSubTitle').textContent = sub;
         document.title = title + ' - لوحة التحكم';
         document.documentElement.style.setProperty('--gold', color);
+        const mobLogo = document.getElementById('mobileLogo');
+        const mobTitle = document.getElementById('mobileBrandTitle');
+        if (mobLogo) mobLogo.src = logo;
+        if (mobTitle) mobTitle.textContent = title;
     }
 
     function loadAllData() {
@@ -2374,8 +2549,8 @@
         }, 30000);
         // فحص فوري بعد التحميل
         setTimeout(() => checkAppointmentTimes(), 2000);
-        // مزامنة دورية كل 10 دقائق
-        setInterval(() => { if (document.visibilityState === 'visible') fetchPersonalDataFromServer(); }, 10 * 60 * 1000);
+        // لا مزامنة دورية — فقط عند الفتح وبعد التعديل (توفير كوتا Google)
+        pushAppointmentsToSW();
     }
 
     // =================================================================
@@ -2430,14 +2605,21 @@
         showLoginScreen();
     });
     document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
+        if (document.visibilityState === 'hidden') {
+            // عند الإغلاق / التصغير: رفع البيانات إن وُجدت تغييرات
+            syncOnClose();
+        } else if (document.visibilityState === 'visible') {
             if (document.getElementById('dashboard').style.display === 'block' && isSessionExpired()) {
                 forceLogout('انتهت الجلسة أثناء غيابك.', false);
             } else if (document.getElementById('dashboard').style.display === 'block') {
+                // عند الفتح: جلب من السيرفر
                 fetchPersonalDataFromServer();
+                checkAppointmentTimes();
             }
         }
     });
+    window.addEventListener('pagehide', () => { syncOnClose(); });
+    window.addEventListener('beforeunload', () => { syncOnClose(); });
 
     window.addEventListener('load', () => {
         initialSessionCheck();
