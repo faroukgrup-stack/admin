@@ -1,7 +1,7 @@
 /* Service Worker - لوحة تحكم مجموعة فاروق v2
  * تخزين مؤقت + إشعارات المواعيد
  */
-const CACHE_NAME = 'farouk-admin-v2';
+const CACHE_NAME = 'farouk-admin-v4.7';
 const SHELL = [
   './admin.html',
   './manifest.webmanifest',
