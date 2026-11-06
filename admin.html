@@ -52,7 +52,7 @@
 
         #dashboard { display: none; min-height: 100vh; position: relative; z-index: 1; }
         .dashboard-container { display: flex; }
-        .sidebar { width: 270px; background: linear-gradient(180deg, #0d0d0d, #161616); border-left: 2px solid var(--gold); padding: 20px 12px; display: flex; flex-direction: column; color: #fff; height: 100vh; position: sticky; top: 0; overflow-y: auto; transition: width 0.3s; z-index: 100; }
+        .sidebar { width: 270px; max-width: 270px; background: linear-gradient(180deg, #0d0d0d, #161616); border-left: 2px solid var(--gold); padding: 20px 12px; display: flex; flex-direction: column; color: #fff; height: 100vh; position: sticky; top: 0; overflow-y: auto; overflow-x: hidden; transition: width 0.3s; z-index: 100; box-sizing: border-box; }
         .sidebar.collapsed { width: 58px; }
         .sidebar.collapsed .sidebar-logo h2, .sidebar.collapsed .sidebar-logo p, .sidebar.collapsed .sidebar-btn span, .sidebar.collapsed .sidebar-footer span, .sidebar.collapsed .sidebar-section-title { display: none; }
         .sidebar.collapsed .sidebar-btn { justify-content: center; padding: 11px; }
@@ -65,7 +65,7 @@
         .sidebar-section { margin-bottom: 8px; }
         .sidebar-section-title { font-size: 0.75rem; color: #666; margin: 8px 0 4px; padding: 0 6px; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .sidebar-section-title:hover { color: #bbb; }
-        .sidebar-btn { background: transparent; color: #ccc; border: 1px solid #2a2a2a; padding: 10px 12px; border-radius: 10px; cursor: pointer; text-align: right; display: flex; align-items: center; gap: 9px; width: 100%; margin-bottom: 5px; transition: var(--transition); font-family: 'Tajawal', sans-serif; font-size: 0.9rem; }
+        .sidebar-btn { background: transparent; color: #ccc; border: 1px solid #2a2a2a; padding: 10px 12px; border-radius: 10px; cursor: pointer; text-align: right; display: flex; align-items: center; gap: 9px; width: 100%; max-width: 100%; margin-bottom: 5px; transition: var(--transition); font-family: 'Tajawal', sans-serif; font-size: 0.9rem; box-sizing: border-box; overflow: hidden; }
         .sidebar-btn i { color: var(--gold); width: 20px; text-align: center; font-size: 1.05rem; }
         .sidebar-btn:hover, .sidebar-btn.active { background: rgba(184,134,11,0.14); border-color: var(--gold); color: #fff; transform: translateX(-4px); }
         .sidebar-footer { margin-top: auto; border-top: 1px solid #2a2a2a; padding-top: 10px; }
@@ -83,6 +83,20 @@
         .refresh-btn:hover { background: var(--gold); color: #111; }
         .refresh-btn.loading i { animation: spin 0.8s linear infinite; }
 
+
+        .progress-cell { min-width: 150px; }
+        .progress-wrapper { display: flex; align-items: center; gap: 8px; }
+        .progress-track { flex: 1; height: 16px; background: rgba(0,0,0,0.45); border-radius: 10px; overflow: hidden; border: 1px solid rgba(184,134,11,0.25); }
+        .progress-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; background: linear-gradient(90deg, #b8860b, #d4b15a); }
+        .progress-fill.high { background: linear-gradient(90deg, #2e7d32, #4caf50); }
+        .progress-fill.medium { background: linear-gradient(90deg, #b8860b, #d4b15a); }
+        .progress-fill.low { background: linear-gradient(90deg, #8a6d0b, #b8860b); }
+        .progress-fill.empty { background: linear-gradient(90deg, #444, #666); }
+        .progress-percent { font-size: 0.78rem; font-weight: 800; color: var(--gold-light); min-width: 40px; }
+        .progress-lessons { font-size: 0.68rem; color: var(--text-muted); display: block; margin-top: 2px; }
+        select.booking-status-select { background: #1a2233 !important; color: #f0f4fa !important; border: 1px solid #4a5568 !important; }
+        select.booking-status-select option { background: #1a2233; color: #f0f4fa; }
+        select.booking-status-select option:checked { background: #b8860b; color: #111; }
         .platform-status { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; font-size: 0.8rem; }
         .plat-status-item { padding: 4px 10px; border-radius: 20px; background: rgba(0,0,0,0.3); border: 1px solid #333; display: flex; align-items: center; gap: 5px; }
         .plat-status-item.ok { border-color: var(--success); color: var(--success); }
@@ -342,8 +356,8 @@
         <img id="loginLogo" src="https://lh3.googleusercontent.com/d/1e6u-DPTinDJl_Q9wW3QvGgzFbXO_2sXa" alt="شعار">
         <h2>الدخول للمصرح لهم</h2>
         <p class="sub-title" id="loginSubTitle">مجموعة فاروق للاستشارات والأعمال</p>
-        <div class="admin-email"><i class="fas fa-envelope"></i> faroukgrup@gmail.com</div>
-        <input type="password" id="passwordInput" class="login-input" placeholder="كلمة المرور" autofocus>
+        <input type="email" id="usernameInput" class="login-input" placeholder="البريد الإلكتروني" value="" dir="ltr" autocomplete="username">
+        <input type="password" id="passwordInput" class="login-input" placeholder="كلمة المرور" autofocus autocomplete="current-password">
         <button class="login-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
         <div class="error-msg" id="errorMsg"></div>
     </div>
@@ -380,12 +394,17 @@
                 <h2 id="sidebarTitle">مجموعة فاروق</h2>
                 <p id="sidebarSub">للاستشارات والأعمال</p>
             </div>
+            <div style="background:rgba(184,134,11,0.08);border:1px solid rgba(184,134,11,0.3);border-radius:10px;padding:8px 10px;margin-bottom:12px;text-align:center;font-size:0.8rem;">
+                <strong id="userDisplayName" style="color:var(--gold-light);display:block;font-size:0.9rem;">—</strong>
+                <span id="userRoleLabel" style="color:#888;font-size:0.75rem;">—</span>
+            </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-title" onclick="toggleSection(this)"><span>الرئيسية</span><i class="fas fa-chevron-down"></i></div>
                 <button class="sidebar-btn active" onclick="loadData('all', this)"><i class="fas fa-chart-pie"></i> <span>نظرة عامة</span></button>
                 <button class="sidebar-btn" onclick="openSettingsModal()"><i class="fas fa-cog"></i> <span>إعدادات اللوحة</span></button>
+                <button class="sidebar-btn" onclick="showMessagesView()"><i class="fas fa-envelope"></i> <span>الرسائل</span> <span id="msgBadgeSidebar" style="display:none;background:#e74c3c;color:#fff;font-size:0.7rem;padding:1px 7px;border-radius:10px;margin-right:auto;"></span></button>
             </div>
-            <div class="sidebar-section">
+            <div class="sidebar-section" id="platformsSidebarSection">
                 <div class="sidebar-section-title" onclick="toggleSection(this)"><span>المنصات الأساسية</span><i class="fas fa-chevron-down"></i></div>
                 <button class="sidebar-btn" data-platform="comprehensive" onclick="loadData('comprehensive', this)"><i class="fas fa-briefcase" style="color:#b8860b"></i> <span>المنصة الشاملة</span></button>
                 <button class="sidebar-btn" data-platform="portaltr" onclick="loadData('portaltr', this)"><i class="fas fa-globe-asia" style="color:#3498db"></i> <span>الشاملة تركي</span></button>
@@ -393,17 +412,21 @@
                 <button class="sidebar-btn" data-platform="menuEngineering" onclick="loadData('menuEngineering', this)"><i class="fas fa-utensils" style="color:#e67e22"></i> <span>هندسة المينيو</span></button>
                 <button class="sidebar-btn" data-platform="newCourse" onclick="loadData('newCourse', this)"><i class="fas fa-book" style="color:#9b59b6"></i> <span>دورة الماليات</span></button>
             </div>
-            <div class="sidebar-section">
+            <div class="sidebar-section" id="bookingsSidebarSection">
                 <div class="sidebar-section-title" onclick="toggleSection(this)"><span>الحجوزات</span><i class="fas fa-chevron-down"></i></div>
                 <button class="sidebar-btn" onclick="showBookingsView()"><i class="fas fa-calendar-check" style="color:#e67e22"></i> <span>حجوزات العملاء</span></button>
                 <button class="sidebar-btn" onclick="openBookingSettingsModal()"><i class="fas fa-clock" style="color:#3498db"></i> <span>إعدادات الحجز</span></button>
             </div>
-            <div class="sidebar-section">
+            <div class="sidebar-section" id="toolsSidebarSection">
                 <div class="sidebar-section-title" onclick="toggleSection(this)"><span>الأدوات الاستشارية</span><i class="fas fa-chevron-down"></i></div>
                 <button class="sidebar-btn" onclick="window.open('business-audit-60q.html','_blank')"><i class="fas fa-clipboard-list"></i> <span>التدقيق السريع</span></button>
                 <button class="sidebar-btn" onclick="window.open('restaurant-audit-150q.html','_blank')"><i class="fas fa-utensils"></i> <span>تقييم المطاعم</span></button>
                 <button class="sidebar-btn" onclick="window.open('business-audit-150q.html','_blank')"><i class="fas fa-briefcase"></i> <span>تقييم الأعمال</span></button>
                 <button class="sidebar-btn" onclick="window.open('investment-readiness.html','_blank')"><i class="fas fa-chart-pie"></i> <span>جاذبية الاستثمار</span></button>
+            </div>
+            <div class="sidebar-section" id="staffSidebarSection" style="display:none;">
+                <div class="sidebar-section-title" onclick="toggleSection(this)"><span>الإدارة</span><i class="fas fa-chevron-down"></i></div>
+                <button class="sidebar-btn" onclick="showStaffView()"><i class="fas fa-users-cog"></i> <span>إدارة الموظفين</span></button>
             </div>
             <div class="sidebar-footer">
                 <button class="sidebar-btn logout-btn" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span></button>
@@ -466,6 +489,14 @@
                     <div><h4>منتهية</h4><span class="stat-number" id="expiredUsers">0</span><div class="stat-sub">تحتاج تجديد</div></div>
                     <i class="fas fa-user-times"></i>
                 </div>
+                <div class="stat-card" id="statAppsToday" onclick="showBookingsView()">
+                    <div><h4>مواعيد اليوم</h4><span class="stat-number" id="appsTodayCount">0</span><div class="stat-sub">حجوزات + إداري</div></div>
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-card" id="statPendingBookings" onclick="showBookingsView()">
+                    <div><h4>بانتظار التأكيد</h4><span class="stat-number" id="pendingBookingsCount">0</span><div class="stat-sub">حجوزات عملاء</div></div>
+                    <i class="fas fa-clock"></i>
+                </div>
             </div>
 
             <div class="charts-grid" id="chartsSection">
@@ -480,7 +511,7 @@
                     <h3><i class="fas fa-sticky-note"></i> ملاحظات سريعة</h3>
                     <textarea id="notesArea" placeholder="اكتب ملاحظاتك هنا..." style="width:100%;min-height:90px;padding:10px;border:1px solid #3a3a3a;border-radius:8px;background:rgba(0,0,0,0.3);color:#ddd;font-family:'Tajawal',sans-serif;resize:vertical;margin-bottom:8px;"></textarea>
                     <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                        <button class="btn-sm" onclick="saveNotes()"><i class="fas fa-save"></i> حفظ</button>
+                        <button class="btn-sm" onclick="saveNotes(event)"><i class="fas fa-save"></i> حفظ</button>
                         <button class="btn-outline-sm" onclick="exportNotes()"><i class="fas fa-download"></i> تصدير</button>
                         <button class="btn-outline-sm" onclick="importNotes()"><i class="fas fa-upload"></i> استيراد</button>
                     </div>
@@ -501,7 +532,7 @@
                                 <option value="low">أولوية منخفضة</option>
                             </select>
                         </div>
-                        <button class="btn-sm" id="todoSubmitBtn" onclick="saveTodo()"><i class="fas fa-plus"></i> إضافة مهمة</button>
+                        <button class="btn-sm" id="todoSubmitBtn" onclick="saveTodoWithLoading()"><i class="fas fa-plus"></i> إضافة مهمة</button>
                     </div>
                     <div class="item-list" id="todoList"></div>
                 </div>
@@ -523,7 +554,7 @@
                             <option value="block">🚫 حجز وقت (منع الحجوزات)</option>
                         </select>
                         <input type="text" id="appDesc" placeholder="تفاصيل (اختياري)">
-                        <button class="btn-sm" id="appSubmitBtn" onclick="saveAppointment()"><i class="fas fa-calendar-plus"></i> إضافة موعد</button>
+                        <button class="btn-sm" id="appSubmitBtn" onclick="saveAppointmentWithLoading()"><i class="fas fa-calendar-plus"></i> إضافة موعد</button>
                     </div>
                     <div class="item-list" id="appointmentsList"></div>
                     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
@@ -573,6 +604,7 @@
                             <th onclick="sortTable('startDate')">تاريخ الانتهاء <i class="fas fa-sort"></i></th>
                             <th onclick="sortTable('daysLeft')">الأيام المتبقية <i class="fas fa-sort"></i></th>
                             <th>الحالة</th>
+                            <th onclick="sortTable('progressPercent')">التقدم <i class="fas fa-sort"></i></th>
                             <th>التجميد</th>
                             <th>إجراءات</th>
                         </tr>
@@ -631,6 +663,100 @@
                     </table>
                 </div>
             </div>
+
+            <!-- ===== Staff View ===== -->
+            <div id="staffView" style="display:none;">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3><i class="fas fa-users-cog"></i> إدارة الموظفين</h3>
+                        <button class="btn-sm" onclick="openStaffModal()"><i class="fas fa-user-plus"></i> إضافة موظف</button>
+                    </div>
+                    <div id="staffListContainer"><div class="loader"></div></div>
+                </div>
+            </div>
+
+            <!-- ===== Messages View (Email-like) ===== -->
+            <div id="messagesView" style="display:none;">
+                <div class="table-container" style="padding:0;overflow:hidden;">
+                    <div class="table-header" style="padding:14px 16px;margin:0;">
+                        <h3><i class="fas fa-envelope"></i> البريد الداخلي</h3>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn-sm" onclick="openComposeMsgModal()"><i class="fas fa-pen"></i> رسالة جديدة</button>
+                            <button class="btn-outline-sm" id="btnMsgInbox" onclick="loadMessagesFolder('inbox')">الوارد</button>
+                            <button class="btn-outline-sm" id="btnMsgSent" onclick="loadMessagesFolder('sent')">المرسل</button>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:minmax(260px,1fr) minmax(320px,1.4fr);min-height:420px;" id="msgLayout">
+                        <div id="messagesListContainer" style="border-left:1px solid rgba(255,255,255,0.08);max-height:520px;overflow-y:auto;padding:8px;"><div class="loader"></div></div>
+                        <div id="messageReadPane" style="padding:16px;display:flex;align-items:center;justify-content:center;color:#888;min-height:320px;">
+                            <div style="text-align:center;"><i class="fas fa-envelope-open-text" style="font-size:2rem;opacity:0.4;"></i><p style="margin-top:10px;">اختر رسالة لعرضها</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+            @media (max-width: 800px) {
+                #msgLayout { grid-template-columns: 1fr !important; }
+                #messageReadPane { border-top: 1px solid rgba(255,255,255,0.08); }
+            }
+            </style>
+        </div>
+    </div>
+</div>
+
+<!-- Staff Modal -->
+<div id="staffModal" class="modal">
+    <div class="modal-content" style="max-width:560px;">
+        <h3 style="margin-bottom:14px;" id="staffModalTitle"><i class="fas fa-user-plus"></i> إضافة موظف</h3>
+        <input type="hidden" id="staffEditEmail">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="staffEmail" dir="ltr" placeholder="email@example.com">
+        <label>الاسم الكامل</label>
+        <input type="text" id="staffFullName" placeholder="الاسم">
+        <label>كلمة المرور</label>
+        <input type="text" id="staffPassword" dir="ltr" placeholder="كلمة مرور قوية">
+        <label style="margin-top:12px;display:block;color:var(--gold-light);">المنصات المسموحة</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;"><input type="checkbox" class="perm-plat" value="comprehensive"> المنصة الشاملة</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;"><input type="checkbox" class="perm-plat" value="portaltr"> الشاملة تركي</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;"><input type="checkbox" class="perm-plat" value="restaurantCourse"> دورة المطاعم</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;"><input type="checkbox" class="perm-plat" value="menuEngineering"> هندسة المينيو</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;"><input type="checkbox" class="perm-plat" value="newCourse"> دورة الماليات</label>
+        </div>
+        <label style="margin-top:8px;display:block;color:var(--gold-light);">الإجراءات المسموحة</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="add_subscriber"> إضافة مشترك</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="edit_subscriber"> تعديل مشترك</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="delete_subscriber"> حذف مشترك</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="manage_subscribers"> إدارة المشتركين (كل)</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="manage_bookings"> إدارة الحجوزات</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="booking_settings"> إعدادات الحجز</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="use_audit_tools"> أدوات التدقيق</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="send_messages"> إرسال رسائل</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><input type="checkbox" class="perm-act" value="view_reports"> التقارير</label>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-save" onclick="saveStaffFromModal()">حفظ</button>
+            <button class="btn-cancel" onclick="closeModal('staffModal')">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- Compose Message Modal -->
+<div id="composeMsgModal" class="modal">
+    <div class="modal-content">
+        <h3 style="margin-bottom:14px;"><i class="fas fa-pen"></i> رسالة جديدة</h3>
+        <label>إلى</label>
+        <select id="composeTo"><option value="">— اختر —</option><option value="all">جميع الموظفين</option></select>
+        <label>الموضوع</label>
+        <input type="text" id="composeSubject" placeholder="موضوع الرسالة">
+        <label>الأولوية</label>
+        <select id="composePriority"><option value="normal">عادية</option><option value="high">عالية</option></select>
+        <label>نص الرسالة</label>
+        <textarea id="composeBody" rows="5" style="width:100%;padding:10px;border:1px solid #3a3a3a;border-radius:8px;background:rgba(0,0,0,0.3);color:#ddd;font-family:inherit;"></textarea>
+        <div class="modal-buttons">
+            <button class="btn-save" onclick="sendComposeMessage()"><i class="fas fa-paper-plane"></i> إرسال</button>
+            <button class="btn-cancel" onclick="closeModal('composeMsgModal')">إلغاء</button>
         </div>
     </div>
 </div>
@@ -709,7 +835,7 @@
 <div class="toast-container" id="toastBox"></div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxabO75lngU1DTw8REo9-sdmOKBVu61Avls8SqwOAyf6KLqzhwkOalXDm5dHpNy8YcFpQ/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7LqmXgKI3YEuWELG0FfwkVC8fpkJEaz-ppY7naLQI4AaqXd3N4zgDSr-QRmA3mVoBBQ/exec";
     // يجب أن يطابق ADMIN_KEY في Script Properties للمنصة الشاملة و ADMINSECRETKEY لهندسة المينيو
     const ADMIN_KEY = "mF9$kL2#pQ8wZ4xR7vN1yT6";
     const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
@@ -733,7 +859,9 @@
         },
         restaurantCourse: {
             name: 'دورة المطاعم',
-            url: 'https://script.google.com/macros/s/AKfycbx9XjJQBoM1iOJPhJKJUTGizQT8o9hL2ajyguCpy093f4OgZSI22vePlI4mw8ItHFAP/exec'
+            url: 'https://script.google.com/macros/s/AKfycbyMfXBSn3MOU2mxZ60Zux18RmnfN3VMOHDHrXkroNzVQC9W-FWfH43ko_h_zzyVzK_a/exec',
+            supportsProgress: true,
+            totalLessonsDefault: 81
         },
         menuEngineering: {
             name: 'هندسة المينيو',
@@ -847,8 +975,58 @@
         document.getElementById('passwordInput').value = ''; document.getElementById('errorMsg').textContent = '';
         document.getElementById('loginBtn').disabled = false; document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
     }
+    // ===== Multi-user state =====
+    let currentUser = { email: '', name: '', role: '', permissions: {}, isSuperAdmin: false };
+    function hasPerm(action) {
+        if (currentUser.isSuperAdmin || currentUser.role === 'super') return true;
+        const acts = (currentUser.permissions && currentUser.permissions.actions) || [];
+        if (acts.indexOf(action) !== -1) return true;
+        // إدارة المشتركين الشاملة تشمل الإضافة/التعديل/الحذف
+        if (acts.indexOf('manage_subscribers') !== -1 &&
+            (action === 'add_subscriber' || action === 'edit_subscriber' || action === 'delete_subscriber')) return true;
+        return false;
+    }
+    function hasPlatform(key) {
+        if (currentUser.isSuperAdmin || currentUser.role === 'super') return true;
+        const plats = (currentUser.permissions && currentUser.permissions.platforms) || [];
+        return plats.indexOf(key) !== -1;
+    }
+    function applyPermissionsUI() {
+        document.querySelectorAll('.sidebar-btn[data-platform]').forEach(btn => {
+            btn.style.display = hasPlatform(btn.dataset.platform) ? '' : 'none';
+        });
+        const bookingsSec = document.getElementById('bookingsSidebarSection');
+        if (bookingsSec) bookingsSec.style.display = hasPerm('manage_bookings') ? '' : 'none';
+        const staffSec = document.getElementById('staffSidebarSection');
+        if (staffSec) staffSec.style.display = (currentUser.isSuperAdmin || hasPerm('manage_staff')) ? '' : 'none';
+        const toolsSec = document.getElementById('toolsSidebarSection');
+        if (toolsSec) toolsSec.style.display = hasPerm('use_audit_tools') ? '' : 'none';
+        const roleLabel = document.getElementById('userRoleLabel');
+        if (roleLabel) roleLabel.textContent = currentUser.isSuperAdmin ? 'المسؤول الرئيسي' : (currentUser.role === 'staff' ? 'موظف' : currentUser.role || '');
+        const nameLabel = document.getElementById('userDisplayName');
+        if (nameLabel) nameLabel.textContent = currentUser.name || '';
+        // إعدادات اللوحة للمسؤول فقط
+        document.querySelectorAll('.sidebar-btn').forEach(btn => {
+            const span = btn.querySelector('span');
+            if (span && span.textContent.trim() === 'إعدادات اللوحة') {
+                btn.style.display = (currentUser.isSuperAdmin || currentUser.role === 'super') ? '' : 'none';
+            }
+        });
+    }
+    function loadCurrentUserFromStorage() {
+        currentUser = {
+            email: localStorage.getItem('userEmail') || '',
+            name: localStorage.getItem('userName') || '',
+            role: localStorage.getItem('userRole') || 'staff',
+            permissions: JSON.parse(localStorage.getItem('userPerms') || '{}'),
+            isSuperAdmin: localStorage.getItem('isSuperAdmin') === '1'
+        };
+    }
+
     async function attemptLogin() {
-        const username = 'faroukgrup@gmail.com'; const password = document.getElementById('passwordInput').value.trim();
+        const usernameEl = document.getElementById('usernameInput');
+        const username = (usernameEl ? usernameEl.value.trim() : '') || 'faroukgrup@gmail.com';
+        const password = document.getElementById('passwordInput').value.trim();
         if (!password) { document.getElementById('errorMsg').textContent = '❌ أدخل كلمة المرور'; return; }
         const btn = document.getElementById('loginBtn'); btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري التحقق...'; btn.disabled = true;
         try {
@@ -856,9 +1034,21 @@
             const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body });
             const r = await res.json();
             if (r.status === 'success') {
-                localStorage.setItem('userToken', r.token); localStorage.setItem('userName', r.name); localStorage.setItem('daysLeft', r.daysLeft); localStorage.setItem('loginTimestamp', Date.now().toString());
-                document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('sessionExpiredOverlay').style.display = 'none'; document.getElementById('dashboard').style.display = 'block';
-                startSessionTimer(); initAudio(); loadAllData(); showToast(`مرحباً ${r.name}`, "fa-smile");
+                localStorage.setItem('userToken', r.token);
+                localStorage.setItem('userName', r.name || username);
+                localStorage.setItem('userEmail', r.email || username);
+                localStorage.setItem('userRole', r.role || 'staff');
+                localStorage.setItem('userPerms', JSON.stringify(r.permissions || {}));
+                localStorage.setItem('isSuperAdmin', (r.isSuperAdmin || r.role === 'super') ? '1' : '0');
+                localStorage.setItem('loginTimestamp', Date.now().toString());
+                if (r.daysLeft !== undefined) localStorage.setItem('daysLeft', r.daysLeft);
+                loadCurrentUserFromStorage();
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('sessionExpiredOverlay').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                applyPermissionsUI();
+                startSessionTimer(); initAudio(); loadAllData();
+                showToast(`مرحباً ${r.name}`, "fa-smile");
             } else if (r.status === 'expired') {
                 document.getElementById('errorMsg').innerHTML = '❌ انتهى اشتراكك. <a href="https://alfan.link/faroukazem?digital=r89RJK" target="_blank" style="color:#cfa776;">تجديد</a>';
             } else document.getElementById('errorMsg').textContent = '❌ ' + (r.message || 'بيانات خاطئة');
@@ -869,12 +1059,17 @@
         const token = localStorage.getItem('userToken');
         if (!token) { showLoginScreen(); return; }
         if (isSessionExpired()) { localStorage.removeItem('userToken'); localStorage.removeItem('loginTimestamp'); showLoginScreen(); return; }
-        document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('sessionExpiredOverlay').style.display = 'none'; document.getElementById('dashboard').style.display = 'block';
+        loadCurrentUserFromStorage();
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('sessionExpiredOverlay').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        applyPermissionsUI();
         startSessionTimer(); initAudio(); loadAllData();
     }
     window.logoutAdmin = function() {
         if (logoutTimer) clearTimeout(logoutTimer);
-        localStorage.removeItem('userToken'); localStorage.removeItem('userName'); localStorage.removeItem('daysLeft'); localStorage.removeItem('loginTimestamp');
+        ['userToken','userName','userEmail','userRole','userPerms','isSuperAdmin','daysLeft','loginTimestamp'].forEach(k => localStorage.removeItem(k));
+        currentUser = { email: '', name: '', role: '', permissions: {}, isSuperAdmin: false };
         stopAutoRefresh(); showLoginScreen(); showToast("تم تسجيل الخروج", "fa-sign-out-alt");
     };
 
@@ -882,6 +1077,27 @@
         const box = document.getElementById('toastBox'); const toast = document.createElement('div');
         toast.className = 'toast' + (type ? ' toast-' + type : ''); toast.innerHTML = `<i class="fas ${icon}"></i> <span>${msg}</span>`;
         box.appendChild(toast); setTimeout(() => toast.remove(), 4500);
+    }
+    /** تعطيل الزر وإظهار دوران أثناء التنفيذ ثم استعادة النص */
+    async function withButtonLoading(btnOrId, loadingText, fn) {
+        const btn = typeof btnOrId === 'string' ? document.getElementById(btnOrId) : btnOrId;
+        if (!btn) return fn();
+        if (btn.dataset.loading === '1') return; // منع الضغط المزدوج
+        const oldHtml = btn.innerHTML;
+        btn.dataset.loading = '1';
+        btn.disabled = true;
+        btn.style.opacity = '0.75';
+        btn.style.pointerEvents = 'none';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (loadingText || 'جاري التنفيذ...');
+        try {
+            return await fn();
+        } finally {
+            btn.dataset.loading = '0';
+            btn.disabled = false;
+            btn.style.opacity = '';
+            btn.style.pointerEvents = '';
+            btn.innerHTML = oldHtml;
+        }
     }
     window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
     function updateDateTime() {
@@ -908,8 +1124,10 @@
     function setProgress(pct) { const el = document.getElementById('fetchProgress'); el.style.width = pct + '%'; if (pct >= 100) setTimeout(() => el.style.width = '0', 400); }
     function updatePlatformStatus(statusMap) {
         const c = document.getElementById('platformStatus'); c.innerHTML = '';
-        Object.entries(PLATFORMS).forEach(([key]) => {
-            const s = statusMap[key] || { state: 'loading', count: 0 };
+        // عرض المنصات الموجودة في statusMap فقط (المصرح بها) — لا حلقات تحميل أبدية
+        Object.entries(statusMap || {}).forEach(([key, s]) => {
+            if (typeof hasPlatform === 'function' && !hasPlatform(key)) return;
+            s = s || { state: 'loading', count: 0 };
             const d = document.createElement('div'); d.className = 'plat-status-item ' + s.state;
             const icon = s.state === 'ok' ? 'fa-check-circle' : s.state === 'fail' ? 'fa-times-circle' : 'fa-spinner fa-spin';
             d.innerHTML = `<i class="fas ${icon}"></i> ${translatePlatform(key)} ${s.count > 0 ? '(' + s.count + ')' : ''}`;
@@ -966,21 +1184,74 @@
         return { key, success: false, data: [] };
     }
 
+
+    async function enrichRestaurantProgress(allData) {
+        const url = getPlatformUrl('restaurantCourse');
+        if (!url) return;
+        const totalLessons = parseInt(localStorage.getItem('totalLessons_restaurantCourse') || localStorage.getItem('totalLessons') || '81', 10) || 81;
+        let progressMap = {};
+        // طريقة admin-res: getAllProgress كخريطة email -> completed[]
+        try {
+            const res = await fetch(url + '?fn=getAllProgress&t=' + Date.now(), { cache: 'no-store' });
+            const data = await res.json();
+            if (data && data.status === 'success' && data.data && typeof data.data === 'object' && !Array.isArray(data.data)) {
+                Object.keys(data.data).forEach(k => {
+                    progressMap[k.toString().trim().toLowerCase()] = data.data[k];
+                });
+            } else if (data && (data.status === 'success' || data.success) && Array.isArray(data.data)) {
+                data.data.forEach(item => {
+                    const email = (item.email || item.username || '').toString().trim().toLowerCase();
+                    const completed = item.completed || item.completedLessons || [];
+                    progressMap[email] = completed;
+                });
+            }
+        } catch (e) { console.warn('getAllProgress', e); }
+
+        // بديل: لكل مستخدم
+        if (Object.keys(progressMap).length === 0) {
+            const restUsers = allData.filter(u => u.platformKey === 'restaurantCourse');
+            const results = await Promise.all(restUsers.map(async u => {
+                try {
+                    const email = (u.username || '').toString().trim().toLowerCase();
+                    const res = await fetch(url + '?fn=getProgress&email=' + encodeURIComponent(email) + '&t=' + Date.now(), { cache: 'no-store' });
+                    const data = await res.json();
+                    if (data && data.status === 'success' && Array.isArray(data.completed)) return { email, completed: data.completed };
+                    if (data && data.data && Array.isArray(data.data.completed)) return { email, completed: data.data.completed };
+                } catch (_) {}
+                return null;
+            }));
+            results.forEach(r => { if (r) progressMap[r.email] = r.completed; });
+        }
+
+        allData.forEach(u => {
+            if (u.platformKey !== 'restaurantCourse') return;
+            const key = (u.username || '').toString().trim().toLowerCase();
+            const completedArr = progressMap[key] || [];
+            const completedCount = Array.isArray(completedArr) ? completedArr.length : (parseInt(completedArr, 10) || 0);
+            const percent = totalLessons > 0 ? Math.min(100, Math.round((completedCount / totalLessons) * 100)) : 0;
+            u.completedLessons = completedCount;
+            u.totalLessons = totalLessons;
+            u.progressPercent = percent;
+            u.progressLevel = percent >= 75 ? 'high' : (percent >= 25 ? 'medium' : (percent > 0 ? 'low' : 'empty'));
+        });
+    }
+
     async function fetchDashboardData(silent = false, force = false) {
         if (isFetching && !force) return;
         isFetching = true; alertDismissed = false;
         const rb = document.getElementById('refreshBtn');
         if (!silent) { rb.classList.add('loading'); document.getElementById('tableLoader').style.display = 'block'; setProgress(8); }
-        const statusMap = {}; Object.keys(PLATFORMS).forEach(k => statusMap[k] = { state: 'loading', count: 0 }); updatePlatformStatus(statusMap);
+        const statusMap = {}; Object.keys(PLATFORMS).forEach(k => { if (typeof hasPlatform !== 'function' || hasPlatform(k)) statusMap[k] = { state: 'loading', count: 0 }; }); updatePlatformStatus(statusMap);
         const cached = loadCache();
         if (cached && cached.data.length > 0 && !force) {
-            window.allUsersData = cached.data; lastFetchTime = new Date(cached.timestamp);
+            window.allUsersData = (cached.data || []).filter(u => typeof hasPlatform !== 'function' || hasPlatform(u.platformKey));
+            lastFetchTime = new Date(cached.timestamp);
             document.getElementById('lastUpdateLabel').textContent = 'آخر تحديث: ' + lastFetchTime.toLocaleTimeString('ar-EG');
             document.getElementById('cacheStatus').textContent = cached.age < CACHE_TTL_MS ? '✓ من الذاكرة' : '⟳ تحديث...';
             updateStatsCards(window.allUsersData); drawAllCharts(window.allUsersData); applyFilterAndSort(); checkAllAlerts(window.allUsersData);
         }
         setProgress(20);
-        const keys = Object.keys(PLATFORMS).filter(k => getPlatformUrl(k));
+        const keys = Object.keys(PLATFORMS).filter(k => getPlatformUrl(k) && (typeof hasPlatform !== 'function' || hasPlatform(k)));
         const results = await Promise.allSettled(keys.map(k => fetchSinglePlatform(k, 1)));
         setProgress(85);
         const allData = [];
@@ -990,6 +1261,10 @@
             else statusMap[k] = { state: 'fail', count: 0 };
         });
         updatePlatformStatus(statusMap);
+        // إثراء تقدم دورة المطاعم إن وُجدت في النتائج
+        if (allData.some(u => u.platformKey === 'restaurantCourse')) {
+            try { await enrichRestaurantProgress(allData); } catch (e) { console.warn('progress enrich', e); }
+        }
         if (allData.length > 0) {
             window.allUsersData = allData; saveCache(allData); lastFetchTime = new Date();
             document.getElementById('lastUpdateLabel').textContent = 'آخر تحديث: ' + lastFetchTime.toLocaleTimeString('ar-EG');
@@ -1091,6 +1366,10 @@
         currentFilter = type; document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); applyFilterAndSort();
     };
     window.loadData = function(platform, btn) {
+        if (platform !== 'all' && typeof hasPlatform === 'function' && !hasPlatform(platform)) {
+            showToast('ليس لديك صلاحية هذه المنصة', 'fa-lock', 'danger');
+            return;
+        }
         if (typeof showDashboardView === 'function') showDashboardView();
         currentFilter = platform; document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); if (btn) btn.classList.add('active');
         document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active')); document.querySelector('.filter-chip[data-filter="all"]')?.classList.add('active');
@@ -1099,7 +1378,7 @@
     window.filterByPlatformSelect = function(val) { currentFilter = val || 'all'; applyFilterAndSort(); };
 
     function applyFilterAndSort() {
-        let filtered = [...window.allUsersData];
+        let filtered = [...window.allUsersData].filter(u => typeof hasPlatform !== 'function' || hasPlatform(u.platformKey));
         if (currentFilter === 'active') filtered = filtered.filter(u => u.daysLeft > 0);
         else if (currentFilter === 'expiring7') filtered = filtered.filter(u => u.daysLeft <= 7 && u.daysLeft > 0);
         else if (currentFilter === 'expiring3') filtered = filtered.filter(u => u.daysLeft <= 3 && u.daysLeft > 0);
@@ -1137,13 +1416,17 @@
 
     function renderTable(users) {
         const tbody = document.getElementById('usersTableBody'); tbody.innerHTML = '';
-        if (!users.length) { tbody.innerHTML = '<tr><td colspan="9" style="padding:24px;color:#888;">لا يوجد مشتركين</td></tr>'; return; }
+        if (!users.length) { tbody.innerHTML = '<tr><td colspan="10" style="padding:24px;color:#888;">لا يوجد مشتركين</td></tr>'; return; }
         const frag = document.createDocumentFragment();
         users.forEach(u => {
             const days = u.daysLeft; let color = '#2ecc71';
             if (days <= 0) color = '#e74c3c'; else if (days <= 3) color = '#e67e22'; else if (days <= 7) color = '#f39c12';
             const uid = `${u.id}|${u.platformKey}`;
             const tr = document.createElement('tr');
+            const p = u.progressPercent;
+            const hasProgress = typeof p === 'number';
+            const level = u.progressLevel || (hasProgress ? (p >= 75 ? 'high' : p >= 25 ? 'medium' : p > 0 ? 'low' : 'empty') : '');
+            const progressHtml = hasProgress ? `<div class="progress-cell"><div class="progress-wrapper"><div class="progress-track"><div class="progress-fill ${level}" style="width:${p}%;"></div></div><span class="progress-percent">${p}%</span></div><span class="progress-lessons">${u.completedLessons||0} / ${u.totalLessons||0} درس</span></div>` : '<span style="color:#666;font-size:0.8rem;">—</span>';
             tr.innerHTML = `
                 <td><input type="checkbox" class="row-checkbox" data-uid="${uid}"></td>
                 <td>${escapeHtml(u.name)}</td>
@@ -1152,6 +1435,7 @@
                 <td>${u.startDate}</td>
                 <td style="color:${color};font-weight:900;">${days}</td>
                 <td class="${days > 0 ? 'status-active' : 'status-expired'}">${days > 0 ? 'نشط' : 'منتهي'}</td>
+                <td>${progressHtml}</td>
                 <td style="color:${u.frozen ? '#e74c3c' : '#2ecc71'};font-weight:700;">${u.frozen ? '🔒' : '✅'}</td>
                 <td>
                     <button class="action-btn edit-btn" onclick="openEditUserModal('${uid}')"><i class="fas fa-edit"></i></button>
@@ -1332,7 +1616,15 @@
         } catch (e) { setSyncUI('error', 'محلي'); return false; }
     }
 
-    window.manualPersonalSync = async function() { setSyncUI('syncing'); if (personalDataDirty) await pushPersonalDataToServer(); await fetchPersonalDataFromServer(); showToast('تمت المزامنة ✓', 'fa-cloud'); };
+    window.manualPersonalSync = async function() {
+        const btn = document.getElementById('syncPersonalBtn');
+        await withButtonLoading(btn, 'جاري المزامنة...', async () => {
+            setSyncUI('syncing');
+            if (personalDataDirty) await pushPersonalDataToServer();
+            await fetchPersonalDataFromServer();
+            showToast('تمت المزامنة ✓', 'fa-cloud');
+        });
+    };
     function schedulePersonalSync() { personalDataDirty = true; localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(Date.now())); }
     function syncOnClose() { if (!localStorage.getItem('userToken') || !personalDataDirty) return; pushPersonalDataToServer(); }
     function pushAppointmentsToSW() { if ('serviceWorker' in navigator && navigator.serviceWorker.controller) { try { navigator.serviceWorker.controller.postMessage({ type: 'SCHEDULE_APPS', appointments }); } catch (e) {} } }
@@ -1361,6 +1653,12 @@
             list.appendChild(card);
         });
     }
+    window.saveTodoWithLoading = async function() {
+        await withButtonLoading('todoSubmitBtn', 'جاري الإضافة...', async () => { saveTodo(); await new Promise(r => setTimeout(r, 200)); });
+    };
+    window.saveAppointmentWithLoading = async function() {
+        await withButtonLoading('appSubmitBtn', 'جاري الإضافة...', async () => { saveAppointment(); await new Promise(r => setTimeout(r, 200)); });
+    };
     window.saveTodo = function() {
         const text = document.getElementById('todoText').value.trim(); if (!text) return;
         const due = document.getElementById('todoDue').value || null, priority = document.getElementById('todoPriority').value, ts = Date.now();
@@ -1381,10 +1679,14 @@
         pushPersonalDataToServer().then(() => { if (document.getElementById('bookingsView')?.style.display === 'block') loadBookings(true); });
     }
     function renderAppointments() {
-        const list = document.getElementById('appointmentsList'); document.getElementById('appBadge').textContent = appointments.length; list.innerHTML = '';
-        if (!appointments.length) { list.innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i>لا توجد مواعيد</div>'; return; }
+        const list = document.getElementById('appointmentsList');
+        // الواجهة الأمامية: إخفاء المنتهية والملغاة — تبقى في صفحة الحجوزات فقط
+        const activeApps = appointments.filter(a => a.status !== 'completed' && a.status !== 'cancelled');
+        document.getElementById('appBadge').textContent = activeApps.length;
+        list.innerHTML = '';
+        if (!activeApps.length) { list.innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i>لا توجد مواعيد نشطة</div>'; return; }
         const today = getLocalDateStr();
-        [...appointments].sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || ''))).forEach(a => {
+        [...activeApps].sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || ''))).forEach(a => {
             const isToday = a.date === today, isPast = a.date < today;
             const card = document.createElement('div'); card.className = 'item-card' + (isToday ? ' due-today' : '') + (isPast ? ' completed' : '');
             const dateStr = new Date(a.date + 'T00:00:00').toLocaleDateString('ar-EG', { weekday: 'short', day: 'numeric', month: 'short' });
@@ -1433,10 +1735,26 @@
         const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `appointments_${new Date().toISOString().slice(0, 10)}.csv`; a.click(); showToast("تم التصدير", "fa-file-csv");
     };
 
-    window.saveNotes = function() { const ts = Date.now(); localStorage.setItem('adminNotes', document.getElementById('notesArea').value); localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(ts)); localStorage.setItem(PERSONAL_DATA_KEY + '_notes_ts', String(ts)); showToast("تم الحفظ", "fa-check"); schedulePersonalSync(); };
+    window.saveNotes = async function(ev) {
+        const btn = ev && ev.currentTarget ? ev.currentTarget : document.querySelector('button[onclick*="saveNotes"]');
+        await withButtonLoading(btn, 'جاري الحفظ...', async () => {
+            const ts = Date.now();
+            localStorage.setItem('adminNotes', document.getElementById('notesArea').value);
+            localStorage.setItem(PERSONAL_DATA_KEY + '_ts', String(ts));
+            localStorage.setItem(PERSONAL_DATA_KEY + '_notes_ts', String(ts));
+            showToast("تم الحفظ", "fa-check");
+            schedulePersonalSync();
+            await new Promise(r => setTimeout(r, 250));
+        });
+    };
     function loadNotes() { const s = localStorage.getItem('adminNotes'); if (s) document.getElementById('notesArea').value = s; }
 
-    window.manualRefresh = async () => await fetchDashboardData(false, true);
+    window.manualRefresh = async function() {
+        const btn = document.getElementById('refreshBtn');
+        await withButtonLoading(btn, 'جاري التحديث...', async () => {
+            await fetchDashboardData(false, true);
+        });
+    };
     function startAutoRefresh() { if (refreshIntervalId) clearInterval(refreshIntervalId); refreshIntervalId = setInterval(() => fetchDashboardData(true, false), 4 * 60 * 60 * 1000); }
     function stopAutoRefresh() { if (refreshIntervalId) { clearInterval(refreshIntervalId); refreshIntervalId = null; } }
     window.toggleSection = function(el) { const i = el.querySelector('i'), sec = el.parentElement; sec.querySelectorAll('.sidebar-btn').forEach(b => b.style.display = b.style.display === 'none' ? '' : 'none'); i.classList.toggle('fa-chevron-down'); i.classList.toggle('fa-chevron-up'); };
@@ -1449,6 +1767,10 @@
     document.getElementById('sidebar')?.addEventListener('click', (e) => { if (e.target.closest('.sidebar-btn') && window.innerWidth <= 768) setTimeout(closeMobileMenu, 150); });
 
     window.openSettingsModal = function() {
+        if (!(currentUser && (currentUser.isSuperAdmin || currentUser.role === 'super'))) {
+            showToast('إعدادات اللوحة للمسؤول الرئيسي فقط', 'fa-lock', 'danger');
+            return;
+        }
         document.getElementById('settingsLogoUrl').value = localStorage.getItem('logoUrl') || ''; document.getElementById('settingsAppTitle').value = localStorage.getItem('appTitle') || 'مجموعة فاروق'; document.getElementById('settingsAppSubtitle').value = localStorage.getItem('appSubtitle') || 'للاستشارات والأعمال'; document.getElementById('settingsPrimaryColor').value = localStorage.getItem('primaryColor') || '#b8860b'; document.getElementById('settingsModal').style.display = 'flex';
     };
     window.saveSettings = function() {
@@ -1477,15 +1799,33 @@
     /* ================== Bookings UI ================== */
     let bookingsData = [], bookingsLoaded = false, bookingFilter = 'all', calendarYear = null, calendarMonth = null, currentBookingSettings = null;
 
+    function hideAllSpecialViews() {
+        ['bookingsView','staffView','messagesView'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    }
     window.showBookingsView = function() {
         ['statsSection','chartsSection','toolsSection','tableSection'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        hideAllSpecialViews();
         document.getElementById('bookingsView').style.display = 'block'; closeMobileMenu();
         if (!calendarYear) { const n = new Date(); calendarYear = n.getFullYear(); calendarMonth = n.getMonth() + 1; }
-        if (!bookingsLoaded) loadBookings(); else renderBookingCalendar();
+        if (!bookingsLoaded) loadBookings(); else { renderBookingCalendar(); renderBookingsTable(); }
     };
     window.showDashboardView = function() {
         ['statsSection','chartsSection','toolsSection','tableSection'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
-        document.getElementById('bookingsView').style.display = 'none';
+        hideAllSpecialViews();
+        updateAppointmentStats();
+    };
+    window.showStaffView = function() {
+        if (!currentUser.isSuperAdmin && !hasPerm('manage_staff')) { showToast('ليس لديك صلاحية', 'fa-lock', 'danger'); return; }
+        ['statsSection','chartsSection','toolsSection','tableSection'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        hideAllSpecialViews();
+        document.getElementById('staffView').style.display = 'block'; closeMobileMenu();
+        loadStaffListUI();
+    };
+    window.showMessagesView = function() {
+        ['statsSection','chartsSection','toolsSection','tableSection'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        hideAllSpecialViews();
+        document.getElementById('messagesView').style.display = 'block'; closeMobileMenu();
+        loadMessagesFolder('inbox');
     };
 
     window.loadBookings = async function(force = false) {
@@ -1542,13 +1882,17 @@
         list.sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
         document.getElementById('bookingsCount').textContent = '(' + list.length + ')'; tbody.innerHTML = '';
         if (!list.length) { tbody.innerHTML = '<tr><td colspan="8" style="padding:24px;color:#888;">لا حجوزات</td></tr>'; return; }
-        const labels = { pending: { t: 'بانتظار', c: '#f39c12' }, confirmed: { t: 'مؤكد', c: '#2ecc71' }, completed: { t: 'مكتمل', c: '#3498db' }, cancelled: { t: 'ملغى', c: '#e74c3c' } };
+        const labels = { pending: { t: 'بانتظار', c: '#f39c12' }, confirmed: { t: 'مؤكد', c: '#2ecc71' }, completed: { t: 'تم الإنهاء', c: '#3498db' }, cancelled: { t: 'ملغى', c: '#e74c3c' } };
         list.forEach(b => {
             const s = labels[b.status] || { t: b.status, c: '#888' };
             let typeLabel = '';
             if (b.type === 'call') typeLabel = '📞 مكالمة';
             else if (b.type === 'field') typeLabel = '🚗 زيارة';
             else if (b.type === 'block') typeLabel = '🚫 حجز إداري';
+
+            const statusOpts = ['pending','confirmed','completed','cancelled'].map(st =>
+                `<option value="${st}" ${b.status===st?'selected':''}>${labels[st].t}</option>`
+            ).join('');
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -1558,38 +1902,91 @@
                 <td>${typeLabel}</td>
                 <td>${b.date}</td>
                 <td>${b.time}</td>
-                <td style="color:${s.c};font-weight:700;">${s.t}</td>
                 <td>
-                    ${!b.isManual ? `
-                        ${b.status === 'pending'   ? `<button class="action-btn" onclick="changeBookingStatus('${b.id}','confirmed')" title="تأكيد" style="background:#2ecc71;"><i class="fas fa-check"></i></button>` : ''}
-                        ${b.status === 'confirmed' ? `<button class="action-btn" onclick="changeBookingStatus('${b.id}','completed')" title="إكمال" style="background:#3498db;"><i class="fas fa-check-double"></i></button>` : ''}
-                        ${(b.status !== 'cancelled' && b.status !== 'completed') ? `<button class="action-btn delete-btn-action" onclick="changeBookingStatus('${b.id}','cancelled')" title="إلغاء"><i class="fas fa-times"></i></button>` : ''}
-                        <button class="action-btn" onclick="deleteBooking('${b.id}')" title="حذف" style="background:#8f2b2b;"><i class="fas fa-trash"></i></button>
-                    ` : `<span style="font-size:0.75rem;color:#888;">يُدار من جدول المواعيد</span>`}
+                    <select class="booking-status-select" data-id="${b.id}" data-prev="${b.status}"
+                        style="padding:6px 10px;border-radius:8px;border:1px solid #556;background:#1a2233;color:#f0f4fa;font-weight:700;font-family:inherit;font-size:0.85rem;cursor:pointer;min-width:120px;"
+                        onchange="onBookingStatusChange(this)">
+                        ${statusOpts}
+                    </select>
+                </td>
+                <td>
+                    <button class="action-btn" onclick="deleteBooking('${b.id}', this)" title="حذف" style="background:#8f2b2b;"><i class="fas fa-trash"></i></button>
                 </td>`;
             tbody.appendChild(tr);
         });
     }
 
-    window.changeBookingStatus = async function(id, status) {
-        const token = localStorage.getItem('userToken'); if (!token) return;
-        if (!confirm('هل تريد ' + ({ confirmed: 'تأكيد', completed: 'إكمال', cancelled: 'إلغاء' }[status] || 'تحديث') + ' هذا الحجز؟')) return;
+    window.onBookingStatusChange = async function(sel) {
+        const id = sel.dataset.id;
+        const status = sel.value;
+        const prev = sel.dataset.prev;
+        if (status === prev) return;
+        const label = { pending: 'بانتظار', confirmed: 'مؤكد', completed: 'تم الإنهاء', cancelled: 'ملغى' }[status] || status;
+        if (!confirm('تغيير الحالة إلى: ' + label + '؟')) {
+            sel.value = prev;
+            return;
+        }
+        sel.disabled = true;
+        const oldHtml = sel.style.opacity;
+        sel.style.opacity = '0.5';
+        const token = localStorage.getItem('userToken'); if (!token) { sel.value = prev; sel.disabled = false; return; }
         try {
             const body = new URLSearchParams({ action: 'updateBookingStatus', token, id, status });
             const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body });
             const r = await res.json();
-            if (r.status === 'success') { showToast('تم التحديث ✓', 'fa-check'); await loadBookings(true); } else showToast('فشل', 'fa-times', 'danger');
+            if (r.status === 'success') {
+                showToast('تم تحديث الحالة إلى: ' + label, 'fa-check');
+                sel.dataset.prev = status;
+                // تحديث المواعيد الشخصية المحلية إن وُجدت
+                try {
+                    const keys = ['adminAppsV2', 'adminAppsV6', 'personalApps'];
+                    keys.forEach(k => {
+                        const raw = localStorage.getItem(k);
+                        if (!raw) return;
+                        let arr = JSON.parse(raw);
+                        if (!Array.isArray(arr)) return;
+                        let ch = false;
+                        arr = arr.map(a => { if (String(a.id) === String(id)) { a.status = status; ch = true; } return a; });
+                        if (ch) localStorage.setItem(k, JSON.stringify(arr));
+                    });
+                    if (typeof renderApps === 'function') renderApps();
+                    if (typeof renderAppointments === 'function') renderAppointments();
+                } catch (e) {}
+                await loadBookings(true);
+                updateAppointmentStats();
+            } else {
+                showToast('فشل التحديث', 'fa-times', 'danger');
+                sel.value = prev;
+            }
+        } catch (e) {
+            showToast('خطأ في الاتصال', 'fa-times', 'danger');
+            sel.value = prev;
+        }
+        sel.disabled = false;
+        sel.style.opacity = oldHtml || '1';
+    };
+
+    window.changeBookingStatus = async function(id, status) {
+        const token = localStorage.getItem('userToken'); if (!token) return;
+        if (!confirm('هل تريد ' + ({ confirmed: 'تأكيد', completed: 'إنهاء', cancelled: 'إلغاء' }[status] || 'تحديث') + ' هذا الموعد/الحجز؟')) return;
+        try {
+            const body = new URLSearchParams({ action: 'updateBookingStatus', token, id, status });
+            const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body });
+            const r = await res.json();
+            if (r.status === 'success') { showToast('تم التحديث ✓', 'fa-check'); await loadBookings(true); updateAppointmentStats(); } else showToast('فشل', 'fa-times', 'danger');
         } catch (e) { showToast('خطأ', 'fa-times', 'danger'); }
     };
-    window.deleteBooking = async function(id) {
+    window.deleteBooking = async function(id, btn) {
         const token = localStorage.getItem('userToken'); if (!token) return;
         if (!confirm('حذف هذا الحجز نهائياً؟')) return;
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
         try {
             const body = new URLSearchParams({ action: 'deleteBooking', token, id });
             const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body });
             const r = await res.json();
-            if (r.status === 'success') { showToast('تم الحذف', 'fa-check'); await loadBookings(true); } else showToast('فشل', 'fa-times', 'danger');
-        } catch (e) { showToast('خطأ', 'fa-times', 'danger'); }
+            if (r.status === 'success') { showToast('تم الحذف', 'fa-check'); await loadBookings(true); updateAppointmentStats(); }
+            else { showToast('فشل', 'fa-times', 'danger'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-trash"></i>'; } }
+        } catch (e) { showToast('خطأ', 'fa-times', 'danger'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-trash"></i>'; } }
     };
 
     /* ================== Booking Settings ================== */
@@ -1679,8 +2076,332 @@
 
     document.getElementById('loginBtn').addEventListener('click', attemptLogin);
     document.getElementById('passwordInput').addEventListener('keypress', e => { if (e.key === 'Enter') attemptLogin(); });
+    const usernameInputEl = document.getElementById('usernameInput');
+    if (usernameInputEl) usernameInputEl.addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('passwordInput').focus(); });
     document.getElementById('reloginBtn').addEventListener('click', () => { document.getElementById('sessionExpiredOverlay').style.display = 'none'; showLoginScreen(); });
     window.addEventListener('load', () => { initialSessionCheck(); updateDateTime(); setInterval(updateDateTime, 1000); });
+
+    /* ================== Staff Management & Messages (v6 UI) ================== */
+    async function apiStaffPost(action, extra = {}) {
+        const token = localStorage.getItem('userToken') || '';
+        const body = new URLSearchParams({ action, token, ...extra });
+        const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body });
+        return res.json();
+    }
+
+    let staffListCache = [];
+
+    window.loadStaffListUI = async function() {
+        const container = document.getElementById('staffListContainer');
+        if (!container) return;
+        container.innerHTML = '<div class="loader"></div>';
+        try {
+            const r = await apiStaffPost('liststaff');
+            if (r.status !== 'success') { container.innerHTML = '<p style="color:#e74c3c;padding:16px;">فشل التحميل</p>'; return; }
+            staffListCache = r.data || [];
+            if (!staffListCache.length) { container.innerHTML = '<p style="color:#888;text-align:center;padding:24px;">لا موظفين بعد</p>'; return; }
+            container.innerHTML = staffListCache.map(s => {
+                const last = s.lastLogin ? new Date(s.lastLogin).toLocaleString('ar-EG') : 'لم يسجل دخولاً بعد';
+                const plats = (s.permissions?.platforms || []).map(p => ({comprehensive:'الشاملة',portaltr:'تركي',restaurantCourse:'المطاعم',menuEngineering:'المينيو',newCourse:'الماليات'}[p]||p)).join('، ') || '—';
+                const acts = (s.permissions?.actions || []).length;
+                const activeCls = s.active ? 'color:var(--success)' : 'color:var(--danger)';
+                return `<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+                    <div style="flex:1;min-width:200px;">
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <strong style="color:var(--gold-light);font-size:1.05rem;">${escapeHtml(s.fullName)}</strong>
+                            <span style="font-size:0.72rem;padding:2px 10px;border-radius:12px;background:${s.role==='super'?'rgba(184,134,11,0.3)':'rgba(52,152,219,0.2)'};">${s.role==='super'?'مسؤول رئيسي':'موظف'}</span>
+                            <span style="font-size:0.75rem;${activeCls}"><i class="fas fa-circle" style="font-size:0.45rem;"></i> ${s.active?'نشط':'معطل'}</span>
+                        </div>
+                        <div style="font-size:0.82rem;color:#999;direction:ltr;text-align:right;margin:4px 0;">${escapeHtml(s.email)}</div>
+                        <div style="font-size:0.78rem;color:#aaa;margin-top:4px;">
+                            <i class="fas fa-clock"></i> آخر دخول: <strong>${last}</strong>
+                        </div>
+                        <div style="font-size:0.78rem;color:#aaa;margin-top:2px;">المنصات: ${escapeHtml(plats)} | إجراءات: ${acts}</div>
+                    </div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        ${s.role !== 'super' ? `
+                            <button class="btn-outline-sm" onclick="openStaffModal('${s.email}')"><i class="fas fa-edit"></i> تعديل</button>
+                            <button class="btn-outline-sm" onclick="toggleStaffActiveUI('${s.email}', ${!s.active})">${s.active?'تعطيل':'تفعيل'}</button>
+                            <button class="btn-outline-sm" style="border-color:#e74c3c;color:#e74c3c;" onclick="deleteStaffUI('${s.email}')"><i class="fas fa-trash"></i></button>
+                        ` : '<span style="font-size:0.8rem;color:#888;">لا يمكن تعديله من هنا</span>'}
+                    </div>
+                </div>`;
+            }).join('');
+        } catch (e) { container.innerHTML = '<p style="color:#e74c3c;padding:16px;">خطأ في الاتصال</p>'; }
+    };
+
+    window.openStaffModal = function(editEmail) {
+        document.getElementById('staffModalTitle').innerHTML = editEmail ? '<i class="fas fa-edit"></i> تعديل موظف' : '<i class="fas fa-user-plus"></i> إضافة موظف';
+        document.getElementById('staffEditEmail').value = editEmail || '';
+        const emailEl = document.getElementById('staffEmail');
+        emailEl.disabled = !!editEmail;
+        document.querySelectorAll('.perm-plat, .perm-act').forEach(c => c.checked = false);
+        if (editEmail) {
+            const s = staffListCache.find(x => x.email === editEmail);
+            if (s) {
+                emailEl.value = s.email;
+                document.getElementById('staffFullName').value = s.fullName || '';
+                document.getElementById('staffPassword').value = '';
+                document.getElementById('staffPassword').placeholder = 'اترك فارغاً للإبقاء على الحالية';
+                (s.permissions?.platforms || []).forEach(p => { const el = document.querySelector(`.perm-plat[value="${p}"]`); if (el) el.checked = true; });
+                (s.permissions?.actions || []).forEach(a => { const el = document.querySelector(`.perm-act[value="${a}"]`); if (el) el.checked = true; });
+            }
+        } else {
+            emailEl.value = '';
+            document.getElementById('staffFullName').value = '';
+            document.getElementById('staffPassword').value = '';
+            document.getElementById('staffPassword').placeholder = 'كلمة مرور قوية';
+        }
+        document.getElementById('staffModal').style.display = 'flex';
+    };
+
+    window.saveStaffFromModal = async function() {
+        const editEmail = document.getElementById('staffEditEmail').value;
+        const email = document.getElementById('staffEmail').value.trim().toLowerCase();
+        const fullName = document.getElementById('staffFullName').value.trim();
+        const password = document.getElementById('staffPassword').value;
+        const platforms = [...document.querySelectorAll('.perm-plat:checked')].map(c => c.value);
+        const actions = [...document.querySelectorAll('.perm-act:checked')].map(c => c.value);
+        if (!email || !fullName) { showToast('الإيميل والاسم مطلوبان', 'fa-exclamation', 'danger'); return; }
+        if (!editEmail && !password) { showToast('كلمة المرور مطلوبة للموظف الجديد', 'fa-exclamation', 'danger'); return; }
+        const btns = document.querySelectorAll('#staffModal .btn-save');
+        btns.forEach(b => { b.disabled = true; b.dataset.old = b.innerHTML; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; });
+        try {
+            let r;
+            if (editEmail) {
+                const payload = { email: editEmail, fullName, permissions: JSON.stringify({ platforms, actions }) };
+                if (password) payload.password = password;
+                r = await apiStaffPost('updatestaff', payload);
+            } else {
+                r = await apiStaffPost('createstaff', { email, password, fullName, permissions: JSON.stringify({ platforms, actions }) });
+            }
+            if (r.status === 'success') { showToast(editEmail ? 'تم التحديث' : 'تم إنشاء الموظف'); closeModal('staffModal'); loadStaffListUI(); }
+            else showToast(r.message || 'فشل', 'fa-times', 'danger');
+        } catch (e) { showToast('خطأ اتصال', 'fa-times', 'danger'); }
+        btns.forEach(b => { b.disabled = false; b.innerHTML = b.dataset.old || 'حفظ'; });
+    };
+
+    window.toggleStaffActiveUI = async function(email, active) {
+        if (!confirm(active ? 'تفعيل الموظف؟' : 'تعطيل الموظف؟')) return;
+        try {
+            const r = await apiStaffPost('updatestaff', { email, active: String(active) });
+            if (r.status === 'success') { showToast('تم'); loadStaffListUI(); }
+            else showToast(r.message || 'فشل', 'fa-times', 'danger');
+        } catch (e) { showToast('خطأ', 'fa-times', 'danger'); }
+    };
+
+    window.deleteStaffUI = async function(email) {
+        if (!confirm('حذف الموظف نهائياً؟')) return;
+        try {
+            const r = await apiStaffPost('deletestaff', { email });
+            if (r.status === 'success') { showToast('تم الحذف'); loadStaffListUI(); }
+            else showToast(r.message || 'فشل', 'fa-times', 'danger');
+        } catch (e) { showToast('خطأ', 'fa-times', 'danger'); }
+    };
+
+    /* Messages — email style + reply */
+    let currentMsgFolder = 'inbox';
+    let messagesCache = [];
+    let selectedMessageId = null;
+
+    window.loadMessagesFolder = async function(folder) {
+        currentMsgFolder = folder;
+        selectedMessageId = null;
+        const inboxBtn = document.getElementById('btnMsgInbox');
+        const sentBtn = document.getElementById('btnMsgSent');
+        if (inboxBtn) inboxBtn.style.borderColor = folder === 'inbox' ? 'var(--gold)' : '#3a3a3a';
+        if (sentBtn) sentBtn.style.borderColor = folder === 'sent' ? 'var(--gold)' : '#3a3a3a';
+        const container = document.getElementById('messagesListContainer');
+        const pane = document.getElementById('messageReadPane');
+        if (pane) pane.innerHTML = '<div style="text-align:center;color:#888;width:100%;"><i class="fas fa-envelope-open-text" style="font-size:2rem;opacity:0.4;"></i><p style="margin-top:10px;">اختر رسالة لعرضها</p></div>';
+        if (!container) return;
+        container.innerHTML = '<div class="loader"></div>';
+        try {
+            const r = await apiStaffPost('getmessages', { folder });
+            if (r.status !== 'success') { container.innerHTML = '<p style="color:#e74c3c;padding:16px;">فشل التحميل</p>'; return; }
+            messagesCache = r.data || [];
+            if (!messagesCache.length) { container.innerHTML = '<p style="color:#888;text-align:center;padding:24px;">لا رسائل</p>'; return; }
+            container.innerHTML = messagesCache.map(m => {
+                const unread = !m.isRead && folder === 'inbox';
+                const prio = m.priority === 'high' ? '<i class="fas fa-exclamation-circle" style="color:var(--danger);margin-left:4px;"></i>' : '';
+                const peer = folder === 'inbox' ? m.from : m.to;
+                return `<div class="msg-item" data-id="${m.id}" onclick="openReadMessage('${m.id}')"
+                    style="background:${unread?'rgba(184,134,11,0.08)':'rgba(255,255,255,0.03)'};border:1px solid ${unread?'rgba(184,134,11,0.35)':'rgba(255,255,255,0.06)'};border-right:3px solid ${unread?'var(--gold)':'transparent'};border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:0.15s;">
+                    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+                        <strong style="font-size:0.88rem;${unread?'color:var(--gold-light);':''}">${prio}${escapeHtml(peer || '—')}</strong>
+                        <span style="font-size:0.72rem;color:#888;white-space:nowrap;">${m.createdAt?new Date(m.createdAt).toLocaleString('ar-EG',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):''}</span>
+                    </div>
+                    <div style="color:${unread?'var(--gold-light)':'#ccc'};font-size:0.86rem;margin:3px 0;font-weight:${unread?700:500};">${escapeHtml(m.subject || '(بدون موضوع)')}</div>
+                    <div style="font-size:0.78rem;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml((m.body||'').substring(0,90))}</div>
+                </div>`;
+            }).join('');
+            if (folder === 'inbox') {
+                const unreadCount = messagesCache.filter(m => !m.isRead).length;
+                const badge = document.getElementById('msgBadgeSidebar');
+                if (badge) { if (unreadCount > 0) { badge.style.display = ''; badge.textContent = unreadCount; } else badge.style.display = 'none'; }
+            }
+        } catch (e) { container.innerHTML = '<p style="color:#e74c3c;padding:16px;">خطأ اتصال</p>'; }
+    };
+
+    window.openReadMessage = async function(id) {
+        selectedMessageId = id;
+        const m = messagesCache.find(x => x.id === id);
+        const pane = document.getElementById('messageReadPane');
+        if (!m || !pane) return;
+        document.querySelectorAll('.msg-item').forEach(el => {
+            el.style.outline = el.dataset.id === id ? '1px solid var(--gold)' : 'none';
+        });
+        const when = m.createdAt ? new Date(m.createdAt).toLocaleString('ar-EG') : '—';
+        const prioLabel = m.priority === 'high' ? '<span style="background:rgba(231,76,60,0.2);color:#e74c3c;padding:2px 8px;border-radius:10px;font-size:0.75rem;">عالية</span>' : '';
+        pane.innerHTML = `
+            <div style="width:100%;max-width:100%;align-self:flex-start;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                    <h3 style="color:var(--gold-light);margin:0;font-size:1.15rem;line-height:1.4;">${escapeHtml(m.subject || '(بدون موضوع)')} ${prioLabel}</h3>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <button class="btn-sm" onclick="replyToMessage('${m.id}')"><i class="fas fa-reply"></i> رد</button>
+                        ${currentMsgFolder === 'inbox' ? `<button class="btn-outline-sm" onclick="replyAllHint('${m.id}')"><i class="fas fa-reply-all"></i> رد مع تحويل</button>` : ''}
+                    </div>
+                </div>
+                <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.85rem;">
+                    <div style="display:grid;gap:6px;">
+                        <div><span style="color:#888;">من:</span> <strong style="direction:ltr;display:inline-block;">${escapeHtml(m.from)}</strong></div>
+                        <div><span style="color:#888;">إلى:</span> <strong style="direction:ltr;display:inline-block;">${escapeHtml(m.to)}</strong></div>
+                        <div><span style="color:#888;">التاريخ:</span> ${when}</div>
+                    </div>
+                </div>
+                <div style="white-space:pre-wrap;line-height:1.7;color:#ddd;font-size:0.95rem;padding:4px 2px 16px;">${escapeHtml(m.body || '')}</div>
+                <div id="replyBox" style="display:none;margin-top:8px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px;">
+                    <label style="color:var(--gold-light);font-size:0.85rem;">الرد</label>
+                    <textarea id="replyBody" rows="4" style="width:100%;padding:10px;border:1px solid #3a3a3a;border-radius:8px;background:rgba(0,0,0,0.3);color:#ddd;font-family:inherit;margin:8px 0;" placeholder="اكتب ردك هنا..."></textarea>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="btn-sm" id="btnSendReply" onclick="sendReply('${m.id}')"><i class="fas fa-paper-plane"></i> إرسال الرد</button>
+                        <button class="btn-outline-sm" onclick="document.getElementById('replyBox').style.display='none'">إلغاء</button>
+                    </div>
+                </div>
+            </div>`;
+        if (!m.isRead && currentMsgFolder === 'inbox') {
+            try {
+                await apiStaffPost('markmessageread', { id });
+                m.isRead = true;
+                const item = document.querySelector(`.msg-item[data-id="${id}"]`);
+                if (item) { item.style.background = 'rgba(255,255,255,0.03)'; item.style.borderRight = '3px solid transparent'; }
+                const badge = document.getElementById('msgBadgeSidebar');
+                if (badge) {
+                    const unreadCount = messagesCache.filter(x => !x.isRead).length;
+                    if (unreadCount > 0) { badge.style.display = ''; badge.textContent = unreadCount; } else badge.style.display = 'none';
+                }
+            } catch (e) {}
+        }
+    };
+
+
+    window.openComposeMsgModal = async function() {
+        const sel = document.getElementById('composeTo');
+        if (!sel) return;
+        sel.innerHTML = '<option value="">— اختر المستلم بالاسم أو البريد —</option><option value="all">📢 جميع الموظفين</option>';
+        try {
+            const r = await apiStaffPost('liststaff');
+            if (r.status === 'success' && r.data) {
+                r.data.forEach(s => {
+                    if (s.email && s.email !== (currentUser.email || '').toLowerCase()) {
+                        const opt = document.createElement('option');
+                        opt.value = s.email;
+                        opt.textContent = (s.fullName || s.email) + ' — ' + s.email;
+                        sel.appendChild(opt);
+                    }
+                });
+            }
+        } catch (e) {}
+        document.getElementById('composeSubject').value = '';
+        document.getElementById('composeBody').value = '';
+        document.getElementById('composePriority').value = 'normal';
+        document.getElementById('composeMsgModal').style.display = 'flex';
+    };
+
+    window.sendComposeMessage = async function() {
+        const toEmail = document.getElementById('composeTo').value;
+        const subject = document.getElementById('composeSubject').value.trim();
+        const body = document.getElementById('composeBody').value.trim();
+        const priority = document.getElementById('composePriority').value;
+        if (!toEmail || !subject || !body) { showToast('أكمل جميع الحقول', 'fa-exclamation', 'danger'); return; }
+        const btns = document.querySelectorAll('#composeMsgModal .btn-save');
+        btns.forEach(b => { b.disabled = true; b.dataset.old = b.innerHTML; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'; });
+        try {
+            const r = await apiStaffPost('sendmessage', { toEmail, subject, body, priority });
+            if (r.status === 'success') {
+                showToast('تم إرسال الرسالة', 'fa-paper-plane');
+                closeModal('composeMsgModal');
+                if (typeof currentMsgFolder !== 'undefined' && currentMsgFolder === 'sent') loadMessagesFolder('sent');
+            } else showToast(r.message || 'فشل', 'fa-times', 'danger');
+        } catch (e) { showToast('خطأ', 'fa-times', 'danger'); }
+        btns.forEach(b => { b.disabled = false; b.innerHTML = b.dataset.old || '<i class="fas fa-paper-plane"></i> إرسال'; });
+    };
+
+    window.replyToMessage = function(id) {
+        const box = document.getElementById('replyBox');
+        if (!box) return;
+        box.style.display = 'block';
+        const ta = document.getElementById('replyBody');
+        if (ta) { ta.value = ''; ta.focus(); }
+    };
+
+    window.replyAllHint = function(id) {
+        replyToMessage(id);
+        showToast('الرد سيُرسل إلى المرسل الأصلي', 'fa-info-circle');
+    };
+
+    window.sendReply = async function(id) {
+        const m = messagesCache.find(x => x.id === id);
+        if (!m) return;
+        const bodyEl = document.getElementById('replyBody');
+        const body = (bodyEl && bodyEl.value || '').trim();
+        if (!body) { showToast('اكتب نص الرد', 'fa-exclamation', 'danger'); return; }
+        const toEmail = currentMsgFolder === 'inbox' ? m.from : m.to;
+        if (!toEmail || toEmail === 'all') { showToast('لا يمكن الرد على هذه الرسالة', 'fa-exclamation', 'danger'); return; }
+        const subject = (m.subject || '').startsWith('Re:') ? m.subject : ('Re: ' + (m.subject || ''));
+        const quoted = '\\n\\n──────────\\nفي ' + (m.createdAt ? new Date(m.createdAt).toLocaleString('ar-EG') : '') + ' كتب ' + m.from + ':\\n' + (m.body || '');
+        const fullBody = body + quoted;
+        const btn = document.getElementById('btnSendReply');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'; }
+        try {
+            const r = await apiStaffPost('sendmessage', { toEmail, subject, body: fullBody, priority: m.priority || 'normal' });
+            if (r.status === 'success') {
+                showToast('تم إرسال الرد', 'fa-paper-plane');
+                if (bodyEl) bodyEl.value = '';
+                document.getElementById('replyBox').style.display = 'none';
+            } else showToast(r.message || 'فشل الإرسال', 'fa-times', 'danger');
+        } catch (e) { showToast('خطأ في الاتصال', 'fa-times', 'danger'); }
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الرد'; }
+    };
+
+    /* Dashboard appointment stats */
+    function updateAppointmentStats() {
+        const today = (function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
+        let appsToday = 0, pending = 0;
+        if (typeof bookingsData !== 'undefined' && Array.isArray(bookingsData)) {
+            // المواعيد النشطة فقط (ليست ملغاة أو منتهية) تظهر في النظرة العامة
+            appsToday = bookingsData.filter(b => b.date === today && b.status !== 'cancelled' && b.status !== 'completed').length;
+            pending = bookingsData.filter(b => b.status === 'pending').length;
+        }
+        // personal appointments
+        try {
+            const apps = JSON.parse(localStorage.getItem('adminAppsV2') || localStorage.getItem('adminAppsV6') || '[]');
+            appsToday += apps.filter(a => a.date === today && a.status !== 'completed' && a.status !== 'cancelled').length;
+        } catch(e) {}
+        const el1 = document.getElementById('appsTodayCount');
+        const el2 = document.getElementById('pendingBookingsCount');
+        if (el1) el1.textContent = appsToday;
+        if (el2) el2.textContent = pending;
+    }
+
+    // refresh stats when bookings load
+    const _origLoadBookings = window.loadBookings;
+    if (typeof _origLoadBookings === 'function') {
+        window.loadBookings = async function(force) {
+            await _origLoadBookings(force);
+            updateAppointmentStats();
+        };
+    }
 </script>
 </body>
 </html>
