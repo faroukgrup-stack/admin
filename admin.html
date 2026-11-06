@@ -835,7 +835,41 @@
 <div class="toast-container" id="toastBox"></div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7LqmXgKI3YEuWELG0FfwkVC8fpkJEaz-ppY7naLQI4AaqXd3N4zgDSr-QRmA3mVoBBQ/exec";
+// ---- كود الحماية ومنع الوصول لأدوات المطور ----
+(function () {
+  "use strict";
+
+  // منع F12 واختصارات أدوات المطور وعرض المصدر
+  document.addEventListener('keydown', function (e) {
+    // F12
+    if (e.key === 'F12' || e.keyCode === 123) {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+Shift+I / J / C
+    if (e.ctrlKey && e.shiftKey &&
+        (e.key === 'I' || e.key === 'i' ||
+         e.key === 'J' || e.key === 'j' ||
+         e.key === 'C' || e.key === 'c')) {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+U (عرض المصدر)
+    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+      e.preventDefault();
+      return false;
+    }
+  }, true);
+
+  // منع النقر بزر الماوس الأيمن (بدون alert)
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    return false;
+  }, true);
+
+})();
+// ---- نهاية كود الحماية ----
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0XST9C_oSUU6vTb_TLOudAfCMF146LqxVfd-XmSV7O5bccAdeMm1KmVVK0YYUd3_MfQ/exec";
     // يجب أن يطابق ADMIN_KEY في Script Properties للمنصة الشاملة و ADMINSECRETKEY لهندسة المينيو
     const ADMIN_KEY = "mF9$kL2#pQ8wZ4xR7vN1yT6";
     const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
